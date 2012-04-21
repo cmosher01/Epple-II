@@ -23,7 +23,7 @@ cd
 mkdir epple2
 cd epple2
 wget http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz  # <2>
-tar xzvf epple2-1.0.tar.gz
+tar xzvf epple2-latest.tar.gz
 mkdir build  # <3>
 cd build
 ../epple2-1.0/configure  # <4>
