@@ -10,15 +10,15 @@
 
 
 # Integer BASIC and old Monitor ROMs
-import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
-import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
-import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.a65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.a65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.a65
 
 
 
 # Disk ][ card with 13-sector ROMs
 slot 6 disk
-import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/13sector/controller/disk2.ex65
+import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/13sector/controller/disk2.a65
 
 # Insert DOS 3.1 System Master disk into drive 1
 load slot 6 drive 1 $(PREFIX)lib/apple2/dos3x/13sector/disks/dos310/clean31sysmas_stock_rawdos.nib

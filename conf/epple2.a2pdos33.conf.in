@@ -10,8 +10,8 @@
 
 
 # Applesoft BASIC and Autostart Monitor ROMs
-import motherboard rom 0000 $(PREFIX)lib/apple2/system/applesoft/applesoft.ex65
-import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2plus/monitor.ex65
+import motherboard rom 0000 $(PREFIX)lib/apple2/system/applesoft/applesoft.a65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2plus/monitor.a65
 
 
 
@@ -22,7 +22,7 @@ slot 0 language
 
 # Disk ][ controller card in slot 6, with 16-sector ROMs
 slot 6 disk
-import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/16sector/controller/disk2.ex65
+import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/16sector/controller/disk2.a65
 
 # Insert DOS 3.3 System Master disk (original version) in drive 1
 load slot 6 drive 1 $(PREFIX)lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib
