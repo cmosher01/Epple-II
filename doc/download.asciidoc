@@ -20,7 +20,7 @@ System ROM (Demo): http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz
 
 Card ROMs (stdin/stdout/clock): http://mosher.mine.nu/epple2/download/epple2cards-latest.tar.gz[epple2cards.tar.gz]
 
-See <<_building_from_source,Building>> on ow to build from sources.
+See <<_building_from_source,Building>> on how to build from sources.
 
 Source code is hosted on github:
 https://github.com/cmosher01/Epple-II/[Epple-II]
