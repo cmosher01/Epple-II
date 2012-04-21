@@ -1,0 +1,55 @@
+# epple2.conf
+# Copyright 2009, by Chris Mosher <chris@mosher.mine.nu>
+# GPLv3
+#
+# Configuration file for the Epple 2 emulator.
+#
+# This sample file is the default setup for the emulator.
+# It does not load any proprietary ROMs, only GPLv3 ROMs
+# written by the author of the emulator.
+#
+
+
+
+# Demo system ROM for the emulator. This is only to allow the
+# emulator to do something useful when there are no real Apple ROM
+# images provided.
+# 
+import motherboard rom 2C00 $(PREFIX)lib/epple2/system/epple2sys.ex65
+
+# These are how to load the real (proprietary) Apple ROMs.
+# There ROMs are not distributed with the Epple 2 emulator.
+# These two lines are for an Apple ][ plus:
+#import motherboard rom 0000 $(PREFIX)lib/apple2/system/applesoft/applesoft.ex65
+#import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2plus/monitor.ex65
+# or instead, use these three lines are for an Apple ][:
+#import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+#import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+#import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+
+slot 0 language
+
+slot 1 stdout
+import slot 1 rom 0 $(PREFIX)lib/epple2/cards/stdout.ex65
+
+slot 2 stdin
+import slot 2 rom 0 $(PREFIX)lib/epple2/cards/stdin.ex65
+
+slot 4 clock
+import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.ex65
+
+#slot 5 disk
+#import slot 5 rom 0 $(PREFIX)lib/apple2/dos3x/13sector/controller/disk2.ex65
+#load slot 5 drive 1 $(PREFIX)lib/apple2/dos3x/13sector/disks/dos310/clean31sysmas_stock_rawdos.nib
+
+#slot 6 disk
+#import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/16sector/controller/disk2.ex65
+#load slot 6 drive 1 $(PREFIX)lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib
+
+#slot 7 firmware
+#import slot 7 rombank 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+#import slot 7 rombank 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+#import slot 7 rombank 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+
+#revision 0
+revision 1

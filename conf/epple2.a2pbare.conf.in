@@ -1,0 +1,10 @@
+# Apple ][ plus, bare
+#
+# This set up is a standard Apple ][ plus, and
+# nothing in any slots. It has Applesoft BASIC
+# and the Autostart Monitor ROMs.
+
+
+
+import motherboard rom 0000 $(PREFIX)lib/apple2/system/applesoft/applesoft.ex65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2plus/monitor.ex65

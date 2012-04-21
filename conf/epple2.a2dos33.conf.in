@@ -1,0 +1,29 @@
+# Apple ][ with language card and DOS 3.3 (original version)
+#
+# After power-on, type C600G to boot the DOS 3.3 System Master disk.
+# Notice it shows "APPLE II STANDARD" for this machine, and then it
+# loads APPLESOFT into the language card.
+#
+# You can use FP to switch to Applesoft, and INT to switch
+# back to Integer BASIC. As you do this, notice the "R" reading
+# indicator on the language card line turning on or off.
+
+
+# Integer BASIC and old Monitor ROMs
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+
+
+
+# Language card in slot 0
+slot 0 language
+
+
+
+# Disk ][ controller card in slot 6, with 16-sector ROMs
+slot 6 disk
+import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/16sector/controller/disk2.ex65
+
+# Insert DOS 3.3 System Master disk (original version) in drive 1
+load slot 6 drive 1 $(PREFIX)lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib

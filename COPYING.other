@@ -1,0 +1,20 @@
+For the analogtv class, portions were inspired by Trevor Blackwell's analog
+TV module for xscreensaver. For those portions:
+/* analogtv, Copyright (c) 2003, 2004 Trevor Blackwell <tlb@tlb.org>
+ *
+ * Permission to use, copy, modify, distribute, and sell this software and its
+ * documentation for any purpose is hereby granted without fee, provided that
+ * the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  No representations are made about the suitability of this
+ * software for any purpose.  It is provided "as is" without express or
+ * implied warranty.
+ */
+Thanks, Trevor, for your code and your inspiration.
+
+
+
+The ADC and SBC instructions of the CPU class were based on those taken
+from Verhille Arnaud's POM1 Apple 1 emulator. For those portions:
+// Copyright (C) 2000, by Verhille Arnaud, GPLv2 license.
+Thanks, Verhille.

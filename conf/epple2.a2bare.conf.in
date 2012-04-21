@@ -1,0 +1,11 @@
+# Apple ][ (with revision 1 or later motherboard), bare
+#
+# This set up is a standard Apple ][ (with a newer motherboard,
+# that is, not an original revision zero motherboard), and
+# nothing in any slots. It has Integer BASIC and the old Monitor ROMs.
+
+
+
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65

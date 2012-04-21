@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2003/01/wi">
+	<Product Name="EPPLE ][" Id="d603c69f-4116-4b8e-910f-44f488a772a4" Language="1033" Codepage="1252" Version="1.0.0" Manufacturer="Chris Mosher">
+		<Package Id="0ca046fe-0adb-4df3-9fab-048baa55b165" Description="Emulated Apple ][" InstallerVersion="100" Languages="1033" Compressed="yes" />
+		<Media Id="1" Cabinet="Epple2.cab" EmbedCab="yes" DiskPrompt="Epple2.cab" />
+		<Property Id="DiskPrompt" Value="Epple ][ Installation" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder" Name="PFiles">
+				<Directory Id="INSTALLDIR" Name="Epple2">
+					<Directory Id="bindot" Name=".">
+					<Directory Id="bin" Name="bin">
+						<Component Id="MainExecutable" Guid="d3f60e2b-92e2-4a41-b83a-a38591c2e6c3">
+							<File Id="EPPLE2_EXE" Name="epple2.exe" DiskId="1" Source="epple2.exe" Vital="yes">
+								<Shortcut Id="startmenuEpple2" Directory="ProgramMenuDir" Name="Epple2" WorkingDirectory="INSTALLDIR" />
+								<Shortcut Id="desktopEpple2" Directory="DesktopFolder" Name="Epple2" WorkingDirectory="INSTALLDIR" />
+							</File>
+							<RemoveFolder Id="ProgramMenuDir" On="uninstall" />
+						</Component>
+						<Component Id="SDL" Guid="d8e283c0-9af6-4275-8d66-45ca2a0e51ce">
+							<File Id="SDLDLL" Name="sdl.dll" DiskId="1" Source="$(var.SDLDIR)\SDL.dll" />
+						</Component>
+	
+						<Component Id="MINGWM" Guid="d8e283c0-9af6-4275-8d66-45ca2a0e51ce">
+							<File Id="MINGWMDLL" Name="mingwm10.dll" DiskId="1" Source="$(var.MINGWMDIR)\mingwm10.dll" />
+						</Component>
+					</Directory>
+					</Directory>
+
+					<Directory Id="etcdot" Name=".">
+					<Directory Id="etc" Name="etc">
+						<Directory Id="etc_epple2" Name="epple2">
+							<Component Id="ConfigFiles" Guid="73057afd-e28b-48b1-b428-6e2bf029b74d">
+								<File Id="Config"            Name="epple2.cfg"   LongName="epple2.conf"             DiskId="1" Source="..\conf\epple2.conf"          Vital="yes" />
+								<File Id="Config_rev0bare"   Name="epple2_1.cfg" LongName="epple2.rev0bare.conf"    DiskId="1" Source="..\conf\epple2.rev0bare.conf" Vital="yes" />
+								<File Id="Config_a2bare"     Name="epple2_2.cfg" LongName="epple2.a2bare.conf"      DiskId="1" Source="..\conf\epple2.a2bare.conf"   Vital="yes" />
+								<File Id="Config_a2dos31"    Name="epple2_3.cfg" LongName="epple2.a2dos31.conf"     DiskId="1" Source="..\conf\epple2.a2dos31.conf"  Vital="yes" />
+								<File Id="Config_a2dos33"    Name="epple2_4.cfg" LongName="epple2.a2dos33.conf"     DiskId="1" Source="..\conf\epple2.a2dos33.conf"  Vital="yes" />
+								<File Id="Config_a2loaded"   Name="epple2_5.cfg" LongName="epple2.a2loaded.conf"    DiskId="1" Source="..\conf\epple2.a2loaded.conf" Vital="yes" />
+							</Component>
+						</Directory>
+					</Directory>
+					</Directory>
+				</Directory>
+			</Directory>
+
+			<Directory Id="ProgramMenuFolder" Name="PMenu" LongName="Programs">
+				<Directory Id="ProgramMenuDir" Name="Epple2" />
+			</Directory>
+
+			<Directory Id="DesktopFolder" Name="Desktop" />
+		</Directory>
+
+		<Feature Id="Complete" Level="1">
+			<ComponentRef Id="MainExecutable" />
+			<ComponentRef Id="ConfigFiles" />
+			<ComponentRef Id="SDL" />
+			<ComponentRef Id="MINGWM" />
+		</Feature>
+	</Product>
+</Wix>

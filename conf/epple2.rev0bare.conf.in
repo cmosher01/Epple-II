@@ -1,0 +1,21 @@
+# Apple ][ with revision zero motherboard
+#
+# This sets up a revision zero motherboard, and loads
+# Integer BASIC and the old Monitor ROMs. This set up
+# has nothing in any slots; it's a minimalist Apple ][.
+#
+# With a revision zero motherboard, powering on the machine
+# doesn't start it running; you need to press RESET (Break)
+# to get it actually running.
+
+
+
+# Load Integer BASIC and old Monitor ROMs
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+
+
+
+# Use an original, revision zero, motherboard
+revision 0

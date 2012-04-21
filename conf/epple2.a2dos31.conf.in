@@ -1,0 +1,24 @@
+# Apple ][ with (13-sector) DOS 3.1 (the original version of DOS 3.3).
+#
+# After power-up, type C600G to boot the DOS 3.1 System Master disk.
+#
+# Since this System Master disk has "APPLESOFT" on it, you can type
+# FP at the Integer BASIC prompt to run Applesoft BASIC. When you do
+# it this way, you get an interesting title page for Applesoft, showing
+# copyright notices for Apple and Microsoft.
+
+
+
+# Integer BASIC and old Monitor ROMs
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.ex65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.ex65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.ex65
+
+
+
+# Disk ][ card with 13-sector ROMs
+slot 6 disk
+import slot 6 rom 0 $(PREFIX)lib/apple2/dos3x/13sector/controller/disk2.ex65
+
+# Insert DOS 3.1 System Master disk into drive 1
+load slot 6 drive 1 $(PREFIX)lib/apple2/dos3x/13sector/disks/dos310/clean31sysmas_stock_rawdos.nib

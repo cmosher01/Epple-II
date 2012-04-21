@@ -1,0 +1,135 @@
+epple2 (Emulated Apple ][)
+--------------------------
+
+
+epple2 is an emulator of the Apple ][ and Apple ][ plus
+computers from Apple, Inc. It strives to faithfully simulate
+much of the internal workings of the original Apple ][,
+including the individual cycles of the 6502 CPU, and the
+NTSC video signal generation, including the "strange orange
+line", other color anomalies, and the "floating data bus."
+Understanding the Apple ][, by Jim Sather, is the primary
+source for information about the internals of the Apple ][.
+
+The CPU and video timings are synchronized, and the emulator
+is designed to run at the same speed as the original
+machine (if your computer is fast enough). It also emulates
+several different types of television screens and monitors
+for the display.
+
+It includes emulation of a Disk ][ controller card, a ROM
+firmware card, and a RAM "Language" card, as well as a
+simple clock card.
+
+epple2 is written in C++, and is designed to be buildable
+on Windows (with MSYS/MinGW or Visual C++ 2008, Express
+Edition) or Linux (gcc).
+
+The SDL library (http://www.libsdl.org) is the only dependency
+of epple2 (see below).
+
+The epple2 is released under GPLv3.
+
+
+
+RUNNING
+-------
+SDL:
+To run epple2, you need to have the SDL libraries installed.
+See http://www.libsdl.org for information on SDL.
+You'll need to download and install the "Runtime Libraries"
+for your platform (Win32 or Linux).
+
+ROM:
+With epple2 and SDL, you can run the emulator, but it won't
+do too much without the appropriate Apple ROM code. You can
+use ROM images from your own original Apple ][ or ][ plus, or
+you can find some on the Internet (check the Asimov Apple
+repository).
+Alternatively, you can build the ROMs yourself from assembly
+language source files I've created; these are available in
+the apple2src project. (See that project for details).
+
+Disks:
+You will also probably want floppy disk images. Again, you can
+download some from the Internet, especially from Asimov. The
+epple2 only reads NIBBLE IMAGES. If you only have 16 sector
+images, you will need to convert them to nibble images; you
+can use CiderPress (http://ciderpress.sourceforge.net).
+
+
+
+
+BUILDING
+--------
+See INSTALL for generic instructions on building and installing
+a normal distribution.
+
+If you want to build epple2 from the source distribution,
+you'll need to have the SDL development libraries installed.
+See http://www.libsdl.org for information on SDL.
+You'll need to download and install the "Development Libraries"
+for your platform (Win32 or Linux).
+
+Developers fetching directly from the repository instead of
+downloading the distribution will need to execute the bootstrap
+script before running ./configure or make.
+
+
+
+PLATFORM-SPECIFIC BUILDING
+--------------------------
+
+Windows/MSYS
+--------------
+Install MSYS into C:\MSYS\1.0
+Install MinGW into C:\mingw
+
+Install SDL. At http://www.libsdl.org/ find the download page.
+Download the "Development Libraries" for Win32, mingw, for example:
+SDL-devel-1.2.13-mingw32.tar.gz (Mingw32)
+And save it to your MSYS home directory.
+Untar the SDL archive to your home directory:
+$ cd
+$ tar xzvf SDL-devel-1.2.13-mingw32.tar.gz
+Then follow the instructions to install SDL, for example:
+$ cd SDL-1.2.13
+$ make native
+
+
+
+Run MSYS, and at the bash prompt, go to your home directory and
+untar the epple2 source distribution tar file and cd to the
+epple2 directory. For example:
+$ cd
+$ tar xzvf epple2-1.0.tar.gz
+
+NOTE: If you checked out epple2 from subversion, rather
+than downloading the distribution, you need to first run
+the bootstrap script. But first you'll need to install
+autoconf, automake, etc.
+$ cd
+$ cd epple2
+$ ./bootstrap
+
+
+
+Then build as follows. I recommend doing a VPATH build, in
+which you build into a different directory that the source
+directory. To accomplish this, create a new directory for
+building, somewhere, such as:
+$ cd
+$ mkdir buildepple2
+$ cd buildepple2
+Then run configure from there. For the MSYS build to work,
+you need some extra parameters to the build, and you could
+also add some compiler options to optimize the build. For
+example (from the buildepple2 directory you just created):
+$ ~/epple2/configure --prefix= \
+CXXFLAGS="-I/usr/include -O4 -msse3" \
+CFLAGS="-I/usr/include" \
+LDFLAGS="-L/usr/lib -mconsole -mthreads -mno-cygwin"
+$ make
+$ make install
+
+Then follow the instruction above under "RUNNING" for ROM and disks.
