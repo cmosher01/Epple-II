@@ -1,7 +1,7 @@
 SUBDIRS = src conf installer
 
 NAME = epple2
-VERSION = 1.0
+VERSION = 1.1
 ARCH = i386
 
 EXTRA_DIST = COPYING.sdl COPYING.other epple2.spec
