@@ -7,6 +7,8 @@ all : doc
 
 doc : index.html
 
+index.html : *.asciidoc
+
 clean :
 	rm -f index.html
 
