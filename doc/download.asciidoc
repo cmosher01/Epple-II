@@ -16,9 +16,7 @@ http://www.gnu.org/licenses/gpl-3.0-standalone.html[GPLv3].
 
 Epple ][ Program: http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz[epple2.tar.gz]
 
-System ROM (Demo): http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz[epple2sys.tar.gz]
-
-Card ROMs (stdin/stdout/clock): http://mosher.mine.nu/epple2/download/epple2cards-latest.tar.gz[epple2cards.tar.gz]
+ROMs (System Demo and Cards): http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz[epple2sys.tar.gz]
 
 See <<_building_from_source,Building>> on how to build from sources.
 
