@@ -1,0 +1,173 @@
+== Screenshots
+
+
+
+=== DOS 3.3 System Master boot
+
+image::dos330boot.png[]
+
+Here we've configured an Apple ][ plus, with a disk
+controller in slot 6, and a language card in slot 0.
+We've booted the DOS 3.3 System Master disk. It correctly
+identifies the machine as an Apple ][ plus, and then
+loads Integer BASIC into the language card. You can switch
+between Applesoft and Integer BASIC by using the +FP+ and
++INT+ commands.
+
+
+
+=== DOS 3.1 System Master on Revision 0 motherboard
+
+image::dos310rev0.png[]
+
+Here we've configured an Apple ][ (Integer BASIC ROMs),
+with a Revision Zero motherboard, and a disk
+controller (with 13-sector ROMs) in slot 6. With a
+revision 0 motherboard, when the machine is powered-on,
+the CPU doesn't start actually running until you
+manually press the RESET button. Also, the old Monitor
+ROMs do not boot from the disk drives automatically;
+you need to type +C600G+ to boot.
+We've booted the DOS 3.1 System Master disk and done a
+catalog of it. As you can see, with a revision 0 motherboard,
+the text is displayed in green and purple, which are also the
+only two HIRES colors. Later revisions
+of the motherboard added a ``color burst killer'' which is
+active during text mode, so the text would be strictly white.
+Two more HIRES colors, blue and orange, were also added in
+later revisions.
+
+
+
+=== PRODOS 1.1.1 boot
+
+image::prodos.png[]
+
+Here we've configured an Apple ][ plus with language card
+and disk drive. We're booting a PRODOS 1.1.1 disk.
+
+
+
+=== Bishop's Apple Split
+
+image::applesplit.png[]
+
+The October 1982 issue of http://en.wikipedia.org/wiki/Softalk[Softalk]
+featured an article by Bob Bishop entitled
+http://rich12345.tripod.com/aiivideo/softalk.html[Have an Apple Split], which describes
+in some detail the inner workings of the Apple ]['s video processing. Listings 1 and 2 from that
+article show a short Applesoft program and assembly language subroutine that allow the Apple ][
+to have a screen split between text and graphics display. To achieve this on the EPPLE ][,
+copy the following text and paste it into the emulator (at the Applesoft +]+ prompt). Since the
+EPPLE ][ accurately emulates the video scanning and timing of the original Apple ][s, this
+``split screen'' technique works successfully.
+The rest of the behavior described in the article (the floating data bus) is also emulated
+faithfully by the EPPLE ][.
+
+[source,vbs]
+---------------------------------
+CALL -151
+
+300:8D 52 C0 A9 E0 A2 04 CD 51 C0 D0 F9 CA D0 F8 A9
+310:A0 A2 04 CD 50 C0 D0 F9 CA D0 F8 8D 51 C0 60
+
+E000G
+
+100 HOME
+
+200 FOR K = 0 TO 39
+210   POKE 1448+K, 14*16
+220   POKE 2000+K, 10*16
+230   COLOR = K+4
+240   VLIN 24, 45 AT K
+250 NEXT K
+
+300 VTAB 6 : HTAB 17
+310 PRINT "APPLE II"
+
+400 CALL 768
+500 GOTO 400
+
+RUN
+---------------------------------
+
+
+
+=== Mysterious Pink Line
+
+image::pinkmystery.png[]
+
+Jim Sather's book 
+http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+which was the primary
+reference for the internal design of the EPPLE ][ emulator, describes the video
+generation process of the Apple ][, in great detail, in Chapter 8.
+On page 8-21 he shows a simple Applesoft BASIC program (shown below)
+that shows an example of one of the hi-res idiosyncrasies on the Apple ][.
+The program would logically draw three orange lines, but due to the
+video cutoff and extension of half-dot shifted pixels, instead the right
+line is brown, and there is a ``mysterious pink line'' (actually magenta)
+on the far left of the screen. The EPPLE ][ faithfully emulates this behavior.
+
+[source,vbs]
+---------------------------------
+NEW
+
+10 HGR : HCOLOR = 5 : HPLOT 5,159 TO 5,0 TO 279,0 TO 279,159
+
+RUN
+---------------------------------
+
+
+
+=== Split Screen HIRES/LORES colors
+
+image::splitcolors.png[]
+
+Jim Sather's book 
+http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+shows an Applesoft BASIC
+program and assembly language subroutine on pages 3-16 and 3-17 (reproduced
+below) that produce the display shown here. The screen is split between HIRES
+and LORES graphics by a timed loop that manipulates the screen switches.
+(Press any key repeatedly to move the position of the split.)
+
+Notice that the Apple ][ can actually produce more HIRES colors than are
+documented in the standard Apple reference manuals. White, black, green,
+purple, blue, and orange are normally documented, but by careful manipulation
+of the high-bit (half-dot shift indicator) of the HIRES display byte, many
+other colors can be produced. The additional colors match some LORES colors.
+Also notice that the text at the bottom of the screen is colored green and
+purple while in mixed text/graphics mode. This is because the ``color
+burst killer'' circuit is not active while displaying graphics on the
+Apple ][ machines.
+
+[source,vbs]
+---------------------------------
+CALL -151
+1F00:AC 54 C0 A0 27 20 27 1F
+1F08:AC 10 C0 AC 00 C0 30 F3
+1F10:69 01 29 01 AA BC 56 C0
+1F18:A2 08 20 31 1F A0 31 20
+1F20:27 1F 18 90 E6 D0 01 88
+1F28:88 EA D0 F9 60 48 68 EA
+1F30:EA A0 62 20 27 1F EA CA
+1F38:D0 F3 60
+
+E000G
+ 30 HGR : HOME : VTAB 21 : PRINT "1  7  D  2  8  E  B  4  5  A 3 6 C 9 F 8"
+ 40 DIM COLR(39), X(21)
+100 FOR A = 0 TO 39 : READ COLR(A) : COLOR = COLR(A) : VLIN 0, 39 AT A : NEXT A
+200 FOR A = 0 TO 21 : READ COLR(A) : READ X(A) : HCOLOR = COLR(A)
+210 HPLOT X(A), 0 TO X(A), 159 : NEXT A
+220 FOR A = 8319 TO 16383 STEP 128 : POKE A, 64 : NEXT A
+300 CALL 7936
+400 REM  LORES DATA
+410 DATA 1,0,7,7,0,13,13,0,2,2,0,8,8,0,14,14,0,11,11,0
+420 DATA 4,4,0,0,5,0,0,10,0,3,0,6,0,12,0,9,0,15,0,8
+500 REM  HIRES DATA
+510 DATA 4,0,3,20,4,21,3,41,4,42,7,62,7,83,7,104,3,105,7,125,3,126,7,159,3,161
+520 DATA 7,180,3,182,3,206,7,220,3,233,7,247,3,262,3,263,7,279
+
+RUN
+---------------------------------

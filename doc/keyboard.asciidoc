@@ -1,0 +1,61 @@
+=== Keyboard
+
+The EPPLE ][ emulates the original Apple ][ keyboard. The original Apple ][
+keyboard had symbols in different places than current common PC keyboards. For
+example, Shift-2 on the Apple ][ produces a double quote, but on a PC keyboard
+it produces an at-sign. For ease of typing, the EPPLE ][ emulator does not
+mimic the positions of the original keys, but rather mimics the symbols on
+the current PC keyboard. So, for example, if you type Shift-2 on the PC
+keyboard into the EPPLE ][, it produces an at-sign, as you would normally expect.
+
+The Apple ][ keyboard didn't produce lower-case letters; neither does the emulator.
+Also, the Apple couldn't produce an opening square bracket ([), braces, vertical
+bar, backslash. There were no up- or down-arrow keys. You cannot type these into
+the emulator, either. There are other, unusual, cases that are emulated correctly,
+as well, such as typing Control in conjunction with a number key simply produces
+that number. So typing a Control-3 is the same as just typing a 3. Also, typing
+Shift-Control-2 produces the NUL character (ASCII $80).
+
+The Apple ][ keyboards didn't automatically repeat typing characters when a
+key was held down. Instead, the user would hold down the REPT (``repeat'') key
+while holding down the key that was to be repeated. On the EPPLE ][, this
+behavior is emulated, and the F10 key is used as the REPT key.
+
+The Apple ][ had no keyboard buffer (actually, it had a buffer of one character).
+So if you typed several characters on the keyboard before the currently running
+program had a chance to read them, they would get lost (only the final character
+typed would be remembered). This behavior can be
+toggled on or off in the EPPLE ][. By default, the EPPLE ][ will buffer up any
+characters you type and deliver them to the emulated machine when it asks for
+them. However, the Apple program must be written properly to allow this to work.
+Some Apple ][ programs (like maybe some games) may not work correctly in this
+respect, so you may want to turn off buffering in these cases. With buffering
+turned off, the EPPLE ][ accurately emulates the original Apple ][. Use the F12
+key to toggle the keyboard buffering. Note that pasting from the clipboard (with
+the Insert key) will most definitely cause keys to be lost if the keyboard
+buffer is turned off. So if you have a big Applesoft program in the clipboard
+and you want to paste it into the EPPLE ][ correctly, make sure the keyboard
+buffer is on.
+
+.Special Keys
+* +F1+ Emulates the POWER switch on the back of the Apple ][.
+* +F2+ Cycles among different display types (TV, monitor, etc.).
+* +F3+ Toggles between full-screen or window display.
+* +F4+ Toggles between showing scan lines on the display, or duplicating
+each scan line to the following line, to fill-in the otherwise black line.
+* +F5+ Go to ``command entry'' mode.
+* +F10+ Emulates the REPT key.
+* +F11+ Toggles between running the emulator at authentic speed
+(1.02 MHz CPU), or as fast as possible.
+* +F12+ Toggles the keyboard buffer.
+* +Break+ Emulates the RESET key.
+* +Insert+ Pastes characters from the clipboard into the emulated Apple
+(as if they had been typed on the keyboard).
+* +Print&nbsp;Screen+ Save a bitmap file of the current EPPLE ][ screen.
+The file will be in the default directory, named +ep2_YYYYMMDDHHMMSS.bmp+.
+* +End+ Quit the EPPLE ][ program, immediately!
+
+[WARNING]
+If you have modification to any floppy images or cassette images, and you
+press the +End+ key, you will LOSE all those changes, unless you
+save them first. See <<_commands,Commands>> for the +save+ command.

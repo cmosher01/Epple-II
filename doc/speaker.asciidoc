@@ -1,0 +1,9 @@
+=== Speaker
+
+The Apple ][ could generate sound via a speaker that generated square wave
+audio. A program could read memory location $C030 to toggle the speaker and
+generate a ``click'' sound.
+
+The Epple ][ emulator will generate sounds from the emulated Apple and
+send them to the audio device. It generates 8-bit mono sound, with a 22,050 Hz
+sampling rate.

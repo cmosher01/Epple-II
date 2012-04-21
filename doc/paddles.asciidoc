@@ -1,0 +1,12 @@
+=== Paddles
+
+The Epple ][ provides two paddles to the Apple ][ machine.
+One paddle is controlled by moving the mouse left and right; the other
+paddle is controlled by moving the mouse up and down. The paddle buttons
+are emulated by the mouse buttons (left and right click).
+
+In
+http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
+to create two real-time clock references. This is emulated by the Epple ][. Paddle timers 2 and 3
+are 100-microsecond and 1-millisecond references, respectively.

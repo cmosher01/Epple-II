@@ -1,0 +1,6 @@
+=== Overview
+
+Epple ][ (the Emulated Apple ][ is a free (as in GPLv3), cross-platform
+(Windows, Linux) emulator of the Apple ][ and Apple ][ plus computers
+from Apple, Inc. It strives for accurate emulation of the original machines,
+with a few extra features added.

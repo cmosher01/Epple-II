@@ -1,0 +1,263 @@
+[[cards]]
+
+=== Peripheral Cards
+
+==== Disk ][ Controller
+
+The Disk ][ Controller card emulates the floppy disk controller card and associated
+disk drives in the original Apple ][ systems. In the emulator, each card has two
+drives attached to it, referred to as drive 1 and drive 2. The floppy disks
+themselves are represented by a ``nibble'' image of the contents. The
+emulator emulates the hardware, but to be of any use, you will need to provide
+the firmware ROM code.
+
+To use a disk card and drives, add these lines to your epple2.conf file, for example:
+
+--------
+slot 6 disk
+import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.ex65
+--------
+
+The first line uses the <<_slot,slot>> command to
+insert a disk contoller card into slot 6, which is the standard
+slot used for disk cards. The next line uses the <<_import,import>>
+command to load the card's ROM with the disk controller
+firmware. This firmware is known as the ``bootstrap'' or ``P5'' ROM code.
+It is seen by the Apple ][ at memory addresses $Cs00-$CsFF, where s is the
+slot number (so in the common case of the card being in slot 6, the ROM is
+at $C600-$C6FF). The firmware is copyright by Apple, and is available from
+the http://mosher.mine.nu/apple2/[Apple II Library].
+
+You can also load a floppy disk image (nibble format) into the drive,either by putting
+the <<_load,load>> command into the +epple2.conf+ file, or by using the command prompt
+in the emulator (+F5+ key). For example, you could load the DOS 3.3 system master into
+slot 6, drive 1, with this command
+
+--------
+load slot 6 drive 1 /usr/lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib
+--------
+
+
+
+
+==== Language
+
+The language card emulates an Apple 16K RAM card, commonly called a Language Card.
+To use a language card, add this line to your epple2.conf file:
+
+--------
+slot 0 language
+--------
+
+Note that DOS and ProDOS will make use of a language card only if it is in slot _zero_.
+
+The language card has RAM at addresses $E000 through $FFFF, as well as two banks of RAM
+at addresses $D000 through $DFFF. A program switches between these RAMs and/or the
+motherboard ROM by using the I/O switches at $C080 through $C08F.
+
+The information area of the Epple ][ will show the current state of the
+language card as follows:
+
+*  +R+   Read from card RAM (vs. motherboard ROM)
+*  +W+   Write to card RAM (vs. write-disabled)
+*  +B1+  Use $D000 bank 1
+*  +B2+  Use $D000 bank 2
+
+An overview of the I/O switches that control the language card
+is provided by Jim Sather in
+http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+p. 5-30, Table 5.4, as follows:
+
+[options="header", style="monospaced"]
+|==================================================================
+| BANK2 | BANK1  2+|                  ACTION
+
+|  C080 |  C088 .2+| WRTCOUNT = 0*, WRITE DISABLE .2+| READ ENABLE
+|  C084 |  C08C
+
+| RC081 | RC089 .2+| WRTCOUNT = WRTCOUNT + 1*     .2+| READ DISABLE
+| RC085 | RC08D
+
+| WC081 | WC089 .2+| WRTCOUNT = 0*                .2+| READ DISABLE
+| WC085 | WC08D
+
+|  C082 |  C08A .2+| WRTCOUNT = 0*, WRITE DISABLE .2+| READ DISABLE
+|  C086 |  C08E
+
+| RC083 | RC08B .2+| WRTCOUNT = WRTCOUNT + 1*     .2+| READ ENABLE
+| RC087 | RC08F
+
+| WC083 | WC08B .2+| WRTCOUNT = 0*                .2+| READ ENABLE
+| WC087 | WC08F
+|==================================================================
+
+^*^ Writing to expansion RAM is enabled when WRTCOUNT reaches 2.
+
+
+
+==== Firmware
+
+The firmware card emulates a (modified) Apple Firmware card.
+The firmware card is simply an alternate ROM, at addresses
+$D000 through $FFFF, that is switched using the I/O switches
+at addresses $C080 through $C08F. In order to make use of the
+firmware card, you will need to load the ROM with a binary image
+from a file on disk. For example, to insert an Integer BASIC
+firmware card into the emulator, add these lines to your
++epple2.conf+ file:
+
+--------
+# Firmware card with Integer BASIC and old Monitor
+slot 0 firmware
+import slot 0 rombank 1000 /usr/lib/apple2/system/intbasic/intbasic.ex65
+import slot 0 rombank 2425 /usr/lib/apple2/system/other/other.ex65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2/monitor.ex65
+--------
+
+For an Applesoft BASIC firmware card, use these:
+
+--------
+# Firmware card with Applesoft BASIC and Autostart Monitor
+slot 0 firmware
+import slot 0 rombank 0000 /usr/lib/apple2/system/applesoft/applesoft.ex65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.ex65
+--------
+
+Note that the addresses specified in the +epple2.conf+ file for the
+rombank are based on the beginning of the bank ROM itself. For example, specifying
++1000+ (which is 1000 hex) represents the final memory address of $E000, because
+the bank ROM is always based at address $D000.
+
+The idea is that you would load your motherboard with, for
+example, Applesoft BASIC and the Autostart Monitor ROM (to emulate
+an Apple ][ plus), and then install a firmware card with Integer
+BASIC and the old Monitor. Booting with DOS 3.3, then, would allow
+you to type +FP+ to use Applesoft BASIC, or +INT+ to switch to Integer BASIC.
+
+Note that DOS and ProDOS will make use of a firmware card only if it is in slot _zero_.
+
+Jim Sather, in
+http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+on pages 6-18 through 6-21, explains
+how to modify a firmware card to allow independent switching of the $F800-$FFFF
+ROM memory. This area is occupied by the Monitor, so it is primarily
+intended to allow the user to switch between the old Monitor and the Autostart
+Monitor, independent of switching between Integer and Applesoft BASIC. The EPPLE ][
+firmware card emulates this behavior.
+
+The information area of the EPPLE ][ will show the current state of the
+firmware card as follows:
+
+*  +D+   Read from firmware card $D000-$F7FF (vs. motherboard BASIC ROM)
+*  +F8+  Read from firmware card $F800-$FFFF (vs. motherboard Monitor ROM)
+
+
+
+==== Clock
+
+The clock card emulates a ProDOS-compatible real-time clock card for the Apple ][.
+To use a clock card, you will need to configure the EPPLE ][ to insert one into
+a slot, typically slot 4. You will also need to load the card with its ROM code,
+which is provided with the emulator in the clock.ex65 file.
+For example, add this to your epple2.conf file:
+
+--------
+slot 4 clock
+import slot 4 rom 0 /usr/lib/epple2/cards/clock.ex65
+--------
+
+Of course you may need to adjust the path for your particular system.
+
+To verify that the clock card is working correctly, you can run the following Applesoft
+program to retrieve the current time from the clock card and print it.
+This program assumes the card is in slot 4.
+
+
+[source,vbs]
+-------------------------------------------------
+NEW
+
+10 CALL -15360 : REM $C400 SLOT 4 ENTRY POINT
+20 A = 512 : REM $0200 INPUT BUFFER
+30 C = PEEK(A)
+40 IF C < 160 THEN 99
+50 PRINT CHR$(C);
+60 A = A+1
+70 GOTO 30
+99 END
+
+RUN
+-------------------------------------------------
+
+
+The card returns data (into the GETLN input buffer at $200) in
+the following format:
+
++mm,ww,dd,hh,nn,ss,000,yyyy,Time Zone,v+
+
+* +mm+    Month, 01-12
+* +ww+    Weekday, 00=Monday... 06=Saturday
+* +dd+    Day, 01-31
+* +hh+    Hour, 00-23
+* +nn+    Minute, 00-59
+* +ss+    Second, 00-61
+* +000+   Milliseconds; always zero
+* +yyyy+  Year, e.g., 2008
+* +Time Zone+  time zone string (could contain lower-case characters,
+           which won't display correctly)
+* +v+     Daylight Saving Time in effect, 0=no, 1=yes
+
+Note that only +mm,ww,dd,hh,nn+ fields are used by ProDOS. The other
+fields, +ss,000,yyyy,Time Zone,v+, are an EPPLE ][ extension. Also note
+that ProDOS was not designed to work for years past 2007, so
+ProDOS will show the incorrect year, but the other fields will be accurate.
+I believe patches exist for ProDOS to fix this.
+
+
+
+==== Standard Input
+
+The ``standard input'' card doesn't emulate a real piece of hardware; rather, it
+reads characters from standard input (stdin) (of the EPPLE ][ emulator).
+
+To use a standard input card, add these lines to your +epple2.conf+ file:
+
+-------------------------------------------------
+# IN#2 reads from standard input
+slot 2 stdin
+import slot 2 rom 0 /usr/lib/epple2/cards/stdin.ex65
+-------------------------------------------------
+
+That will insert a stdin card into slot 2, and then load its
+ROM image into the card.
+The stdin ROM is provided with the EPPLE ][ distribution.
+
+For example, if you have a stdin card installed in slot 2, start
+the EPPLE ][ emulator from the command line, and at the Applesoft
+prompt, type +IN#2+. Then you can switch back to the
+command shell, and whatever you type will be fed into the emulated
+Apple. Use RESET or +IN#0+ to go back to normal.
+
+
+
+==== Standard Output
+
+The ``standard output'' card doesn't emulate a real piece of hardware; rather, it acts
+similar to a printer card, but instead of sending characters to a printer, it sends
+them to standard output (stdout) (of the EPPLE ][ emulator).
+
+To use a standard output card, add these lines to your +epple2.conf+ file:
+
+-------------------------------------------------
+# PR#1 prints to standard output
+slot 1 stdout
+import slot 1 rom 0 /usr/lib/epple2/cards/stdout.ex65
+-------------------------------------------------
+
+This will insert a stdout card into slot 1 (which is the typical
+slot for a printer card), and then load its ROM image into the card.
+The stdout ROM is provided with the EPPLE ][ distribution.
+
+For example, if you have a stdout card installed, at the Applesoft
+prompt, type +PR#1+. Whatever you type next will be
+echoed to standard output. Type +PR#0+ to stop echoing.

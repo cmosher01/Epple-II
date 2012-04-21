@@ -1,0 +1,2325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="generator" content="AsciiDoc 8.6.7">
+<title>Epple ][</title>
+<style type="text/css">
+/* Shared CSS for AsciiDoc xhtml11 and html5 backends */
+
+/* Default font. */
+body {
+  font-family: Georgia,serif;
+}
+
+/* Title font. */
+h1, h2, h3, h4, h5, h6,
+div.title, caption.title,
+thead, p.table.header,
+#toctitle,
+#author, #revnumber, #revdate, #revremark,
+#footer {
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+body {
+  margin: 1em 5% 1em 5%;
+}
+
+a {
+  color: blue;
+  text-decoration: underline;
+}
+a:visited {
+  color: fuchsia;
+}
+
+em {
+  font-style: italic;
+  color: navy;
+}
+
+strong {
+  font-weight: bold;
+  color: #083194;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #527bbd;
+  margin-top: 1.2em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+}
+
+h1, h2, h3 {
+  border-bottom: 2px solid silver;
+}
+h2 {
+  padding-top: 0.5em;
+}
+h3 {
+  float: left;
+}
+h3 + * {
+  clear: left;
+}
+h5 {
+  font-size: 1.0em;
+}
+
+div.sectionbody {
+  margin-left: 0;
+}
+
+hr {
+  border: 1px solid silver;
+}
+
+p {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+ul, ol, li > p {
+  margin-top: 0;
+}
+ul > li     { color: #aaa; }
+ul > li > * { color: black; }
+
+pre {
+  padding: 0;
+  margin: 0;
+}
+
+#author {
+  color: #527bbd;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+#email {
+}
+#revnumber, #revdate, #revremark {
+}
+
+#footer {
+  font-size: small;
+  border-top: 2px solid silver;
+  padding-top: 0.5em;
+  margin-top: 4.0em;
+}
+#footer-text {
+  float: left;
+  padding-bottom: 0.5em;
+}
+#footer-badges {
+  float: right;
+  padding-bottom: 0.5em;
+}
+
+#preamble {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+div.imageblock, div.exampleblock, div.verseblock,
+div.quoteblock, div.literalblock, div.listingblock, div.sidebarblock,
+div.admonitionblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.admonitionblock {
+  margin-top: 2.0em;
+  margin-bottom: 2.0em;
+  margin-right: 10%;
+  color: #606060;
+}
+
+div.content { /* Block element content. */
+  padding: 0;
+}
+
+/* Block element titles. */
+div.title, caption.title {
+  color: #527bbd;
+  font-weight: bold;
+  text-align: left;
+  margin-top: 1.0em;
+  margin-bottom: 0.5em;
+}
+div.title + * {
+  margin-top: 0;
+}
+
+td div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content div.title:first-child {
+  margin-top: 0.0em;
+}
+div.content + div.title {
+  margin-top: 0.0em;
+}
+
+div.sidebarblock > div.content {
+  background: #ffffee;
+  border: 1px solid #dddddd;
+  border-left: 4px solid #f0f0f0;
+  padding: 0.5em;
+}
+
+div.listingblock > div.content {
+  border: 1px solid #dddddd;
+  border-left: 5px solid #f0f0f0;
+  background: #f8f8f8;
+  padding: 0.5em;
+}
+
+div.quoteblock, div.verseblock {
+  padding-left: 1.0em;
+  margin-left: 1.0em;
+  margin-right: 10%;
+  border-left: 5px solid #f0f0f0;
+  color: #888;
+}
+
+div.quoteblock > div.attribution {
+  padding-top: 0.5em;
+  text-align: right;
+}
+
+div.verseblock > pre.content {
+  font-family: inherit;
+  font-size: inherit;
+}
+div.verseblock > div.attribution {
+  padding-top: 0.75em;
+  text-align: left;
+}
+/* DEPRECATED: Pre version 8.2.7 verse style literal block. */
+div.verseblock + div.attribution {
+  text-align: left;
+}
+
+div.admonitionblock .icon {
+  vertical-align: top;
+  font-size: 1.1em;
+  font-weight: bold;
+  text-decoration: underline;
+  color: #527bbd;
+  padding-right: 0.5em;
+}
+div.admonitionblock td.content {
+  padding-left: 0.5em;
+  border-left: 3px solid #dddddd;
+}
+
+div.exampleblock > div.content {
+  border-left: 3px solid #dddddd;
+  padding-left: 0.5em;
+}
+
+div.imageblock div.content { padding-left: 0; }
+span.image img { border-style: none; }
+a.image:visited { color: white; }
+
+dl {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+dt {
+  margin-top: 0.5em;
+  margin-bottom: 0;
+  font-style: normal;
+  color: navy;
+}
+dd > *:first-child {
+  margin-top: 0.1em;
+}
+
+ul, ol {
+    list-style-position: outside;
+}
+ol.arabic {
+  list-style-type: decimal;
+}
+ol.loweralpha {
+  list-style-type: lower-alpha;
+}
+ol.upperalpha {
+  list-style-type: upper-alpha;
+}
+ol.lowerroman {
+  list-style-type: lower-roman;
+}
+ol.upperroman {
+  list-style-type: upper-roman;
+}
+
+div.compact ul, div.compact ol,
+div.compact p, div.compact p,
+div.compact div, div.compact div {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+tfoot {
+  font-weight: bold;
+}
+td > div.verse {
+  white-space: pre;
+}
+
+div.hdlist {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
+div.hdlist tr {
+  padding-bottom: 15px;
+}
+dt.hdlist1.strong, td.hdlist1.strong {
+  font-weight: bold;
+}
+td.hdlist1 {
+  vertical-align: top;
+  font-style: normal;
+  padding-right: 0.8em;
+  color: navy;
+}
+td.hdlist2 {
+  vertical-align: top;
+}
+div.hdlist.compact tr {
+  margin: 0;
+  padding-bottom: 0;
+}
+
+.comment {
+  background: yellow;
+}
+
+.footnote, .footnoteref {
+  font-size: 0.8em;
+}
+
+span.footnote, span.footnoteref {
+  vertical-align: super;
+}
+
+#footnotes {
+  margin: 20px 0 20px 0;
+  padding: 7px 0 0 0;
+}
+
+#footnotes div.footnote {
+  margin: 0 0 5px 0;
+}
+
+#footnotes hr {
+  border: none;
+  border-top: 1px solid silver;
+  height: 1px;
+  text-align: left;
+  margin-left: 0;
+  width: 20%;
+  min-width: 100px;
+}
+
+div.colist td {
+  padding-right: 0.5em;
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+div.colist td img {
+  margin-top: 0.3em;
+}
+
+@media print {
+  #footer-badges { display: none; }
+}
+
+#toc {
+  margin-bottom: 2.5em;
+}
+
+#toctitle {
+  color: #527bbd;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 1.0em;
+  margin-bottom: 0.1em;
+}
+
+div.toclevel0, div.toclevel1, div.toclevel2, div.toclevel3, div.toclevel4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+div.toclevel2 {
+  margin-left: 2em;
+  font-size: 0.9em;
+}
+div.toclevel3 {
+  margin-left: 4em;
+  font-size: 0.9em;
+}
+div.toclevel4 {
+  margin-left: 6em;
+  font-size: 0.9em;
+}
+
+span.aqua { color: aqua; }
+span.black { color: black; }
+span.blue { color: blue; }
+span.fuchsia { color: fuchsia; }
+span.gray { color: gray; }
+span.green { color: green; }
+span.lime { color: lime; }
+span.maroon { color: maroon; }
+span.navy { color: navy; }
+span.olive { color: olive; }
+span.purple { color: purple; }
+span.red { color: red; }
+span.silver { color: silver; }
+span.teal { color: teal; }
+span.white { color: white; }
+span.yellow { color: yellow; }
+
+span.aqua-background { background: aqua; }
+span.black-background { background: black; }
+span.blue-background { background: blue; }
+span.fuchsia-background { background: fuchsia; }
+span.gray-background { background: gray; }
+span.green-background { background: green; }
+span.lime-background { background: lime; }
+span.maroon-background { background: maroon; }
+span.navy-background { background: navy; }
+span.olive-background { background: olive; }
+span.purple-background { background: purple; }
+span.red-background { background: red; }
+span.silver-background { background: silver; }
+span.teal-background { background: teal; }
+span.white-background { background: white; }
+span.yellow-background { background: yellow; }
+
+span.big { font-size: 2em; }
+span.small { font-size: 0.6em; }
+
+span.underline { text-decoration: underline; }
+span.overline { text-decoration: overline; }
+span.line-through { text-decoration: line-through; }
+
+div.unbreakable { page-break-inside: avoid; }
+
+
+/*
+ * xhtml11 specific
+ *
+ * */
+
+tt {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+div.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+div.tableblock > table {
+  border: 3px solid #527bbd;
+}
+thead, p.table.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.table {
+  margin-top: 0;
+}
+/* Because the table frame attribute is overriden by CSS in most browsers. */
+div.tableblock > table[frame="void"] {
+  border-style: none;
+}
+div.tableblock > table[frame="hsides"] {
+  border-left-style: none;
+  border-right-style: none;
+}
+div.tableblock > table[frame="vsides"] {
+  border-top-style: none;
+  border-bottom-style: none;
+}
+
+
+/*
+ * html5 specific
+ *
+ * */
+
+.monospaced {
+  font-family: "Courier New", Courier, monospace;
+  font-size: inherit;
+  color: navy;
+}
+
+table.tableblock {
+  margin-top: 1.0em;
+  margin-bottom: 1.5em;
+}
+thead, p.tableblock.header {
+  font-weight: bold;
+  color: #527bbd;
+}
+p.tableblock {
+  margin-top: 0;
+}
+table.tableblock {
+  border-width: 3px;
+  border-spacing: 0px;
+  border-style: solid;
+  border-color: #527bbd;
+  border-collapse: collapse;
+}
+th.tableblock, td.tableblock {
+  border-width: 1px;
+  padding: 4px;
+  border-style: solid;
+  border-color: #527bbd;
+}
+
+table.tableblock.frame-topbot {
+  border-left-style: hidden;
+  border-right-style: hidden;
+}
+table.tableblock.frame-sides {
+  border-top-style: hidden;
+  border-bottom-style: hidden;
+}
+table.tableblock.frame-none {
+  border-style: hidden;
+}
+
+th.tableblock.halign-left, td.tableblock.halign-left {
+  text-align: left;
+}
+th.tableblock.halign-center, td.tableblock.halign-center {
+  text-align: center;
+}
+th.tableblock.halign-right, td.tableblock.halign-right {
+  text-align: right;
+}
+
+th.tableblock.valign-top, td.tableblock.valign-top {
+  vertical-align: top;
+}
+th.tableblock.valign-middle, td.tableblock.valign-middle {
+  vertical-align: middle;
+}
+th.tableblock.valign-bottom, td.tableblock.valign-bottom {
+  vertical-align: bottom;
+}
+
+
+/*
+ * manpage specific
+ *
+ * */
+
+body.manpage h1 {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  border-top: 2px solid silver;
+  border-bottom: 2px solid silver;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+@media screen {
+  body {
+    max-width: 50em; /* approximately 80 characters wide */
+    margin-left: 16em;
+  }
+
+  #toc {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 13em;
+    padding: 0.5em;
+    padding-bottom: 1.5em;
+    margin: 0;
+    overflow: auto;
+    border-right: 3px solid #f8f8f8;
+    background-color: white;
+  }
+
+  #toc .toclevel1 {
+    margin-top: 0.5em;
+  }
+
+  #toc .toclevel2 {
+    margin-top: 0.25em;
+    display: list-item;
+    color: #aaaaaa;
+  }
+
+  #toctitle {
+    margin-top: 0.5em;
+  }
+}
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(3);
+/*]]>*/
+</script>
+</head>
+<body class="article">
+<div id="header">
+<h1>Epple ][</h1>
+<span id="author">Chris Mosher</span><br>
+<span id="email" class="monospaced">&lt;<a href="mailto:chris-keyword-epple2.4a8db3@mosher.mine.nu">chris-keyword-epple2.4a8db3@mosher.mine.nu</a>&gt;</span><br>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="epple2logo.png" alt="epple2logo.png">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Epple ][ is an emulator of the original APPLE ][ and APPLE ][ PLUS
+computers from <a href="http://www.apple.com/">Apple, Inc.</a> It
+runs on Windows and Linux platforms, and is released under
+<a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPLv3</a>
+<span class="image">
+<img src="gplv3logo.png" alt="GPLv3">
+</span></p></div>
+<div class="paragraph"><p>It is written in C++ and is designed with cross-platform
+portability in mind. It uses the <a href="http://www.libsdl.org/">SDL</a> graphics library.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_features">Features</h2>
+<div class="sectionbody">
+<div class="ulist"><ul>
+<li>
+<p>
+Cycle-accurate: emulates all MOS 6502 CPU cycles including &#8220;phantom reads&#8221;
+</p>
+</li>
+<li>
+<p>
+Video display is synchronized with CPU
+</p>
+</li>
+<li>
+<p>
+NTSC video signal emulation: all video quirks emulated accurately
+</p>
+</li>
+<li>
+<p>
+Revision 0 motherboard (optional)
+</p>
+</li>
+<li>
+<p>
+Multiple display types: monitor and TV emulation
+</p>
+</li>
+<li>
+<p>
+Can run full-screen or in a window
+</p>
+</li>
+<li>
+<p>
+640x480 resolution
+</p>
+</li>
+<li>
+<p>
+Floating data bus, and video scanner
+</p>
+</li>
+<li>
+<p>
+Cards: Disk ][, language, firmware, clock
+</p>
+</li>
+<li>
+<p>
+Paddles (mouse emulates two paddles)
+</p>
+</li>
+<li>
+<p>
+Cassette tape interface
+</p>
+</li>
+<li>
+<p>
+PR#1 writes to standard output
+</p>
+</li>
+<li>
+<p>
+Accurate keyboard emulation, including the repeat key
+</p>
+</li>
+<li>
+<p>
+It even emulates the POWER light!
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_screenshots">Screenshots</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_dos_3_3_system_master_boot">DOS 3.3 System Master boot</h3>
+<div class="imageblock">
+<div class="content">
+<img src="dos330boot.png" alt="dos330boot.png">
+</div>
+</div>
+<div class="paragraph"><p>Here we&#8217;ve configured an Apple ][ plus, with a disk
+controller in slot 6, and a language card in slot 0.
+We&#8217;ve booted the DOS 3.3 System Master disk. It correctly
+identifies the machine as an Apple ][ plus, and then
+loads Integer BASIC into the language card. You can switch
+between Applesoft and Integer BASIC by using the <span class="monospaced">FP</span> and
+<span class="monospaced">INT</span> commands.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_dos_3_1_system_master_on_revision_0_motherboard">DOS 3.1 System Master on Revision 0 motherboard</h3>
+<div class="imageblock">
+<div class="content">
+<img src="dos310rev0.png" alt="dos310rev0.png">
+</div>
+</div>
+<div class="paragraph"><p>Here we&#8217;ve configured an Apple ][ (Integer BASIC ROMs),
+with a Revision Zero motherboard, and a disk
+controller (with 13-sector ROMs) in slot 6. With a
+revision 0 motherboard, when the machine is powered-on,
+the CPU doesn&#8217;t start actually running until you
+manually press the RESET button. Also, the old Monitor
+ROMs do not boot from the disk drives automatically;
+you need to type <span class="monospaced">C600G</span> to boot.
+We&#8217;ve booted the DOS 3.1 System Master disk and done a
+catalog of it. As you can see, with a revision 0 motherboard,
+the text is displayed in green and purple, which are also the
+only two HIRES colors. Later revisions
+of the motherboard added a &#8220;color burst killer&#8221; which is
+active during text mode, so the text would be strictly white.
+Two more HIRES colors, blue and orange, were also added in
+later revisions.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_prodos_1_1_1_boot">PRODOS 1.1.1 boot</h3>
+<div class="imageblock">
+<div class="content">
+<img src="prodos.png" alt="prodos.png">
+</div>
+</div>
+<div class="paragraph"><p>Here we&#8217;ve configured an Apple ][ plus with language card
+and disk drive. We&#8217;re booting a PRODOS 1.1.1 disk.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_bishop_8217_s_apple_split">Bishop&#8217;s Apple Split</h3>
+<div class="imageblock">
+<div class="content">
+<img src="applesplit.png" alt="applesplit.png">
+</div>
+</div>
+<div class="paragraph"><p>The October 1982 issue of <a href="http://en.wikipedia.org/wiki/Softalk">Softalk</a>
+featured an article by Bob Bishop entitled
+<a href="http://rich12345.tripod.com/aiivideo/softalk.html">Have an Apple Split</a>, which describes
+in some detail the inner workings of the Apple ]['s video processing. Listings 1 and 2 from that
+article show a short Applesoft program and assembly language subroutine that allow the Apple ][
+to have a screen split between text and graphics display. To achieve this on the EPPLE ][,
+copy the following text and paste it into the emulator (at the Applesoft <span class="monospaced">]</span> prompt). Since the
+EPPLE ][ accurately emulates the video scanning and timing of the original Apple ][s, this
+&#8220;split screen&#8221; technique works successfully.
+The rest of the behavior described in the article (the floating data bus) is also emulated
+faithfully by the EPPLE ][.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">CALL</span></span> <span style="color: #990000">-</span><span style="color: #993399">151</span>
+
+<span style="color: #993399">300</span><span style="color: #990000">:</span>8D <span style="color: #993399">52</span> C0 A9 E0 A2 <span style="color: #993399">04</span> CD <span style="color: #993399">51</span> C0 D0 F9 CA D0 F8 A9
+<span style="color: #993399">310</span><span style="color: #990000">:</span>A0 A2 <span style="color: #993399">04</span> CD <span style="color: #993399">50</span> C0 D0 F9 CA D0 F8 8D <span style="color: #993399">51</span> C0 <span style="color: #993399">60</span>
+
+E000G
+
+<span style="color: #993399">100</span> HOME
+
+<span style="color: #993399">200</span> <span style="font-weight: bold"><span style="color: #0000FF">FOR</span></span> K <span style="color: #990000">=</span> <span style="color: #993399">0</span> TO <span style="color: #993399">39</span>
+<span style="color: #993399">210</span>   POKE <span style="color: #993399">1448</span><span style="color: #990000">+</span>K<span style="color: #990000">,</span> <span style="color: #993399">14</span><span style="color: #990000">*</span><span style="color: #993399">16</span>
+<span style="color: #993399">220</span>   POKE <span style="color: #993399">2000</span><span style="color: #990000">+</span>K<span style="color: #990000">,</span> <span style="color: #993399">10</span><span style="color: #990000">*</span><span style="color: #993399">16</span>
+<span style="color: #993399">230</span>   COLOR <span style="color: #990000">=</span> K<span style="color: #990000">+</span><span style="color: #993399">4</span>
+<span style="color: #993399">240</span>   VLIN <span style="color: #993399">24</span><span style="color: #990000">,</span> <span style="color: #993399">45</span> AT K
+<span style="color: #993399">250</span> <span style="font-weight: bold"><span style="color: #0000FF">NEXT</span></span> K
+
+<span style="color: #993399">300</span> VTAB <span style="color: #993399">6</span> <span style="color: #990000">:</span> HTAB <span style="color: #993399">17</span>
+<span style="color: #993399">310</span> PRINT <span style="color: #FF0000">"APPLE II"</span>
+
+<span style="color: #993399">400</span> <span style="font-weight: bold"><span style="color: #0000FF">CALL</span></span> <span style="color: #993399">768</span>
+<span style="color: #993399">500</span> GOTO <span style="color: #993399">400</span>
+
+RUN</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_mysterious_pink_line">Mysterious Pink Line</h3>
+<div class="imageblock">
+<div class="content">
+<img src="pinkmystery.png" alt="pinkmystery.png">
+</div>
+</div>
+<div class="paragraph"><p>Jim Sather&#8217;s book
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+which was the primary
+reference for the internal design of the EPPLE ][ emulator, describes the video
+generation process of the Apple ][, in great detail, in Chapter 8.
+On page 8-21 he shows a simple Applesoft BASIC program (shown below)
+that shows an example of one of the hi-res idiosyncrasies on the Apple ][.
+The program would logically draw three orange lines, but due to the
+video cutoff and extension of half-dot shifted pixels, instead the right
+line is brown, and there is a &#8220;mysterious pink line&#8221; (actually magenta)
+on the far left of the screen. The EPPLE ][ faithfully emulates this behavior.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>NEW
+
+<span style="color: #993399">10</span> HGR <span style="color: #990000">:</span> HCOLOR <span style="color: #990000">=</span> <span style="color: #993399">5</span> <span style="color: #990000">:</span> HPLOT <span style="color: #993399">5</span><span style="color: #990000">,</span><span style="color: #993399">159</span> TO <span style="color: #993399">5</span><span style="color: #990000">,</span><span style="color: #993399">0</span> TO <span style="color: #993399">279</span><span style="color: #990000">,</span><span style="color: #993399">0</span> TO <span style="color: #993399">279</span><span style="color: #990000">,</span><span style="color: #993399">159</span>
+
+RUN</tt></pre></div></div>
+</div>
+<div class="sect2">
+<h3 id="_split_screen_hires_lores_colors">Split Screen HIRES/LORES colors</h3>
+<div class="imageblock">
+<div class="content">
+<img src="splitcolors.png" alt="splitcolors.png">
+</div>
+</div>
+<div class="paragraph"><p>Jim Sather&#8217;s book
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+shows an Applesoft BASIC
+program and assembly language subroutine on pages 3-16 and 3-17 (reproduced
+below) that produce the display shown here. The screen is split between HIRES
+and LORES graphics by a timed loop that manipulates the screen switches.
+(Press any key repeatedly to move the position of the split.)</p></div>
+<div class="paragraph"><p>Notice that the Apple ][ can actually produce more HIRES colors than are
+documented in the standard Apple reference manuals. White, black, green,
+purple, blue, and orange are normally documented, but by careful manipulation
+of the high-bit (half-dot shift indicator) of the HIRES display byte, many
+other colors can be produced. The additional colors match some LORES colors.
+Also notice that the text at the bottom of the screen is colored green and
+purple while in mixed text/graphics mode. This is because the &#8220;color
+burst killer&#8221; circuit is not active while displaying graphics on the
+Apple ][ machines.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="font-weight: bold"><span style="color: #0000FF">CALL</span></span> <span style="color: #990000">-</span><span style="color: #993399">151</span>
+1F00<span style="color: #990000">:</span>AC <span style="color: #993399">54</span> C0 A0 <span style="color: #993399">27</span> <span style="color: #993399">20</span> <span style="color: #993399">27</span> 1F
+1F08<span style="color: #990000">:</span>AC <span style="color: #993399">10</span> C0 AC <span style="color: #993399">00</span> C0 <span style="color: #993399">30</span> F3
+1F10<span style="color: #990000">:</span><span style="color: #993399">69</span> <span style="color: #993399">01</span> <span style="color: #993399">29</span> <span style="color: #993399">01</span> AA BC <span style="color: #993399">56</span> C0
+1F18<span style="color: #990000">:</span>A2 <span style="color: #993399">08</span> <span style="color: #993399">20</span> <span style="color: #993399">31</span> 1F A0 <span style="color: #993399">31</span> <span style="color: #993399">20</span>
+1F20<span style="color: #990000">:</span><span style="color: #993399">27</span> 1F <span style="color: #993399">18</span> <span style="color: #993399">90</span> E6 D0 <span style="color: #993399">01</span> <span style="color: #993399">88</span>
+1F28<span style="color: #990000">:</span><span style="color: #993399">88</span> EA D0 F9 <span style="color: #993399">60</span> <span style="color: #993399">48</span> <span style="color: #993399">68</span> EA
+1F30<span style="color: #990000">:</span>EA A0 <span style="color: #993399">62</span> <span style="color: #993399">20</span> <span style="color: #993399">27</span> 1F EA CA
+1F38<span style="color: #990000">:</span>D0 F3 <span style="color: #993399">60</span>
+
+E000G
+ <span style="color: #993399">30</span> HGR <span style="color: #990000">:</span> HOME <span style="color: #990000">:</span> VTAB <span style="color: #993399">21</span> <span style="color: #990000">:</span> PRINT <span style="color: #FF0000">"1  7  D  2  8  E  B  4  5  A 3 6 C 9 F 8"</span>
+ <span style="color: #993399">40</span> <span style="font-weight: bold"><span style="color: #0000FF">DIM</span></span> <span style="font-weight: bold"><span style="color: #000000">COLR</span></span><span style="color: #990000">(</span><span style="color: #993399">39</span><span style="color: #990000">),</span> <span style="font-weight: bold"><span style="color: #000000">X</span></span><span style="color: #990000">(</span><span style="color: #993399">21</span><span style="color: #990000">)</span>
+<span style="color: #993399">100</span> <span style="font-weight: bold"><span style="color: #0000FF">FOR</span></span> A <span style="color: #990000">=</span> <span style="color: #993399">0</span> TO <span style="color: #993399">39</span> <span style="color: #990000">:</span> READ <span style="font-weight: bold"><span style="color: #000000">COLR</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span> <span style="color: #990000">:</span> COLOR <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">COLR</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span> <span style="color: #990000">:</span> VLIN <span style="color: #993399">0</span><span style="color: #990000">,</span> <span style="color: #993399">39</span> AT A <span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">NEXT</span></span> A
+<span style="color: #993399">200</span> <span style="font-weight: bold"><span style="color: #0000FF">FOR</span></span> A <span style="color: #990000">=</span> <span style="color: #993399">0</span> TO <span style="color: #993399">21</span> <span style="color: #990000">:</span> READ <span style="font-weight: bold"><span style="color: #000000">COLR</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span> <span style="color: #990000">:</span> READ <span style="font-weight: bold"><span style="color: #000000">X</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span> <span style="color: #990000">:</span> HCOLOR <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">COLR</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span>
+<span style="color: #993399">210</span> HPLOT <span style="font-weight: bold"><span style="color: #000000">X</span></span><span style="color: #990000">(</span>A<span style="color: #990000">),</span> <span style="color: #993399">0</span> TO <span style="font-weight: bold"><span style="color: #000000">X</span></span><span style="color: #990000">(</span>A<span style="color: #990000">),</span> <span style="color: #993399">159</span> <span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">NEXT</span></span> A
+<span style="color: #993399">220</span> <span style="font-weight: bold"><span style="color: #0000FF">FOR</span></span> A <span style="color: #990000">=</span> <span style="color: #993399">8319</span> TO <span style="color: #993399">16383</span> STEP <span style="color: #993399">128</span> <span style="color: #990000">:</span> POKE A<span style="color: #990000">,</span> <span style="color: #993399">64</span> <span style="color: #990000">:</span> <span style="font-weight: bold"><span style="color: #0000FF">NEXT</span></span> A
+<span style="color: #993399">300</span> <span style="font-weight: bold"><span style="color: #0000FF">CALL</span></span> <span style="color: #993399">7936</span>
+<span style="color: #993399">400</span> REM  LORES DATA
+<span style="color: #993399">410</span> DATA <span style="color: #993399">1</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">13</span><span style="color: #990000">,</span><span style="color: #993399">13</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">2</span><span style="color: #990000">,</span><span style="color: #993399">2</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">8</span><span style="color: #990000">,</span><span style="color: #993399">8</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">14</span><span style="color: #990000">,</span><span style="color: #993399">14</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">11</span><span style="color: #990000">,</span><span style="color: #993399">11</span><span style="color: #990000">,</span><span style="color: #993399">0</span>
+<span style="color: #993399">420</span> DATA <span style="color: #993399">4</span><span style="color: #990000">,</span><span style="color: #993399">4</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">5</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">10</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">6</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">12</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">9</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">15</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">8</span>
+<span style="color: #993399">500</span> REM  HIRES DATA
+<span style="color: #993399">510</span> DATA <span style="color: #993399">4</span><span style="color: #990000">,</span><span style="color: #993399">0</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">20</span><span style="color: #990000">,</span><span style="color: #993399">4</span><span style="color: #990000">,</span><span style="color: #993399">21</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">41</span><span style="color: #990000">,</span><span style="color: #993399">4</span><span style="color: #990000">,</span><span style="color: #993399">42</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">62</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">83</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">104</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">105</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">125</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">126</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">159</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">161</span>
+<span style="color: #993399">520</span> DATA <span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">180</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">182</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">206</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">220</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">233</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">247</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">262</span><span style="color: #990000">,</span><span style="color: #993399">3</span><span style="color: #990000">,</span><span style="color: #993399">263</span><span style="color: #990000">,</span><span style="color: #993399">7</span><span style="color: #990000">,</span><span style="color: #993399">279</span>
+
+RUN</tt></pre></div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_download">Download</h2>
+<div class="sectionbody">
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./tip.png" alt="Tip">
+</td>
+<td class="content">Usable Apple ROMs (proprietary
+<span class="footnote" id="_footnote_disclaimer"><br>[You must respect the fact that the Apple System Software and Apple Disk Operating System (DOS) Software are <em>proprietary</em> software; they are copyright by Apple and/or others. This web page is not providing any advice as to the legality of any copying or downloading you may perform.]<br></span>)
+are available at the <a href="http://mosher.mine.nu/apple2/">Apple II Library</a>.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>The following software is licensed under
+<a href="http://www.gnu.org/licenses/gpl-3.0-standalone.html">GPLv3</a>.</p></div>
+<div class="paragraph"><p>Epple ][ Program: <a href="http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz">epple2.tar.gz</a></p></div>
+<div class="paragraph"><p>System ROM (Demo): <a href="http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz">epple2sys.tar.gz</a></p></div>
+<div class="paragraph"><p>Card ROMs (stdin/stdout/clock): <a href="http://mosher.mine.nu/epple2/download/epple2cards-latest.tar.gz">epple2cards.tar.gz</a></p></div>
+<div class="paragraph"><p>See <a href="#_building_from_source">Building</a> to build from sources.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_to_download">What To Download</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_epple_program_mdash_the_hardware_emulated">Epple ][ Program&mdash;The Hardware (Emulated)</h3>
+<div class="paragraph"><p>The <em>Epple ][ Program</em> package is the emulator itself, which emulates the
+Apple ][ or Apple ][ plus <em>hardware</em>, as well as the
+<a href="#cards">peripheral card</a> hardware. This is the main program, so you will
+certainly need to download this package. To have a full functioning emulator,
+you will also need System ROMs and Card ROMs, as described in the following
+sections.</p></div>
+</div>
+<div class="sect2">
+<h3 id="firmware">System ROMs&mdash;The Main System Firmware (Demo or Real)</h3>
+<div class="paragraph"><p>Since the Epple ][ program emulates only the hardware, you will also need to download some <em>system software</em>
+for it to run. This is commonly called &#8220;firmware&#8221; or &#8220;ROMs,&#8221; because it is stored in the
+read-only memory area of the emulated system. The original system software on the
+Apple ][ machines is copyright by Apple, and is proprietary. If you own an actual
+Apple ][ or Apple ][ plus machine, you can copy <span class="footnoteref"><br><a href="#_footnote_disclaimer">[disclaimer]</a><br></span> the firmware
+from it ($D000-$FFFF) (into a file on your PC) and use it. Alternatively, you can
+download <span class="footnoteref"><br><a href="#_footnote_disclaimer">[disclaimer]</a><br></span> the firmware images from the <a href="http://mosher.mine.nu/apple2/">Apple II Library</a>.</p></div>
+<div class="paragraph"><p>If you do not want to download the proprietary firmware, you can still use the emulator (albeit
+in a restricted manner) with the free (GPLv3) <em>System ROM (Demo)</em> package. Download
+the file for your platform and
+install as appropriate. You can choose either binary format (ready to run), or source if you want
+to assemble it yourself (using the <a href="http://www.floodgap.com/retrotech/xa/">xa Assembler</a>).
+The Demo System ROM only provides commands to dump or set memory bytes,
+or run a program in memory. It is not compatible with any Apple software, nor can it read from disks.
+It&#8217;s just a free simple demo system to make the emulator do something reasonable.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_card_roms_mdash_the_peripheral_card_firmware">Card ROMs&mdash;The Peripheral Card Firmware</h3>
+<div class="paragraph"><p>If you are going to use the Disk ][ Controller peripheral card (which you almost certainly will, if
+you want to read any floppy disk images), you will need to have to original ROMs from Apple.
+No demo of the Disk ROMs are provided here; you will need to
+use the original ROMs, which can be obtained from an original machine (by copying <span class="footnoteref"><br><a href="#_footnote_disclaimer">[disclaimer]</a><br></span>
+it from $C600-$C6FF into a file on the PC), or by downloading <span class="footnoteref"><br><a href="#_footnote_disclaimer">[disclaimer]</a><br></span> it
+from the <a href="http://mosher.mine.nu/apple2/">Apple II Library</a>.
+(And, of course, you will need the real Apple System ROM, as noted in the previous section,
+not the Demo System ROM.)</p></div>
+<div class="paragraph"><p>If you are using any of the clock, the standard output, or the
+standard input <a href="#cards">peripheral cards</a>, you will need to download their firmware as well,
+which are contained in the <em>Card ROMs</em> package. You can choose either binary format
+(ready to run) or source format (to assemble it yourself(using the
+<a href="http://www.floodgap.com/retrotech/xa/">xa Assembler</a>).
+If you are <em>not</em> going to use the stdin, stdout, or clock
+cards, then you do not need to download this package.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The Epple ][ Emulator is most useful when properly configured.
+After downloading and installing the Epple ][ Program, some System ROM (demo or real), and
+optionally the peripheral card ROMs you want to use, you will need to configure the program.
+Configuring is concerned primarily with telling the program what peripheral cards to use,
+and where the ROM files are located (and what memory addresses to load them at).</p></div>
+<div class="sect2">
+<h3 id="_epple2_conf">epple2.conf</h3>
+<div class="paragraph"><p>The default configuration file for
+the Epple ][ emulator is:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>/etc/epple2/epple2.conf</pre>
+</div></div>
+<div class="paragraph"><p>For Windows, the file will be:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>C:\Program Files\Epple2\etc\epple2\epple2.conf</pre>
+</div></div>
+<div class="paragraph"><p>The configuration file could be in a different location depending upon how
+the distribution package is built.</p></div>
+<div class="paragraph"><p>You can specify a different configuration file for the emulator to use by
+specifying its name as the argument when running the epple2 program.</p></div>
+<div class="paragraph"><p>The format of the configuration file is just lines of <a href="#_commands">commands</a>.
+Comments begin with a hash <span class="monospaced">#</span> character, and continue to the end of the line.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_firmware">Firmware</h3>
+<div class="paragraph"><p>Firmware, commonly called ROM images or ROMs, will need to be loaded
+into the emulated ROM areas of the emulated Apple
+in order for it to be able to boot the emulated Apple machine.
+The firmware available is described <a href="#firmware">above</a>.
+Once the firmware image
+files are installed on your computer, you can use the <a href="#_import">import</a>
+command in the configuration file to load the image files into the emulator.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_peripheral_cards">Peripheral Cards</h3>
+<div class="paragraph"><p>Another primary concern for configuring the Epple ][ is the insertion of
+peripheral cards into the Apple&#8217;s slots. The most useful card is probably the
+Disk ][ Controller card; you will need to insert one of these cards if you want
+to be able to load floppy disk images into the emulated Apple. The various
+types of cards available are described on the <a href="#cards">peripheral cards</a> section.
+You can use the <a href="#_slot">slot</a> command in the configuration file to insert
+them into the Apple&#8217;s slots.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_sample_configuration_files">Sample Configuration Files</h3>
+<div class="paragraph"><p>There are a number of configuration files provided with the distribution for
+your convenience. They provide various common configurations of machines.
+You can use one of these files directly, by specifying its path as the argument
+to the program, or as a starting point for you own configuration file. These sample
+files are in the same location as the default <span class="monospaced">epple2.conf</span> file.</p></div>
+<div class="paragraph"><p>The Epple ][ Emulator can actually be run without a configuration file at all.
+In this case, you will be able to &#8220;power on&#8221; the Apple and see the low-resolution
+graphics display showing random RAM data. The system will not run, because
+there is no firmware loaded, but the emulator will otherwise be functional.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_user_manual">User Manual</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_overview">Overview</h3>
+<div class="paragraph"><p>Epple ][ (the Emulated Apple ][ is a free (as in GPLv3), cross-platform
+(Windows, Linux) emulator of the Apple ][ and Apple ][ plus computers
+from Apple, Inc. It strives for accurate emulation of the original machines,
+with a few extra features added.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_commands">Commands</h3>
+<div class="paragraph"><p><span class="monospaced"><a href="#_slot">slot</a> <a href="#_import">import</a> <a href="#_load">load</a> <a href="#_unload">unload</a> <a href="#_save">save</a> <a href="#_cassette">cassette</a> <a href="#_revision">revision</a></span></p></div>
+<div class="sect3">
+<h4 id="_slot">slot</h4>
+<div class="paragraph"><p>The <span class="monospaced">slot</span> command inserts a card into a peripheral slot of the emulated Apple.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot &lt;slot&gt; &lt;card&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;slot&gt;</span> Slot number, 0 through 7, to insert the card into.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;card&gt;</span> The type of <a href="#cards">card</a> to insert into the slot:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="monospaced">language</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">firmware</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">disk</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">clock</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">stdout</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">stdin</span>
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">empty</span>
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The <span class="monospaced">slot</span> command inserts a card into a peripheral slot. For example:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot 0 language</pre>
+</div></div>
+<div class="paragraph"><p>inserts a language card into slot zero. Use <span class="monospaced">empty</span> to remove a card:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot 0 empty</pre>
+</div></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./note.png" alt="Note">
+</td>
+<td class="content">The emulated Apple should be <em>powered off</em> before inserting or removing cards.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_import">import</h4>
+<div class="paragraph"><p>The <span class="monospaced">import</span> command imports a binary image file into the emulated Apple&#8217;s memory.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>import slot &lt;slot&gt; { rom | rom7 | rombank } &lt;base&gt; &lt;file-path&gt;
+import motherboard { rom | ram } &lt;base&gt; &lt;file-path&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;slot&gt;</span> Slot number, 0 through 7, of peripheral card to import the binary image into.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;base&gt;</span> Base address in hexadecimal within the given memory area at which to start loading the binary image.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;file-path&gt;</span> Path of the binary image to import.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">import</span> command reads the binary image byte-for-byte from the given file-path
+into an area of memory in the emulated Apple. You can load into either the motherboard or
+a card in one of the slots. For the motherboard, you choose the RAM or ROM area. For a card
+in a slot, you can choose either the normal ROM, the bank-switched ROM, or the so-called
+&#8220;seventh ROM&#8221; area.</p></div>
+<div class="paragraph"><p>You also have to specify the base address within the specific memory
+area at which the image file will be loaded. Note that the base address is specified as the offset
+within the specific memory area, and not necessarily as the actual memory address as seen
+by the Apple. So for motherboard ROM, for example, specifying a base as 2DED will cause the
+image to be loaded at offset 2DED in the ROM, which will be addressed by the Apple at
+memory address $FDED (because motherboard ROM &#8220;starts&#8221; at address $D000).</p></div>
+<div class="paragraph"><p>For peripheral cards, the ROM will be seen at locations $Cs00-$CsFF, where s is the slot
+number (1 through 7). The &#8220;seventh ROM&#8221; can be seen as locations $C800-$CFFF; Jim Sather
+describes this functionality in
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+on page 6-4, section &#8220;The Seventh ROM Chip.&#8221; The EPPLE ][ emulator handles this processing correctly. A card can
+also have bank-switched ROM, which will show up at addresses $D000-$FFFF when switched in
+(stealing that address range from motherboard ROM&#8230; see
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+p. 5-26 &#8220;The 16K RAM Card&#8221;).</p></div>
+</div>
+<div class="sect3">
+<h4 id="_load">load</h4>
+<div class="paragraph"><p>The <span class="monospaced">load</span> command loads a (nibble) floppy disk image into one of the emulated disk drives.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>load slot &lt;slot&gt; drive &lt;drive&gt; &lt;file-path&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;slot&gt;</span> Slot number, 0 through 7, of Disk ][ controller card to load the nibble image into.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;drive&gt;</span> Drive number, 1 or 2, of the disk drive on the controller card to load the nibble image into.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;file-path&gt;</span> Path of the nibble floppy disk image to import.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">load</span> command will load a nibble image into a disk drive. Specify the slot that
+contains a Disk ][ controller peripheral card, and specify which drive number (1 or 2).</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./note.png" alt="Note">
+</td>
+<td class="content">The floppy disk image MUST be a NIBBLE DISK IMAGE.
+Other formats (for example, DOS order, <span class="monospaced">.do</span>, PRODOS order,
+<span class="monospaced">.po</span>, <span class="monospaced">.dsk</span>, or anything else) must first be converted to nibble format. A nibble image contains
+all 35 tracks, in order 0-36, each track being 6656 ($1A00) bytes long. Nibble image files
+will generally have a filetype of <span class="monospaced">.nib</span>.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p>The best floppy disk image conversion tool I&#8217;ve found is <a href="http://ciderpress.sourceforge.net/">CiderPress</a>,
+for Windows (but it supposedly runs under Wine on Linux, too). Thanks to Andy McFadden.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_unload">unload</h4>
+<div class="paragraph"><p>The <span class="monospaced">unload</span> command removes a floppy disk image from one of the emulated disk drives.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>unload slot &lt;slot&gt; drive &lt;drive&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;slot&gt;</span> Slot number, 0 through 7, of Disk ][ controller card to which the drive is attached.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;drive&gt;</span> Drive number, 1 or 2, of the disk drive on the controller card to remove the floppy disk image from.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">unload</span> command removes the disk from the specified slot and drive.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./warning.png" alt="Warning">
+</td>
+<td class="content">If the disk has been modified but not saved, the modifications will be DISCARDED.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_save">save</h4>
+<div class="paragraph"><p>The <span class="monospaced">save</span> command saves changes made on an emulated floppy disk back to the original image file.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>save slot &lt;slot&gt; drive &lt;drive&gt; &lt;file-path&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;slot&gt;</span> Slot number, 0 through 7, of Disk ][ controller card to which the drive is attached.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;drive&gt;</span> Drive number, 1 or 2, of the disk drive on the controller card to save.</p></div>
+<div class="paragraph"><p><span class="monospaced">&lt;file-path&gt;</span> Path of the nibble floppy disk image to import.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">save</span> command saves any changes that the emulated Apple ][ has made to the floppy
+disk image. It is important to note that the emulator operates on the image only in memory, and does
+not immediately write changes back to the real file. You need to issue the <span class="monospaced">save</span> command
+in order to write changes back to the file. Note that the emulator will display a asterisk <span class="monospaced">*</span>
+next to the file-name of a disk image if it has any unsaved changes.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_cassette">cassette</h4>
+<div class="paragraph"><p>The <span class="monospaced">cassette</span> command performs various operations of the emulated cassette tape.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>cassette new &lt;file-path&gt;
+cassette load &lt;file-path&gt;
+cassette unload
+cassette rewind
+cassette save</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;file-path&gt;</span> File path of the (special format) cassette tape image file.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">cassette</span> command allows the user to control the emulated cassette tape player.
+See <a href="#_cassette_tape_interface">Cassette</a> for more information about operating the emulated
+cassette player and cassette tape image files.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_revision">revision</h4>
+<div class="paragraph"><p>The <span class="monospaced">revision</span> command specifies which revision of Apple ][ motherboard to use.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>revision &lt;rev&gt;</pre>
+</div></div>
+<div class="paragraph"><p><span class="monospaced">&lt;rev&gt;</span> Revision number of the motherboard. Currently, only two values make any difference in behavior: 0 or 1.</p></div>
+<div class="paragraph"><p>The <span class="monospaced">revision</span> command chooses which revision of the Apple ][ motherboard to
+use. The only revisions that make any difference (for now, at least) are 0 or 1. Zero
+is the original (now quite rare) version of the motherboard, that only had two hi-res
+colors (green and purple), and always displayed text with green and purple fringes.
+Revision 1 and later motherboards are the ones we are more familiar with.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_display">Display</h3>
+<div class="paragraph"><p>The orignal Apple ][s didn&#8217;t come with a display. The user needed to use either a standard
+television, or a monitor, to see the computer&#8217;s output. The EPPLE ][ emulates a variety of
+displays; you can cycle between the different types using <span class="monospaced">F2</span>.
+There are two major types of displays: televisions and monitors. Monitors generally have
+higher quality (sharper) displays. The displays show the normal visible area of the NTSC
+video signal generated by the emulated Apple ][ machine.</p></div>
+<div class="sect3">
+<h4 id="_monitors">Monitors</h4>
+<div class="paragraph"><p>The emulator provides a color monitor, and three monochrome monitors (white, green, and orange).
+These emulate standard, no-frills NTSC monitors. The most noticeable characteristic of monitors
+is the horizontal display of pixels. Monitors react faster than TVs, so two adjacent pixels will
+not merge together; both will be distinctly visible, with blackness between them. For example,
+type in the following Applesoft command, then cycle through the display types. The monitors
+will show thin, vertical, green lines; TVs will show continuous horizontal lines.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>GR : COLOR=4 : HLIN 10,20 AT 10</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_televisions">Televisions</h4>
+<div class="paragraph"><p>There are two types of television displays, referred to as &#8220;old&#8221; and &#8220;new.&#8221; Each has color and
+monochrome (commonly known as &#8220;black and white&#8221;) varieties. Televisions react more slowly to
+changes in the incoming video signal than monitors do, and as a result, horizontal pixels will
+merge together, forming a more uniform appearance. The &#8220;new&#8221; color TV display uses the pre-defined
+color pallette (described below under &#8220;Colors&#8221;), and the black and white TV uses the same
+pallette, but fully desaturated. The &#8220;old&#8221; color TV is the most interesting. It emulates the
+signal decoding circuitry of a real television. This includes separating out the &#8220;chroma&#8221; portion
+of the incoming NTSC video signal using a filter algorithm, and <em>calculating</em> the color to display.
+It does not use the pre-defined colors.</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./note.png" alt="Note">
+</td>
+<td class="content">This mode is very CPU intensive, so your computer (that is, the one that EPPLE ][ is running on)
+may not be able to run fast enough to run at the speed of the original Apple ][. The Apple ][ CPU
+runs at about 1 MHz, but the video generator runs at 14 MHz; so the inner-most loop in the
+EPPLE ][ must run 14 million times per second to keep up.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_colors">Colors</h4>
+<div class="paragraph"><p>The color palatte used for the
+color monitor and new color TV is pre-defined, and was determined through observation of a real
+Apple ][ machine on a standard TV, the colors being matched by eye. The old color TV, however,
+uses <em>algorithms</em> to calculate the colors it displays.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_scan_lines">Scan Lines</h4>
+<div class="paragraph"><p>NTSC displays (TVs or monitors) usually receive signals that are interlaced. However, the
+Apple ][ doesn&#8217;t generate interlaced screens. This causes blank rows between each displayed
+row of pixels. The EPPLE ][ emulates this behavior, but also allows you to &#8220;fill in&#8221; these
+black rows with a copy of the row above it, for a more continuous display (vertically). Use
+the F4 key to toggle between these two modes.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_resolution">Resolution</h4>
+<div class="paragraph"><p>The Apple ][s are commonly documented as having a resolution of 280x192 pixels, and to an
+extent this is true. Vertically there are 192 pixels, but since there is no interlacing,
+it is more accurate to display them with one blank space between each. So the EPPLE ][ has
+two times 192, or 384, vertical pixels in its display. Horizontally there are 280 pixels, but
+each could also be shifted right one-half dot, allowing for two times 280, or 560, different
+horizontal displayable positions. To emulate this, the EPPLE ][ shows each emulated pixel as
+two pixels wide, and displays an emulated half-dot shift as an actual one pixel shift. So the
+display area of the EPPLE ][ is 560x384. There is an informational area below and to the
+right of the emulated display that shows various statistics of the emulator. So the total screen
+area used by the EPPLE ][ is a standard 640x480 pixels.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_full_screen">Full Screen</h4>
+<div class="paragraph"><p>The EPPLE ][ can run in either full-screen mode, or within a window. Use the <span class="monospaced">F3</span> key to toggle
+between the two.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_informational_area">Informational Area</h4>
+<div class="paragraph"><p>The area at the bottom and the right of the EPPLE ][ display show various information about
+the emulator.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+POWER light
+</p>
+</li>
+<li>
+<p>
+current cards in SLOTS
+</p>
+</li>
+<li>
+<p>
+CASSETTE tape information
+</p>
+</li>
+<li>
+<p>
+emulated CPU speed (MHz)
+</p>
+</li>
+<li>
+<p>
+function-keys help
+</p>
+</li>
+</ul></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_keyboard">Keyboard</h3>
+<div class="paragraph"><p>The EPPLE ][ emulates the original Apple ][ keyboard. The original Apple ][
+keyboard had symbols in different places than current common PC keyboards. For
+example, Shift-2 on the Apple ][ produces a double quote, but on a PC keyboard
+it produces an at-sign. For ease of typing, the EPPLE ][ emulator does not
+mimic the positions of the original keys, but rather mimics the symbols on
+the current PC keyboard. So, for example, if you type Shift-2 on the PC
+keyboard into the EPPLE ][, it produces an at-sign, as you would normally expect.</p></div>
+<div class="paragraph"><p>The Apple ][ keyboard didn&#8217;t produce lower-case letters; neither does the emulator.
+Also, the Apple couldn&#8217;t produce an opening square bracket ([), braces, vertical
+bar, backslash. There were no up- or down-arrow keys. You cannot type these into
+the emulator, either. There are other, unusual, cases that are emulated correctly,
+as well, such as typing Control in conjunction with a number key simply produces
+that number. So typing a Control-3 is the same as just typing a 3. Also, typing
+Shift-Control-2 produces the NUL character (ASCII $80).</p></div>
+<div class="paragraph"><p>The Apple ][ keyboards didn&#8217;t automatically repeat typing characters when a
+key was held down. Instead, the user would hold down the REPT (&#8220;repeat&#8221;) key
+while holding down the key that was to be repeated. On the EPPLE ][, this
+behavior is emulated, and the F10 key is used as the REPT key.</p></div>
+<div class="paragraph"><p>The Apple ][ had no keyboard buffer (actually, it had a buffer of one character).
+So if you typed several characters on the keyboard before the currently running
+program had a chance to read them, they would get lost (only the final character
+typed would be remembered). This behavior can be
+toggled on or off in the EPPLE ][. By default, the EPPLE ][ will buffer up any
+characters you type and deliver them to the emulated machine when it asks for
+them. However, the Apple program must be written properly to allow this to work.
+Some Apple ][ programs (like maybe some games) may not work correctly in this
+respect, so you may want to turn off buffering in these cases. With buffering
+turned off, the EPPLE ][ accurately emulates the original Apple ][. Use the F12
+key to toggle the keyboard buffering. Note that pasting from the clipboard (with
+the Insert key) will most definitely cause keys to be lost if the keyboard
+buffer is turned off. So if you have a big Applesoft program in the clipboard
+and you want to paste it into the EPPLE ][ correctly, make sure the keyboard
+buffer is on.</p></div>
+<div class="ulist"><div class="title">Special Keys</div><ul>
+<li>
+<p>
+<span class="monospaced">F1</span> Emulates the POWER switch on the back of the Apple ][.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F2</span> Cycles among different display types (TV, monitor, etc.).
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F3</span> Toggles between full-screen or window display.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F4</span> Toggles between showing scan lines on the display, or duplicating
+each scan line to the following line, to fill-in the otherwise black line.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F5</span> Go to &#8220;command entry&#8221; mode.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F10</span> Emulates the REPT key.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F11</span> Toggles between running the emulator at authentic speed
+(1.02 MHz CPU), or as fast as possible.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F12</span> Toggles the keyboard buffer.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">Break</span> Emulates the RESET key.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">Insert</span> Pastes characters from the clipboard into the emulated Apple
+(as if they had been typed on the keyboard).
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">Print&nbsp;Screen</span> Save a bitmap file of the current EPPLE ][ screen.
+The file will be in the default directory, named <span class="monospaced">ep2_YYYYMMDDHHMMSS.bmp</span>.
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">End</span> Quit the EPPLE ][ program, immediately!
+</p>
+</li>
+</ul></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./warning.png" alt="Warning">
+</td>
+<td class="content">If you have modification to any floppy images or cassette images, and you
+press the <span class="monospaced">End</span> key, you will LOSE all those changes, unless you
+save them first. See <a href="#_commands">Commands</a> for the <span class="monospaced">save</span> command.</td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cards">Peripheral Cards</h3>
+<div class="sect3">
+<h4 id="_disk_controller">Disk ][ Controller</h4>
+<div class="paragraph"><p>The Disk ][ Controller card emulates the floppy disk controller card and associated
+disk drives in the original Apple ][ systems. In the emulator, each card has two
+drives attached to it, referred to as drive 1 and drive 2. The floppy disks
+themselves are represented by a &#8220;nibble&#8221; image of the contents. The
+emulator emulates the hardware, but to be of any use, you will need to provide
+the firmware ROM code.</p></div>
+<div class="paragraph"><p>To use a disk card and drives, add these lines to your epple2.conf file, for example:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot 6 disk
+import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.ex65</pre>
+</div></div>
+<div class="paragraph"><p>The first line uses the <a href="#_slot">slot</a> command to
+insert a disk contoller card into slot 6, which is the standard
+slot used for disk cards. The next line uses the <a href="#_import">import</a>
+command to load the card&#8217;s ROM with the disk controller
+firmware. This firmware is known as the &#8220;bootstrap&#8221; or &#8220;P5&#8221; ROM code.
+It is seen by the Apple ][ at memory addresses $Cs00-$CsFF, where s is the
+slot number (so in the common case of the card being in slot 6, the ROM is
+at $C600-$C6FF). The firmware is copyright by Apple, and is available from
+the <a href="http://mosher.mine.nu/apple2/">Apple II Library</a>.</p></div>
+<div class="paragraph"><p>You can also load a floppy disk image (nibble format) into the drive,either by putting
+the <a href="#_load">load</a> command into the <span class="monospaced">epple2.conf</span> file, or by using the command prompt
+in the emulator (<span class="monospaced">F5</span> key). For example, you could load the DOS 3.3 system master into
+slot 6, drive 1, with this command</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>load slot 6 drive 1 /usr/lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_language">Language</h4>
+<div class="paragraph"><p>The language card emulates an Apple 16K RAM card, commonly called a Language Card.
+To use a language card, add this line to your epple2.conf file:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot 0 language</pre>
+</div></div>
+<div class="paragraph"><p>Note that DOS and ProDOS will make use of a language card only if it is in slot <em>zero</em>.</p></div>
+<div class="paragraph"><p>The language card has RAM at addresses $E000 through $FFFF, as well as two banks of RAM
+at addresses $D000 through $DFFF. A program switches between these RAMs and/or the
+motherboard ROM by using the I/O switches at $C080 through $C08F.</p></div>
+<div class="paragraph"><p>The information area of the Epple ][ will show the current state of the
+language card as follows:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="monospaced">R</span>   Read from card RAM (vs. motherboard ROM)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">W</span>   Write to card RAM (vs. write-disabled)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">B1</span>  Use $D000 bank 1
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">B2</span>  Use $D000 bank 2
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>An overview of the I/O switches that control the language card
+is provided by Jim Sather in
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+p. 5-30, Table 5.4, as follows:</p></div>
+<table class="tableblock frame-all grid-all"
+style="
+width:100%;
+">
+<col style="width:25%;">
+<col style="width:25%;">
+<col style="width:25%;">
+<col style="width:25%;">
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top" > BANK2 </th>
+<th class="tableblock halign-left valign-top" > BANK1  </th>
+<th class="tableblock halign-left valign-top" colspan="2" >                  ACTION</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C080</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C088</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = 0*, WRITE DISABLE</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ ENABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C084</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C08C</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC081</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC089</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = WRTCOUNT + 1*</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ DISABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC085</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC08D</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC081</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC089</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = 0*</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ DISABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC085</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC08D</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C082</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C08A</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = 0*, WRITE DISABLE</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ DISABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C086</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">C08E</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC083</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC08B</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = WRTCOUNT + 1*</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ ENABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC087</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">RC08F</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC083</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC08B</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">WRTCOUNT = 0*</p></td>
+<td class="tableblock halign-left valign-top" rowspan="2" ><p class="tableblock monospaced">READ ENABLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC087</p></td>
+<td class="tableblock halign-left valign-top" ><p class="tableblock monospaced">WC08F</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph"><p><sup>*</sup> Writing to expansion RAM is enabled when WRTCOUNT reaches 2.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_firmware_2">Firmware</h4>
+<div class="paragraph"><p>The firmware card emulates a (modified) Apple Firmware card.
+The firmware card is simply an alternate ROM, at addresses
+$D000 through $FFFF, that is switched using the I/O switches
+at addresses $C080 through $C08F. In order to make use of the
+firmware card, you will need to load the ROM with a binary image
+from a file on disk. For example, to insert an Integer BASIC
+firmware card into the emulator, add these lines to your
+<span class="monospaced">epple2.conf</span> file:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre># Firmware card with Integer BASIC and old Monitor
+slot 0 firmware
+import slot 0 rombank 1000 /usr/lib/apple2/system/intbasic/intbasic.ex65
+import slot 0 rombank 2425 /usr/lib/apple2/system/other/other.ex65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2/monitor.ex65</pre>
+</div></div>
+<div class="paragraph"><p>For an Applesoft BASIC firmware card, use these:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre># Firmware card with Applesoft BASIC and Autostart Monitor
+slot 0 firmware
+import slot 0 rombank 0000 /usr/lib/apple2/system/applesoft/applesoft.ex65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.ex65</pre>
+</div></div>
+<div class="paragraph"><p>Note that the addresses specified in the <span class="monospaced">epple2.conf</span> file for the
+rombank are based on the beginning of the bank ROM itself. For example, specifying
+<span class="monospaced">1000</span> (which is 1000 hex) represents the final memory address of $E000, because
+the bank ROM is always based at address $D000.</p></div>
+<div class="paragraph"><p>The idea is that you would load your motherboard with, for
+example, Applesoft BASIC and the Autostart Monitor ROM (to emulate
+an Apple ][ plus), and then install a firmware card with Integer
+BASIC and the old Monitor. Booting with DOS 3.3, then, would allow
+you to type <span class="monospaced">FP</span> to use Applesoft BASIC, or <span class="monospaced">INT</span> to switch to Integer BASIC.</p></div>
+<div class="paragraph"><p>Note that DOS and ProDOS will make use of a firmware card only if it is in slot <em>zero</em>.</p></div>
+<div class="paragraph"><p>Jim Sather, in
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+on pages 6-18 through 6-21, explains
+how to modify a firmware card to allow independent switching of the $F800-$FFFF
+ROM memory. This area is occupied by the Monitor, so it is primarily
+intended to allow the user to switch between the old Monitor and the Autostart
+Monitor, independent of switching between Integer and Applesoft BASIC. The EPPLE ][
+firmware card emulates this behavior.</p></div>
+<div class="paragraph"><p>The information area of the EPPLE ][ will show the current state of the
+firmware card as follows:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="monospaced">D</span>   Read from firmware card $D000-$F7FF (vs. motherboard BASIC ROM)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">F8</span>  Read from firmware card $F800-$FFFF (vs. motherboard Monitor ROM)
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect3">
+<h4 id="_clock">Clock</h4>
+<div class="paragraph"><p>The clock card emulates a ProDOS-compatible real-time clock card for the Apple ][.
+To use a clock card, you will need to configure the EPPLE ][ to insert one into
+a slot, typically slot 4. You will also need to load the card with its ROM code,
+which is provided with the emulator in the clock.ex65 file.
+For example, add this to your epple2.conf file:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>slot 4 clock
+import slot 4 rom 0 /usr/lib/epple2/cards/clock.ex65</pre>
+</div></div>
+<div class="paragraph"><p>Of course you may need to adjust the path for your particular system.</p></div>
+<div class="paragraph"><p>To verify that the clock card is working correctly, you can run the following Applesoft
+program to retrieve the current time from the clock card and print it.
+This program assumes the card is in slot 4.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>NEW
+
+<span style="color: #993399">10</span> <span style="font-weight: bold"><span style="color: #0000FF">CALL</span></span> <span style="color: #990000">-</span><span style="color: #993399">15360</span> <span style="color: #990000">:</span> REM $C400 SLOT <span style="color: #993399">4</span> ENTRY POINT
+<span style="color: #993399">20</span> A <span style="color: #990000">=</span> <span style="color: #993399">512</span> <span style="color: #990000">:</span> REM $<span style="color: #993399">0200</span> INPUT BUFFER
+<span style="color: #993399">30</span> C <span style="color: #990000">=</span> <span style="font-weight: bold"><span style="color: #000000">PEEK</span></span><span style="color: #990000">(</span>A<span style="color: #990000">)</span>
+<span style="color: #993399">40</span> <span style="font-weight: bold"><span style="color: #0000FF">IF</span></span> C <span style="color: #990000">&lt;</span> <span style="color: #993399">160</span> <span style="font-weight: bold"><span style="color: #0000FF">THEN</span></span> <span style="color: #993399">99</span>
+<span style="color: #993399">50</span> PRINT CHR$<span style="color: #990000">(</span>C<span style="color: #990000">);</span>
+<span style="color: #993399">60</span> A <span style="color: #990000">=</span> A<span style="color: #990000">+</span><span style="color: #993399">1</span>
+<span style="color: #993399">70</span> GOTO <span style="color: #993399">30</span>
+<span style="color: #993399">99</span> <span style="font-weight: bold"><span style="color: #0000FF">END</span></span>
+
+RUN</tt></pre></div></div>
+<div class="paragraph"><p>The card returns data (into the GETLN input buffer at $200) in
+the following format:</p></div>
+<div class="paragraph"><p><span class="monospaced">mm,ww,dd,hh,nn,ss,000,yyyy,Time Zone,v</span></p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<span class="monospaced">mm</span>    Month, 01-12
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">ww</span>    Weekday, 00=Monday&#8230; 06=Saturday
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">dd</span>    Day, 01-31
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">hh</span>    Hour, 00-23
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">nn</span>    Minute, 00-59
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">ss</span>    Second, 00-61
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">000</span>   Milliseconds; always zero
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">yyyy</span>  Year, e.g., 2008
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">Time Zone</span>  time zone string (could contain lower-case characters,
+           which won&#8217;t display correctly)
+</p>
+</li>
+<li>
+<p>
+<span class="monospaced">v</span>     Daylight Saving Time in effect, 0=no, 1=yes
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Note that only <span class="monospaced">mm,ww,dd,hh,nn</span> fields are used by ProDOS. The other
+fields, <span class="monospaced">ss,000,yyyy,Time Zone,v</span>, are an EPPLE ][ extension. Also note
+that ProDOS was not designed to work for years past 2007, so
+ProDOS will show the incorrect year, but the other fields will be accurate.
+I believe patches exist for ProDOS to fix this.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_standard_input">Standard Input</h4>
+<div class="paragraph"><p>The &#8220;standard input&#8221; card doesn&#8217;t emulate a real piece of hardware; rather, it
+reads characters from standard input (stdin) (of the EPPLE ][ emulator).</p></div>
+<div class="paragraph"><p>To use a standard input card, add these lines to your <span class="monospaced">epple2.conf</span> file:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre># IN#2 reads from standard input
+slot 2 stdin
+import slot 2 rom 0 /usr/lib/epple2/cards/stdin.ex65</pre>
+</div></div>
+<div class="paragraph"><p>That will insert a stdin card into slot 2, and then load its
+ROM image into the card.
+The stdin ROM is provided with the EPPLE ][ distribution.</p></div>
+<div class="paragraph"><p>For example, if you have a stdin card installed in slot 2, start
+the EPPLE ][ emulator from the command line, and at the Applesoft
+prompt, type <span class="monospaced">IN#2</span>. Then you can switch back to the
+command shell, and whatever you type will be fed into the emulated
+Apple. Use RESET or <span class="monospaced">IN#0</span> to go back to normal.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_standard_output">Standard Output</h4>
+<div class="paragraph"><p>The &#8220;standard output&#8221; card doesn&#8217;t emulate a real piece of hardware; rather, it acts
+similar to a printer card, but instead of sending characters to a printer, it sends
+them to standard output (stdout) (of the EPPLE ][ emulator).</p></div>
+<div class="paragraph"><p>To use a standard output card, add these lines to your <span class="monospaced">epple2.conf</span> file:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre># PR#1 prints to standard output
+slot 1 stdout
+import slot 1 rom 0 /usr/lib/epple2/cards/stdout.ex65</pre>
+</div></div>
+<div class="paragraph"><p>This will insert a stdout card into slot 1 (which is the typical
+slot for a printer card), and then load its ROM image into the card.
+The stdout ROM is provided with the EPPLE ][ distribution.</p></div>
+<div class="paragraph"><p>For example, if you have a stdout card installed, at the Applesoft
+prompt, type <span class="monospaced">PR#1</span>. Whatever you type next will be
+echoed to standard output. Type <span class="monospaced">PR#0</span> to stop echoing.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_cassette_tape_interface">Cassette Tape Interface</h3>
+<div class="paragraph"><p>The Apple ][ and Apple ][ plus machines had the ability to save and load binary
+data to and from cassette tape. The user would attach a standard cassette tape
+recorder to the jacks on the back of the Apple ][, and use the monitor <span class="monospaced">R</span> and <span class="monospaced">W</span>
+commands, or the Applesoft BASIC commands <span class="monospaced">LOAD</span> and <span class="monospaced">SAVE</span>, to read and write data
+on the cassette tape. The user would have to press the play and/or record buttons
+on the player at the right time.</p></div>
+<div class="paragraph"><p>The Epple ][ emulates the cassette interface, using a file to hold the
+recorded portion of the tape. The file will grow in length as necessary
+to hold data that the emulated Apple is writing to the &#8220;tape.&#8221;
+The emulator will not overwrite existing data on a tape image.
+The emulator will automatically &#8220;press&#8221; the play or record buttons that
+would have been necessary when using the original machine.</p></div>
+<div class="sect3">
+<h4 id="_commands_2">Commands</h4>
+<div class="paragraph"><p><span class="monospaced">cassette new &lt;file-path&gt;</span></p></div>
+<div class="paragraph"><p>This creates a new empty file (on the host computer) that represents a cassette tape image.
+The file must not already exist.</p></div>
+<div class="paragraph"><p><span class="monospaced">cassette load &lt;file-path&gt;</span></p></div>
+<div class="paragraph"><p>This loads an existing file (from the host computer) containing a cassette tape image.
+The tape is automatically positioned at its beginning (fully rewound).</p></div>
+<div class="paragraph"><p><span class="monospaced">cassette unload</span></p></div>
+<div class="paragraph"><p>This removes the file from the cassette tape. Note that you must manually save
+the file using the <span class="monospaced">cassette save</span> command (described below).</p></div>
+<div class="admonitionblock">
+<table><tr>
+<td class="icon">
+<img src="./warning.png" alt="Warning">
+</td>
+<td class="content">Unloading an unsaved file will lose any changes made to the file, without warning.</td>
+</tr></table>
+</div>
+<div class="paragraph"><p><span class="monospaced">cassette rewind</span></p></div>
+<div class="paragraph"><p>This command &#8220;rewinds&#8221; the cassette tape, positioning it at the beginning
+of the tape (for subsequent reading). You do not need to rewind the tape
+before saving or unloading it, of course.</p></div>
+<div class="paragraph"><p><span class="monospaced">cassette save</span></p></div>
+<div class="paragraph"><p>This command saves the changed tape to the file. Note that the display will show
+an asterisk <span class="monospaced">*</span> next to the file name if there are unsaved changes that need to
+be saved. Unsaved changes will be lost without warning if the file is unloaded
+or if you quit the program.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_example_of_saving_to_tape">Example of Saving to Tape</h4>
+<div class="paragraph"><p>Start up the emulator with Applesoft ROMs for this tutorial.
+Enter a simple Applesoft program, just as an example, that we
+are going to save to a cassette tape image file.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #990000">]</span>NEW
+
+<span style="color: #990000">]</span><span style="color: #993399">10</span> PRINT <span style="color: #FF0000">"HELLO"</span>
+
+<span style="color: #990000">]</span><span style="color: #993399">20</span> <span style="font-weight: bold"><span style="color: #0000FF">END</span></span>
+
+<span style="color: #990000">]</span>LIST
+
+<span style="color: #993399">10</span>  PRINT <span style="color: #FF0000">"HELLO"</span>
+<span style="color: #993399">20</span>  <span style="font-weight: bold"><span style="color: #0000FF">END</span></span>
+
+<span style="color: #990000">]</span>RUN
+HELLO
+
+<span style="color: #990000">]</span></tt></pre></div></div>
+<div class="paragraph"><p>We first need to load a tape image file into the cassette machine.
+Enter command mode by pressing <span class="monospaced">F5</span>, then make a new tape
+image file.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>command: cassette new hello.tap</pre>
+</div></div>
+<div class="paragraph"><p>This will create a new, empty tape file image named <span class="monospaced">hello.tap</span>
+in the current default directory. (We could have specified a full path
+name for the file if we wanted to place it in a different directory.)
+Notice that the emulator now displays the name of the tape image file,
+along with the position and length of the tape image, which is now <span class="monospaced">0/0</span>.</p></div>
+<div class="paragraph"><p>Next, we tell Applesoft to save the program to the cassette. For this,
+we just use the <span class="monospaced">SAVE</span> command. Note that this is not the
+DOS <span class="monospaced">SAVE</span> command; the DOS command has a file name after
+<span class="monospaced">SAVE</span>. We just use <span class="monospaced">SAVE</span> with no file name.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>]SAVE
+
+]</pre>
+</div></div>
+<div class="paragraph"><p>It will take 10 seconds or so for it to save. Notice that the
+current position of the tape is counting up as the Apple saves
+the program. When it is finished, you need to save the changes
+to the file. Press <span class="monospaced">F5</span> and enter the emulator command to save
+the tape image file.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>command: cassette save</pre>
+</div></div>
+<div class="paragraph"><p>We can now unload the file from the emulator (which is like ejecting
+the tape from the cassette player).</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>command: cassette unload</pre>
+</div></div>
+</div>
+<div class="sect3">
+<h4 id="_example_of_loading_from_tape">Example of Loading from Tape</h4>
+<div class="paragraph"><p>To load the saved program (from the previous section) into the Apple again,
+we will need to first load the tape image file back into the cassette machine.
+Press <span class="monospaced">F5</span> to enter command mode and load the image file.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>command: cassette load hello.tap</pre>
+</div></div>
+<div class="paragraph"><p>This will load hello.tap (in the current default directory). Notice the
+emulator now displays the name of the tape image file, along with the
+position and length of the tape image, which in this case is <span class="monospaced">0/33481</span>.</p></div>
+<div class="paragraph"><p>Next, we tell Applesoft to load the program from the cassette. For this,
+we just use the <span class="monospaced">LOAD</span> command. Note that this is not the
+DOS <span class="monospaced">LOAD</span> command; the DOS command has a file name after
+<span class="monospaced">LOAD</span>. We just use <span class="monospaced">LOAD</span> with no file name.</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>]LOAD
+
+]</pre>
+</div></div>
+<div class="paragraph"><p>It will take 10 seconds or so for it to load. Notice that the
+current position of the tape is counting up as the Apple loads
+the program. When it is finished, the program will be loaded.</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt><span style="color: #990000">]</span>LIST
+
+<span style="color: #993399">10</span>  PRINT <span style="color: #FF0000">"HELLO"</span>
+<span style="color: #993399">20</span>  <span style="font-weight: bold"><span style="color: #0000FF">END</span></span>
+
+<span style="color: #990000">]</span>RUN
+HELLO
+
+<span style="color: #990000">]</span></tt></pre></div></div>
+</div>
+<div class="sect3">
+<h4 id="_tape_image_file_format">Tape Image File Format</h4>
+<div class="paragraph"><p>The format of the tape image file is unique to the Epple ][
+It is stored in a low-level format that represents the waveform that the Apple writes
+to the cassette tape.</p></div>
+<div class="paragraph"><p>The file is a binary format. Each byte in the file represents the length of one half of one cycle
+(of voltage level variation) written to the tape. The length is in 10-microsecond units.</p></div>
+<div class="paragraph"><p>For example, a tape image file might have the following binary bytes (in decimal):
+<span class="monospaced">65  65  65  65  65  20  25  50  50  25  25  25  25  50  50</span>
+Since each byte represents a 10-microsecond unit, these bytes represent the following
+half-cycle lengths in microseconds:
+<span class="monospaced">650 650 650 650 650 200 250 500 500 250 250 250 250 500 500</span>
+The meaning of these half-cycle lengths to the Apple is as follows:</p></div>
+<div class="listingblock">
+<div class="content monospaced">
+<pre>|-------HEADER------|--sync-|-1-bit-|-0-bit-|-0-bit-|-1-bit-|
+|                   |       |       |       |       |       |
+|650 650 650 650 650|200 250|500 500|250 250|250 250|500 500|</pre>
+</div></div>
+<div class="paragraph"><p>where <span class="monospaced">HEADER</span> is a header section the Apple writes (to skip any
+unrecordable leader section on a real cassette tape); <span class="monospaced">sync</span> is a
+synchronization cycle; and the subsequent cycles are the actual
+bits of data saved on the tape. A 500-microsecond cycle (which
+is stored in the file as two 250 microsecond half-cycles)
+represents a <strong>zero</strong> bit, and a 1-millisecond cycle (which is
+stored in the file as two 500 microsecond half-cycles)
+represents a <strong>one</strong> bit.</p></div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_paddles">Paddles</h3>
+<div class="paragraph"><p>The Epple ][ provides two paddles to the Apple ][ machine.
+One paddle is controlled by moving the mouse left and right; the other
+paddle is controlled by moving the mouse up and down. The paddle buttons
+are emulated by the mouse buttons (left and right click).</p></div>
+<div class="paragraph"><p>In
+<a href="http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software">Understanding the Apple II</a>,
+on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
+to create two real-time clock references. This is emulated by the Epple ][. Paddle timers 2 and 3
+are 100-microsecond and 1-millisecond references, respectively.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_speaker">Speaker</h3>
+<div class="paragraph"><p>The Apple ][ could generate sound via a speaker that generated square wave
+audio. A program could read memory location $C030 to toggle the speaker and
+generate a &#8220;click&#8221; sound.</p></div>
+<div class="paragraph"><p>The Epple ][ emulator will generate sounds from the emulated Apple and
+send them to the audio device. It generates 8-bit mono sound, with a 22,050 Hz
+sampling rate.</p></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_building_from_source">Building From Source</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The Epple ][ Emulator is written in C++, and can be built
+using the standard <span class="monospaced">make</span> program.</p></div>
+<div class="paragraph"><p>The primary dependency is
+<a href="http://www.libsdl.org/">Simple DirectMedia Layer</a> (SDL).
+Your linux distribution may provide a package. Or else
+you can download it directly from SDL&#8217;s web site. In
+either case, be sure to install the &#8220;Development Libraries&#8221;
+for your particular platform.</p></div>
+<div class="sect2">
+<h3 id="_debian_linux_example">Debian Linux Example</h3>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>sudo apt-get install build-essential libsdl1<span style="color: #990000">.</span><span style="color: #993399">2</span>-dev  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/1.png" alt="1"></span></span>
+cd
+mkdir epple2
+cd epple2
+wget http<span style="color: #990000">:</span>//mosher<span style="color: #990000">.</span>mine<span style="color: #990000">.</span>nu/epple<span style="color: #993399">2</span>/download/epple<span style="color: #993399">2</span>-latest<span style="color: #990000">.</span>tar<span style="color: #990000">.</span>gz  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/2.png" alt="2"></span></span>
+tar xzvf epple2-<span style="color: #993399">1.0</span><span style="color: #990000">.</span>tar<span style="color: #990000">.</span>gz
+mkdir build  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/3.png" alt="3"></span></span>
+cd build
+<span style="color: #990000">..</span>/epple<span style="color: #993399">2</span>-<span style="color: #993399">1.0</span>/configure  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/4.png" alt="4"></span></span>
+make  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/5.png" alt="5"></span></span>
+sudo make install  <span style="font-style: italic"><span style="color: #9A1900"># <img src="./callouts/6.png" alt="6"></span></span></tt></pre></div></div>
+<div class="colist arabic"><table>
+<tr><td><img src="./callouts/1.png" alt="1"></td><td>
+Install dependencies: gcc, make, SDL
+</td></tr>
+<tr><td><img src="./callouts/2.png" alt="2"></td><td>
+Retrieve the latest Epple ][ source distribution
+</td></tr>
+<tr><td><img src="./callouts/3.png" alt="3"></td><td>
+Use this directory for a VPATH-style build
+</td></tr>
+<tr><td><img src="./callouts/4.png" alt="4"></td><td>
+Run one-time configuration script for your system. Use <span class="monospaced">--help</span> for more information.
+</td></tr>
+<tr><td><img src="./callouts/5.png" alt="5"></td><td>
+Compile and link. Program will be <span class="monospaced">src/epple2</span>
+</td></tr>
+<tr><td><img src="./callouts/6.png" alt="6"></td><td>
+Install into standard system directories
+</td></tr>
+</table></div>
+</div>
+<div class="sect2">
+<h3 id="_windows_msys_example">Windows/MSYS Example</h3>
+<div class="sect3">
+<h4 id="_install_mingw_msys">Install MinGW/MSYS</h4>
+<div class="paragraph"><p>Install MSYS into <span class="monospaced">C:\msys\</span></p></div>
+<div class="paragraph"><p>Install MinGW into <span class="monospaced">C:\msys\mingw\</span></p></div>
+<div class="paragraph"><p>For more information on MinGW and MSYS, see <a href="http://www.mingw.org/">http://www.mingw.org/</a>.</p></div>
+</div>
+<div class="sect3">
+<h4 id="_install_sdl">Install SDL</h4>
+<div class="paragraph"><p>At <a href="http://www.libsdl.org/">http://www.libsdl.org/</a> find the download page.
+Download the &#8220;Development Libraries&#8221; for Win32/mingw, for example:</p></div>
+<div class="paragraph"><p><span class="monospaced">SDL-devel-1.2.13-mingw32.tar.gz</span> (Mingw32)</p></div>
+<div class="paragraph"><p>and save it to your MSYS home directory (for example, <span class="monospaced">C:\msys\home\Administrator</span>).
+Run MSYS, and at the bash prompt, go to your home directory and
+untar the SDL archive to your home directory:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>$ cd
+$ tar xzvf SDL-devel-<span style="color: #993399">1.2</span><span style="color: #990000">.</span><span style="color: #993399">13</span>-mingw<span style="color: #993399">32</span><span style="color: #990000">.</span>tar<span style="color: #990000">.</span>gz</tt></pre></div></div>
+<div class="paragraph"><p>Then follow the instructions to install SDL, for example:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>$ cd SDL-<span style="color: #993399">1.2</span><span style="color: #990000">.</span><span style="color: #993399">13</span>
+$ make native</tt></pre></div></div>
+</div>
+<div class="sect3">
+<h4 id="_untar_epple_source">Untar Epple ][ Source</h4>
+<div class="paragraph"><p>Download the Epple ][ Source Distribution
+and save it to your MSYS home directory (for example, <span class="monospaced">C:\msys\home\Administrator</span>).
+Run MSYS, and at the bash prompt, go to your home directory and
+untar the epple2 source distribution tar file. For example:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>$ cd
+$ tar xzvf epple2-<span style="color: #993399">1.0</span><span style="color: #990000">.</span>tar<span style="color: #990000">.</span>gz</tt></pre></div></div>
+</div>
+<div class="sect3">
+<h4 id="_build_epple">Build Epple ][</h4>
+<div class="paragraph"><p>Then build as follows. I recommend doing a VPATH build,
+where you build into a different directory than the source
+directory. To accomplish this, create a new directory for
+building, somewhere, such as:</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>$ cd
+$ mkdir buildepple2
+$ cd buildepple2</tt></pre></div></div>
+<div class="paragraph"><p>Then run <span class="monospaced">configure</span> from there. For the MSYS build to work,
+you need some extra parameters to the build, and you could
+also add some compiler options to optimize the build. For
+example (from the <span class="monospaced">buildepple2</span> directory you just created):</p></div>
+<div class="listingblock">
+<div class="content"><!-- Generator: GNU source-highlight 3.1.6
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>$ <span style="color: #990000">~</span>/epple<span style="color: #993399">2</span>/configure --prefix<span style="color: #990000">=</span> <span style="color: #990000">\</span>
+<span style="color: #009900">CXXFLAGS</span><span style="color: #990000">=</span><span style="color: #FF0000">"-I/usr/include -O4 -msse3"</span> <span style="color: #990000">\</span>
+<span style="color: #009900">CFLAGS</span><span style="color: #990000">=</span><span style="color: #FF0000">"-I/usr/include"</span> <span style="color: #990000">\</span>
+<span style="color: #009900">LDFLAGS</span><span style="color: #990000">=</span><span style="color: #FF0000">"-L/usr/lib -mconsole -mthreads -mno-cygwin"</span>
+$ make</tt></pre></div></div>
+<div class="paragraph"><p>If all goes well, it will build without any errors.
+If you get errors about not finding <span class="monospaced">SDL.h</span>, make sure
+SDL is installed, and make sure the configure command
+is correct. (If you just run configure without the
+options shown above, you will get this error at build time.)
+The result of the build (on Windows platform) is</p></div>
+<div class="paragraph"><p><span class="monospaced">installer/epple2.msi</span></p></div>
+<div class="paragraph"><p>which is an installable file for Windows. To install
+epple2, just double-click on this file from Explorer.</p></div>
+<hr>
+<div class="paragraph"><p><span class="small">Copyright &#169; 2009,2012, by
+<a href="mailto:chris-keyword-epple2.4a8db3@mosher.mine.nu">Christopher A. Mosher</a>,
+Shelton CT, USA.</span></p></div>
+<div class="paragraph"><p><span class="image">
+<img src="80x15.png" alt="Creative Commons Attribution-Noncommercial-Share Alike 3.0 USA License">
+</span></p></div>
+<div class="paragraph"><p><span class="small">This web site is licensed under the
+<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/us/">Creative Commons Attribution-Noncommercial-Share Alike 3.0 USA License</a>.</span></p></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr></div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2012-04-20 20:42:04 EDT
+</div>
+</div>
+</body>
+</html>
