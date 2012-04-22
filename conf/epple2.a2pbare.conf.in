@@ -6,5 +6,5 @@
 
 
 
-import motherboard rom 0000 $(PREFIX)lib/apple2/system/applesoft/applesoft.a65
-import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2plus/monitor.a65
+import motherboard rom 0000 $(PREFIX)lib/apple2/system/a2p/applesoft.a65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2p/monitor.a65

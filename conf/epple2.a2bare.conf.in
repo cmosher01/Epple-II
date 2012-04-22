@@ -6,6 +6,6 @@
 
 
 
-import motherboard rom 1000 $(PREFIX)lib/apple2/system/intbasic/intbasic.a65
-import motherboard rom 2425 $(PREFIX)lib/apple2/system/other/other.a65
-import motherboard rom 2800 $(PREFIX)lib/apple2/system/monitor/apple2/monitor.a65
+import motherboard rom 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
+import motherboard rom 2425 $(PREFIX)lib/apple2/system/a2/other.a65
+import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
