@@ -25,6 +25,7 @@ std::deque<char> locbuf;
 volatile bool done;
 SDL_cond* bufchg;
 SDL_mutex* buflck;
+volatile int silence;
 
 // TODO figure out why sound is so choppy, and fix it
 void fillbuf(void *userdata, Uint8 *stream, int len)
@@ -70,7 +71,6 @@ void fillbuf(void *userdata, Uint8 *stream, int len)
 }
 
 #define TICKS_PER_SAMPLE 47
-#define AMP 126
 
 SpeakerClicker::SpeakerClicker():
 	clicked(false),
@@ -80,7 +80,7 @@ SpeakerClicker::SpeakerClicker():
 
 	SDL_AudioSpec audio;
 	audio.freq = 22050; // samples per second
-	audio.format = AUDIO_S8; // 8 bits (1 byte) per sample
+	audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
 	audio.channels = 1; // mono
 	audio.silence = 0;
 	audio.samples = 4096;
@@ -98,15 +98,16 @@ SpeakerClicker::SpeakerClicker():
 	{
 		bufchg = SDL_CreateCond();
 		buflck = SDL_CreateMutex();
-		/*
+		silence = obtained.silence;
+/*
 		std::cout << "initialized audio: " << std::endl;
 		std::cout << "freq: " << obtained.freq << std::endl;
-		std::cout << "format: " << (obtained.format==AUDIO_S8?"8-bit":"other") << std::endl;
+		std::cout << "format: " << obtained.format << std::endl;
 		std::cout << "channels: " << (int)obtained.channels << std::endl;
 		std::cout << "silence: " << (int)obtained.silence << std::endl;
 		std::cout << "samples: " << obtained.samples << std::endl;
 		std::cout << "size: " << obtained.size << std::endl;
-		*/
+*/
 		SDL_PauseAudio(0);
 	}
 }
@@ -141,13 +142,13 @@ void SpeakerClicker::tick()
 		int amp;
 		if (this->clicked)
 		{
-			amp = this->positive ? AMP : -AMP;
+			amp = this->positive ? silence+100 : silence-100;
 			this->positive = !this->positive;
 			this->clicked = false;
 		}
 		else
 		{
-			amp = 0;
+			amp = silence;
 		}
 		SDL_LockMutex(buflck);
 		locbuf.push_back(amp);
