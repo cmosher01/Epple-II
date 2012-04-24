@@ -98,7 +98,7 @@ SpeakerClicker::SpeakerClicker():
 	{
 		bufchg = SDL_CreateCond();
 		buflck = SDL_CreateMutex();
-
+		/*
 		std::cout << "initialized audio: " << std::endl;
 		std::cout << "freq: " << obtained.freq << std::endl;
 		std::cout << "format: " << (obtained.format==AUDIO_S8?"8-bit":"other") << std::endl;
@@ -106,6 +106,7 @@ SpeakerClicker::SpeakerClicker():
 		std::cout << "silence: " << (int)obtained.silence << std::endl;
 		std::cout << "samples: " << obtained.samples << std::endl;
 		std::cout << "size: " << obtained.size << std::endl;
+		*/
 		SDL_PauseAudio(0);
 	}
 }
@@ -125,24 +126,6 @@ SpeakerClicker::~SpeakerClicker()
 	SDL_DestroyCond(bufchg);
 	SDL_DestroyMutex(buflck);
 }
-
-/*
-void SpeakerClicker::tick()
-{
-	--this->t;
-	if (this->t <= 0)
-	{
-		this->t = TICKS_PER_SAMPLE;
-		if (this->clicked)
-		{
-			this->positive = !this->positive;
-			this->clicked = false;
-		}
-		locbuf.push_back(this->positive ? AMP : -AMP);
-		locbuf.push_back(this->positive ? AMP : -AMP);
-	}
-}
-*/
 
 void SpeakerClicker::tick()
 {
