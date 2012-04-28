@@ -14,9 +14,8 @@ are available at the http://mosher.mine.nu/apple2/[Apple II Library].
 The following software is licensed under
 http://www.gnu.org/licenses/gpl-3.0-standalone.html[GPLv3].
 
-Epple ][ Program: http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz[epple2.tar.gz]
-
-ROMs (System Demo and Cards): http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz[epple2sys.tar.gz]
+Epple ][ Program:: http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz[epple2.tar.gz]
+ROMs (System Demo and Cards):: http://mosher.mine.nu/epple2/download/epple2sys-latest.tar.gz[epple2sys.tar.gz]
 
 See <<_building_from_source,Building>> on how to build from sources.
 
@@ -70,7 +69,7 @@ not the Demo System ROM.)
 If you are using any of the clock, the standard output, or the
 standard input <<cards,peripheral cards>>, you will need to download their firmware as well,
 which are contained in the _Card ROMs_ package. You can choose either binary format
-(ready to run) or source format (to assemble it yourself(using the
+(ready to run) or source format (to assemble it yourself using the
 http://www.floodgap.com/retrotech/xa/[xa Assembler]).
 If you are _not_ going to use the stdin, stdout, or clock
 cards, then you do not need to download this package.
