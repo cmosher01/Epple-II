@@ -1,0 +1,9 @@
+QUICK START
+
+When fetching sources directly from the source code repository,
+use the following command to get the necessary dependencies, etc.,
+for a working configure script.
+
+    ./bootstrap
+
+After that, you can use the normal build steps documented in INSTALL.
