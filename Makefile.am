@@ -23,3 +23,11 @@ package: $(NAME).spec dist
 	echo "%_topdir $(RPM)" >>$(RPM)/.rpmmacros
 	HOME=$(RPM) rpmbuild -ba --clean --buildroot $(RPM)/BUILDROOT $<
 	fakeroot alien $(RPM)/RPMS/$(ARCH)/$(NAME)-$(VERSION)-1.$(ARCH).rpm
+
+.PHONY: site doc
+
+site: doc
+
+doc:
+	$(MAKE) -C $@ all
+	$(MAKE) -C $@ site

@@ -12,10 +12,9 @@ index.html : *.asciidoc
 clean :
 	rm -f index.html
 
-install :
-	mkdir -p deploy
-	cp *.html *.png *.gif deploy
-	cp -R callouts deploy
+.PHONY: site
 
-uninstall :
-	rm -Rf deploy
+site :
+	mkdir -p site
+	cp *.html *.png *.gif site
+	cp -R callouts site
