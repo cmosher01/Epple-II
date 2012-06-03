@@ -5,7 +5,7 @@ AC_PREREQ(2.59)
 AC_CONFIG_SRCDIR([config.h.in])
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(epple2, 1.1)
+AM_INIT_AUTOMAKE(epple2, 1.2-SNAPSHOT)
 
 
 
