@@ -27,10 +27,10 @@
 #include "keyboardbuffermode.h"
 #include "hypermode.h"
 #include "clipboardhandler.h"
+#include <SDL/SDL.h>
 
 class Timable;
 class Config;
-struct SDL_KeyboardEvent;
 
 class Emulator
 {
