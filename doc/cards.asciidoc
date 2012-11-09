@@ -196,7 +196,7 @@ the following format:
 +mm,ww,dd,hh,nn,ss,000,yyyy,Time Zone,v+
 
 * +mm+    Month, 01-12
-* +ww+    Weekday, 00=Monday... 06=Saturday
+* +ww+    Weekday, 00=Sunday... 06=Saturday
 * +dd+    Day, 01-31
 * +hh+    Hour, 00-23
 * +nn+    Minute, 00-59
