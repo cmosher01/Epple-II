@@ -27,4 +27,5 @@ simple clock card.
 on Linux (gcc) or Windows (mingw). http://www.libsdl.org/[SDL]
 is the only dependency.
 
-+epple2+ is released under GPLv3.
++epple2+ is released under GPLv3. See files +COPYING.*+ for
+copyright notices.
