@@ -20,7 +20,7 @@
 #include "applentsc.h"
 #include "card.h"
 #include "util.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <ctime>
 #include <sstream>
 
@@ -67,7 +67,7 @@ void ScreenImage::toggleFullScreen()
 
 void ScreenImage::createScreen()
 {
-	this->screen = SDL_SetVideoMode(SCRW,SCRH,32,SDL_HWSURFACE|SDL_HWPALETTE|(this->fullscreen?SDL_FULLSCREEN:0));
+// TODO	this->screen = SDL_SetVideoMode(SCRW,SCRH,32,SDL_HWSURFACE|SDL_HWPALETTE|(this->fullscreen?SDL_FULLSCREEN:0));
 	if (this->screen == NULL)
 	{
 		printf("Unable to set video mode: %s\n",SDL_GetError());
@@ -248,7 +248,7 @@ void ScreenImage::drawChar(const char ch, int row, int col, int color, int bgcol
 		pn -= FONTW;
 		pn += SCRW;
 	}
-	SDL_UpdateRect(this->screen,col*FONTW,row*FONTH,(col+1)*FONTW,(row+1)*FONTH);
+// TODO	SDL_UpdateRect(this->screen,col*FONTW,row*FONTH,(col+1)*FONTW,(row+1)*FONTH);
 }
 
 void ScreenImage::displayHz(int hz)
@@ -296,7 +296,7 @@ void ScreenImage::drawPower(bool on)
 		pn -= POWERD;
 		pn += this->screen->pitch/4;
 	}
-	SDL_UpdateRect(this->screen,0,HEIGHT,POWERD,HEIGHT+POWERD);
+// TODO	SDL_UpdateRect(this->screen,0,HEIGHT,POWERD,HEIGHT+POWERD);
 }
 
 ScreenImage::~ScreenImage()
@@ -305,7 +305,7 @@ ScreenImage::~ScreenImage()
 
 void ScreenImage::notifyObservers()
 {
-	SDL_UpdateRect(this->screen,0,0,SCRW,SCRH);
+// TODO	SDL_UpdateRect(this->screen,0,0,SCRW,SCRH);
 }
 
 void ScreenImage::setElem(unsigned int i, const unsigned int val)

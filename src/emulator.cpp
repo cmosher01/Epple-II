@@ -19,7 +19,7 @@
 #include "configep2.h"
 #include "e2const.h"
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include <ctime>
 
@@ -205,11 +205,11 @@ int Emulator::run()
 
 void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent)
 {
-	unsigned char key = (unsigned char)(keyEvent.keysym.unicode & 0x7F);
-	SDLKey sym = keyEvent.keysym.sym;
-	SDLMod mod = keyEvent.keysym.mod;
-	unsigned char scancode = keyEvent.keysym.scancode;
-//	printf("key UP: %d    sym: %d    mod: %04X    scn: %d\n",key,sym,mod,scancode);
+	SDL_Keycode sym = keyEvent.keysym.sym;
+	SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
+	unsigned char key = (unsigned char)(sym & 0x7F);
+
+        //	printf("key UP: %d    sym: %d    mod: %04X    scn: %d\n",key,sym,mod,scancode);
 
 	if ((sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
 		!(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
@@ -230,10 +230,14 @@ void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent)
 	// Apple ][ or Apple ][ plus keyboard
 void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent)
 {
-	unsigned char key = (unsigned char)(keyEvent.keysym.unicode & 0x7F);
-	SDLKey sym = keyEvent.keysym.sym;
-	SDLMod mod = keyEvent.keysym.mod;
-	unsigned char scancode = keyEvent.keysym.scancode;
+        if (keyEvent.repeat)
+        {
+            return;
+        }
+
+        SDL_Keycode sym = keyEvent.keysym.sym;
+	SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
+	unsigned char key = (unsigned char)(sym & 0x7F);
 
 //	printf("key DN: %d    sym: %d    mod: %04X    scn: %d\n",key,sym,mod,scancode);
 
@@ -339,7 +343,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent)
 		return;
 	}
 		// ...else save a screen shot
-	else if (sym == SDLK_PRINT)
+	else if (sym == SDLK_PRINTSCREEN)
 	{
 		this->screenImage.saveBMP();
 	}
@@ -360,10 +364,10 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent)
 		// Ctrl-Shift-Space is the same as Space
 		key = ' ';
 	}
-	else if ((mod&KMOD_CTRL) && !(mod&KMOD_SHIFT) && SDLK_KP0 <= sym && sym <= SDLK_KP9)
+	else if ((mod&KMOD_CTRL) && !(mod&KMOD_SHIFT) && SDLK_KP_0 <= sym && sym <= SDLK_KP_9)
 	{
 			// Control-only numeric keypad keys are converted to regular digit keys
-		key = sym-SDLK_KP0+'0';
+		key = sym-SDLK_KP_0+'0';
 	}
 	else if ((mod&KMOD_CTRL) && !(mod&KMOD_SHIFT) && (('0' <= sym && sym <= '9') || sym == '/' || sym == ' '))
 	{
@@ -401,8 +405,10 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent)
 	// window
 void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent)
 {
-	unsigned char key = (unsigned char)(keyEvent.keysym.unicode & 0x7F);
-	SDLKey sym = keyEvent.keysym.sym;
+	SDL_Keycode sym = keyEvent.keysym.sym;
+	SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
+	unsigned char key = (unsigned char)(sym & 0x7F);
+
 	if (sym == SDLK_RETURN)
 	{
 		processCommand();

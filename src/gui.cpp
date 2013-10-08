@@ -20,7 +20,7 @@
 #endif
 
 #include "gui.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 	// Create, initialize, and cable together the UI objects to serve this
 	// program
@@ -33,9 +33,7 @@ GUI::GUI()
 		throw GUI::NotInitException();
 	}
 
-	SDL_EnableUNICODE(1);
 	SDL_ShowCursor(0);
-	SDL_EnableKeyRepeat(0,0);
 }
 
 GUI::~GUI()

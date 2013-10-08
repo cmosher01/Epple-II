@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "speakerclicker.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <iostream>
 #include <ostream>
 #include <deque>

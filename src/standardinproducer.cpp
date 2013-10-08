@@ -16,8 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "standardinproducer.h"
-#include <SDL/SDL.h>
-#include <SDL/SDL_thread.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_thread.h>
 #include <iostream>
 
 #define CR '\r'
@@ -92,7 +92,7 @@ static int readInput(void *voidkeys)
 
 StandardInProducer::StandardInProducer()
 {
-	SDL_CreateThread(readInput,&this->keys);
+	SDL_CreateThread(readInput,"stdin",&this->keys);
 }
 
 StandardInProducer::~StandardInProducer()
