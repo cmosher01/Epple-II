@@ -12,3 +12,20 @@ Makefile.in
 /install-sh
 /missing
 /config.h.in*
+
+
+
+# need these for non-VPATH builds
+/config.h
+/config.status
+/config.log
+/stamp-h1
+
+Makefile
+.deps/
+
+*.o
+
+# netbeans
+
+/nbproject/
