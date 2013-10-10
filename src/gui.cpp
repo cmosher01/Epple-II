@@ -14,35 +14,38 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+#include <iostream>
 #include "gui.h"
 #include <SDL2/SDL.h>
 
-	// Create, initialize, and cable together the UI objects to serve this
-	// program
-GUI::GUI()
-{
-	const int result = SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
+// Create, initialize, and cable together the UI objects to serve this
+// program
 
-	if (result != 0)
-	{
-		throw GUI::NotInitException();
-	}
+GUI::GUI() {
+    const int result = SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
+    if (result != 0) {
+        throw GUI::NotInitException();
+    }
 
-	SDL_ShowCursor(0);
+    const SDL_bool ok = SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
+    if (ok != SDL_TRUE) {
+        std::cerr << "could not set opengles2 rendering" << std::endl;
+// maybe it's OK, so don't throw GUI::NotInitException();
+    }
+
+    SDL_ShowCursor(0);
 }
 
-GUI::~GUI()
-{
-	SDL_Quit();
+GUI::~GUI() {
+    SDL_Quit();
 }
 
 GUI::NotInitException::NotInitException() :
-	runtime_error("Unable to initialize SDL")
-{
-	SDL_GetError();
+runtime_error("Unable to initialize SDL") {
+    SDL_GetError();
 }

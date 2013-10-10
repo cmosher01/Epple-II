@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #ifndef SCREENIMAGE_H
 #define SCREENIMAGE_H
 
@@ -23,72 +23,77 @@
 #include <string>
 
 class Card;
-struct SDL_Surface;
+struct SDL_Texture;
+struct SDL_Renderer;
+struct SDL_Window;
 
-class ScreenImage
-{
+class ScreenImage {
 private:
-	SDL_Surface* screen;
-	bool fullscreen;
-	bool hyper;
-	bool buffer;
-	bool fillLines;
-	AnalogTV::DisplayType display;
-	unsigned int cmdpos;
-	void createScreen();
-	std::vector<std::string> slotnames;
-	std::string cassettename;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    SDL_Texture* texture;
+    unsigned int* pixels;
+    int screen_pitch;
+    bool fullscreen;
+    bool hyper;
+    bool buffer;
+    bool fillLines;
+    AnalogTV::DisplayType display;
+    unsigned int cmdpos;
+    void createScreen();
+    std::vector<std::string> slotnames;
+    std::string cassettename;
 
-	static std::string truncateFilePath(const std::string& filepath);
+    static std::string truncateFilePath(const std::string& filepath);
 
-// TODO some of these methods should be private
+    // TODO some of these methods should be private
 public:
-	ScreenImage();
-	~ScreenImage();
+    ScreenImage();
+    ~ScreenImage();
 
-	void toggleFullScreen();
-	void drawPower(bool on);
-	void notifyObservers();
-	void setElem(const unsigned int i, const unsigned int val);
-	void blank();
-	void drawText(const std::string& text, int row, int col, int color = 0xFFFFFF, int bgcolor = 0);
-	void drawChar(const char ch, int row, int col, int color = 0xFFFFFF, int bgcolor = 0);
-	void drawLabels();
-	void drawSlots();
-	void drawSlot(int slot, int r, int c);
-	void drawCassette();
-	void drawFnKeys();
-	void toggleHyperLabel();
-	void toggleKdbBufferLabel();
-	void cycleDisplayLabel();
-	void displayHz(int hz);
-	void toggleFillLinesLabel();
-	void invertText(int row, int begincol, int endcol);
-	void drawDisplayLabel();
-	void updateSlotName(const int slot, Card* card);
-	void removeCard(const int slot, Card* card /* empty */);
+    void toggleFullScreen();
+    void drawPower(bool on);
+    void notifyObservers();
+    void setElem(const unsigned int i, const unsigned int val);
+    void blank();
+    void drawText(const std::string& text, int row, int col, int color = 0xFFFFFF, int bgcolor = 0);
+    void drawChar(const char ch, int row, int col, int color = 0xFFFFFF, int bgcolor = 0);
+    void drawLabels();
+    void drawSlots();
+    void drawSlot(int slot, int r, int c);
+    void drawCassette();
+    void drawFnKeys();
+    void toggleHyperLabel();
+    void toggleKdbBufferLabel();
+    void cycleDisplayLabel();
+    void displayHz(int hz);
+    void toggleFillLinesLabel();
+    void invertText(int row, int begincol, int endcol);
+    void drawDisplayLabel();
+    void updateSlotName(const int slot, Card* card);
+    void removeCard(const int slot, Card* card /* empty */);
 
-	void enterCommandMode();
-	void exitCommandMode();
-	void addkeyCommand(unsigned char key);
-	void backspaceCommand();
+    void enterCommandMode();
+    void exitCommandMode();
+    void addkeyCommand(unsigned char key);
+    void backspaceCommand();
 
-	void setDiskFile(int slot, int drive, const std::string& filename);
+    void setDiskFile(int slot, int drive, const std::string& filename);
 
-	void clearCurrentDrive(int slt, int drv);
-	void setCurrentDrive(int slt, int drv, int track, bool on);
-	void setTrack(int slot, int drive, int track);
-	void setIO(int slot, int drive, bool on);
-	void setDirty(int slot, int drive, bool dirty);
+    void clearCurrentDrive(int slt, int drv);
+    void setCurrentDrive(int slt, int drv, int track, bool on);
+    void setTrack(int slot, int drive, int track);
+    void setIO(int slot, int drive, bool on);
+    void setDirty(int slot, int drive, bool dirty);
 
-	void setCassetteFile(const std::string& filepath);
-	void setCassetteDirty(bool dirty);
-	void setCassettePos(int pos, int siz);
+    void setCassetteFile(const std::string& filepath);
+    void setCassetteDirty(bool dirty);
+    void setCassettePos(int pos, int siz);
 
-	void setLangCard(int slot, bool readEnable, bool writeEnable, int bank);
-	void setFirmCard(int slot, bool bank, bool F8);
+    void setLangCard(int slot, bool readEnable, bool writeEnable, int bank);
+    void setFirmCard(int slot, bool bank, bool F8);
 
-	void saveBMP();
+    void saveBMP();
 };
 
 #endif
