@@ -53,7 +53,7 @@ ScreenImage::ScreenImage() :
 fullscreen(false),
 hyper(false),
 buffer(true),
-fillLines(false),
+fillLines(true),
 display(AnalogTV::MONITOR_COLOR),
 slotnames(8),
 cassettename(32, ' ') {
@@ -83,7 +83,7 @@ void ScreenImage::createScreen() {
         throw ScreenException();
     }
 
-    this->pixels = (unsigned int*) malloc(SCRW * SCRH * sizeof (unsigned int));
+    this->pixels = (unsigned int*) calloc(SCRW * SCRH, sizeof (unsigned int));
     this->screen_pitch = SCRW;
 
     drawLabels();

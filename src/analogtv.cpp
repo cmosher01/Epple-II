@@ -44,7 +44,7 @@ AnalogTV::AnalogTV(ScreenImage& image):
 	image(image),
 	on(false),
 	noise(false),
-	bleed_down(false)
+	bleed_down(true)
 {
 	hirescolor.push_back(colors.c()[A2ColorsObserved::HIRES_GREEN]);
 	hirescolor.push_back(colors.c()[A2ColorsObserved::HIRES_ORANGE]);
