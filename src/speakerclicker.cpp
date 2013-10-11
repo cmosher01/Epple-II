@@ -89,7 +89,8 @@ SpeakerClicker::SpeakerClicker():
 	SDL_AudioSpec obtained;
 	obtained.callback = 0;
 	obtained.userdata = 0;
-	if (SDL_OpenAudio(&audio,&obtained) != 0)
+/*
+ * 	if (SDL_OpenAudio(&audio,&obtained) != 0)
 	{
 		done = true;
 		std::cerr << "Unable to initialize audio: " << SDL_GetError() << std::endl;
@@ -99,7 +100,7 @@ SpeakerClicker::SpeakerClicker():
 		bufchg = SDL_CreateCond();
 		buflck = SDL_CreateMutex();
 		silence = obtained.silence;
-/*
+
 		std::cout << "initialized audio: " << std::endl;
 		std::cout << "freq: " << obtained.freq << std::endl;
 		std::cout << "format: " << obtained.format << std::endl;
@@ -107,9 +108,9 @@ SpeakerClicker::SpeakerClicker():
 		std::cout << "silence: " << (int)obtained.silence << std::endl;
 		std::cout << "samples: " << obtained.samples << std::endl;
 		std::cout << "size: " << obtained.size << std::endl;
-*/
+
 		SDL_PauseAudio(0);
-	}
+	}*/
 }
 
 
