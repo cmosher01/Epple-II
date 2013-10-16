@@ -199,6 +199,14 @@ void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
 }
 
 static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modifiers, unsigned char* key) {
+    if (keycode == SDLK_LEFT) {
+        *key = 8;
+        return true;
+    } else if (keycode == SDLK_RIGHT) {
+        *key = 21;
+        return true;
+    }
+
     if (keycode >= 0x100) {
         return false;
     }
@@ -233,33 +241,23 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
         else if (keycode == SDLK_COMMA) *key = '<';
         else if (keycode == SDLK_PERIOD) *key = '>';
         else if (keycode == SDLK_SLASH) *key = '?';
+
+        else if (keycode == SDLK_m) *key = ']';
+        else if (keycode == SDLK_n) *key = '^';
+        else if (keycode == SDLK_p) *key = '@';
     }
 
     if (modifiers & KMOD_CTRL) {
-        if ('A' <= *key && *key <= 'Z') {
+        if (('A' <= *key && *key <= 'Z') || (*key == ']') || (*key == '^') || (*key == '@')) {
             *key -= 64;
         }
     }
 
-    if (keycode == SDLK_LEFT) {
-        *key = 8;
-    } else if (keycode == SDLK_RIGHT) {
-        *key = 21;
-    }
-
-
-    if ((modifiers & KMOD_SHIFT) && (modifiers & KMOD_CTRL) && keycode == '2') {
-        // Ctrl-Shift-2 == Ctrl-@ == NUL == ASCII: 0
-        *key = 0;
-    } else if ((modifiers & KMOD_SHIFT) && (modifiers & KMOD_CTRL) && keycode == ' ') {
+    if ((modifiers & KMOD_SHIFT) && (modifiers & KMOD_CTRL) && keycode == ' ') {
         // Ctrl-Shift-Space is the same as Space
         *key = ' ';
-    } else if ((modifiers & KMOD_CTRL) && !(modifiers & KMOD_SHIFT) && SDLK_KP_0 <= keycode && keycode <= SDLK_KP_9) {
-        // Control-only numeric *keypad *keys are converted to regular digit *keys
-        *key = keycode - SDLK_KP_0 + '0';
     } else if ((modifiers & KMOD_CTRL) && !(modifiers & KMOD_SHIFT) && (('0' <= keycode && keycode <= '9') || keycode == '/' || keycode == ' ')) {
-        // Control-only upon 0-9, / and space leaves them unchanged, the
-        // same as unmodified
+        // Control-only upon 0-9, / and space leaves them unchanged, the same as unmodified
         *key = keycode;
     } else if (keycode == ']') {
         if (modifiers & KMOD_SHIFT) {
@@ -270,8 +268,7 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
             // Ctrl-] == ASCII: $1D
             *key = 29;
         }
-    }// ...else if this is one of the *keys that can't be typed on an Apple ][
-        // *keyboard...
+    } // else if this is one of the *keys that can't be typed on an Apple ][ keyboard
     else if (*key == 0 || keycode == SDLK_TAB || keycode == SDLK_BACKQUOTE || keycode == '[' || keycode == '\\' || keycode == SDLK_DELETE) {
         return false;
     }
@@ -385,7 +382,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
 
 
     if (sendKey) {
-        printf("    sending to apple as ASCII ------------------------------> %02X (%02X)\n", key, key | 0x80);
+        printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
         this->keypresses.push(key);
         this->lastKeyDown = key;
     }
