@@ -291,7 +291,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
     SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
     SDL_Scancode scan = keyEvent.keysym.scancode;
 
-    printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
+    //printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
 
     if ((sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
             !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
@@ -382,7 +382,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
 
 
     if (sendKey) {
-        printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
+        //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
         this->keypresses.push(key);
         this->lastKeyDown = key;
     }
