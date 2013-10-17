@@ -515,5 +515,7 @@ void ScreenImage::saveBMP() {
     struct tm* nowtm = ::localtime(&now);
     char time[64];
     ::strftime(time, sizeof (time), TIMEFORMAT, nowtm);
-    // TODO fix screenshot    SDL_SaveBMP(this->screen, time);
+    SDL_Surface* screenshot = SDL_CreateRGBSurfaceFrom(this->pixels,SCRW,SCRH,32,SCRW*4,0x00FF0000,0x0000FF00,0x000000FF,0xFF000000);
+    SDL_SaveBMP(screenshot, time);
+    SDL_FreeSurface(screenshot);
 }
