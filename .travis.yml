@@ -1,6 +1,8 @@
 language: cpp
 compiler:
   - gcc
-install: sudo apt-get install libsdl2
+install: 
+  - sudo add-apt-repository --yes ppa:brandontschaefer/sdl-mir-support
+  - sudo apt-get install libsdl2
 before_script: ./bootstrap
 script: ./configure && make
