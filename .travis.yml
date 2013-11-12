@@ -1,7 +1,6 @@
 language: cpp
 compiler:
   - gcc
-  - clang
-# Change this to your needs
+install: sudo apt-get install libsdl2
 before_script: ./bootstrap
 script: ./configure && make
