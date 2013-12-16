@@ -12,19 +12,16 @@ AM_INIT_AUTOMAKE(epple2, 1.2-SNAPSHOT)
 # Checks for programs.
 AC_PROG_CXX
 AC_LANG_CPLUSPLUS
-AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
-AM_PROG_CC_C_O
 
 
 
 # Checks for libraries.
 AC_CHECK_LIB([SDL2],[SDL_Init],,[AC_MSG_ERROR([cannot find libsdl])])
-AC_CHECK_LIB([X11],[XOpenDisplay])
 
 
 

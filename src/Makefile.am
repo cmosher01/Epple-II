@@ -19,7 +19,7 @@ epple2_SOURCES = a2colorsobserved.cpp addressbus.cpp analogtv.cpp apple2.cpp \
 	screenimage.cpp slots.cpp speakerclicker.cpp standardin.cpp \
 	standardinproducer.cpp standardout.cpp steppermotor.cpp textcharacters.cpp \
 	timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
-	videostaticgenerator.cpp SDL_win32_main.c
+	videostaticgenerator.cpp
 
 noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h \
 	card.h cassette.h clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \

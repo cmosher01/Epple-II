@@ -24,6 +24,7 @@
 #include <iostream>
 #include <ctime>
 #include <sstream>
+#include <cstdio>
 
 static const char* power =
         " @@@@    @@@   @    @    @  @@@@@  @@@@ "

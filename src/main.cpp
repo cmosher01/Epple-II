@@ -19,6 +19,7 @@
 #include "config.h"
 #endif
 
+#include <SDL/SDL.h>
 #include "emulator.h"
 #include "configep2.h"
 #include "gui.h"
@@ -44,6 +45,9 @@ static int run(const std::string& config_file)
 	return emu->run();
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 int main(int argc, char* argv[])
 {
 	if (argc > 2)
