@@ -184,7 +184,6 @@ int Emulator::run() {
 void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
     SDL_Keycode sym = keyEvent.keysym.sym;
     SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
-    unsigned char key = (unsigned char) (sym & 0x7F);
 
     if ((sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
             !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
@@ -289,7 +288,6 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
 
     SDL_Keycode sym = keyEvent.keysym.sym;
     SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
-    SDL_Scancode scan = keyEvent.keysym.scancode;
 
     //printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
 
@@ -394,7 +392,6 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
 
 void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent) {
     SDL_Keycode sym = keyEvent.keysym.sym;
-    SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
     unsigned char key = (unsigned char) (sym & 0x7F);
 
     if (sym == SDLK_RETURN) {

@@ -26,6 +26,8 @@
 class Cassette
 {
 private:
+	ScreenImage& gui;
+
 	unsigned int t;
 	unsigned int prevT;
 
@@ -40,8 +42,6 @@ private:
 	bool loaded;
 	unsigned int pos;
 	bool modified;
-
-	ScreenImage& gui;
 
 	void checkForWriteProtection();
 

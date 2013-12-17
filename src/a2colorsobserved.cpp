@@ -67,6 +67,8 @@ static int HSVtoRGB(const int h, const float s, const float v)
 			g = v * (1 - s);
 			b = v * (1 - s * f);
 		break;
+                default:
+                    r = g = b = 0;
 	}
 
 	return (tobyt(r) << 16) | (tobyt(g) << 8) | (tobyt(b));
