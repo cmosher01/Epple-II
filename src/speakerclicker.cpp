@@ -63,7 +63,7 @@ void fillbuf(void *userdata, Uint8 *stream, int len)
 		}
 		else
 		{
-			if (locbuf.size() >= 65536);
+			if (locbuf.size() >= 65536)
 				locbuf.clear();
 		}
 		SDL_UnlockMutex(buflck);
