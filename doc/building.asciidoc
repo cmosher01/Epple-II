@@ -14,11 +14,11 @@ for your particular platform.
 
 
 
-=== Debian Linux Example
+=== Arch Linux Example
 
 [source,sh]
 ---------------------------------------------------
-sudo apt-get install build-essential libsdl1.2-dev  # <1>
+sudo pacman -S base-devel sdl2 # <1>
 cd
 mkdir epple2
 cd epple2
@@ -26,7 +26,7 @@ wget http://mosher.mine.nu/epple2/download/epple2-latest.tar.gz  # <2>
 tar xzvf epple2-latest.tar.gz
 mkdir build  # <3>
 cd build
-../epple2-1.0/configure  # <4>
+../epple2-1.1/configure  # <4>
 make  # <5>
 sudo make install  # <6>
 ---------------------------------------------------
@@ -43,48 +43,67 @@ sudo make install  # <6>
 
 ==== Install MinGW/MSYS
 
-Install MSYS into +C:\msys\+
+Install MinGW into +C:\MinGW\+
 
-Install MinGW into +C:\msys\mingw\+
+For more information on MinGW, see http://www.mingw.org/[].
 
-For more information on MinGW and MSYS, see http://www.mingw.org/[].
+==== Install WiX
+
+See http://wixtoolset.org/[] for more information.
+
+Download the latest version, for example: win38.exe, and install it.
+
+Run MSYS.BAT and add WiX to your PATH in +~/.profile+. For example:
+
+[source,sh]
+--------
+export PATH="$PATH:/c/Program Files (x86)/WiX Toolset v3.8/bin"
+--------
 
 ==== Install SDL
 
-At http://www.libsdl.org/[] find the download page.
-Download the ``Development Libraries'' for Win32/mingw, for example:
+At http://www.libsdl.org/[] find the download page for SDL 2.0.
+Download the ``Development Libraries'' for MinGW, for example:
 
-+SDL-devel-1.2.13-mingw32.tar.gz+ (Mingw32)
++SDL2-devel-2.0.1-mingw.tar.gz+
 
-and save it to your MSYS home directory (for example, +C:\msys\home\Administrator+).
-Run MSYS, and at the bash prompt, go to your home directory and
+and save it to your MSYS home directory (for example, +C:\Users\Administrator+).
+Run MSYS.BAT, and at the bash prompt, go to your home directory and
 untar the SDL archive to your home directory:
 
 [source,sh]
 --------
 $ cd
-$ tar xzvf SDL-devel-1.2.13-mingw32.tar.gz
+$ tar xzvf SDL2-devel-2.0.1-mingw.tar.gz
 --------
 
 Then follow the instructions to install SDL, for example:
 
 [source,sh]
 --------
-$ cd SDL-1.2.13
+$ cd SDL2-2.0.1
 $ make native
+--------
+
+I also needed to create a symlink for the SDL include files:
+
+[source,sh]
+--------
+$ cd /usr/include
+$ ln -s SDL2 SDL
 --------
 
 ==== Untar Epple ][ Source
 
 Download the Epple ][ Source Distribution
-and save it to your MSYS home directory (for example, +C:\msys\home\Administrator+).
+and save it to your MSYS home directory (for example, +C:\Users\Administrator+).
 Run MSYS, and at the bash prompt, go to your home directory and
 untar the epple2 source distribution tar file. For example:
 
 [source,sh]
 --------
 $ cd
-$ tar xzvf epple2-1.0.tar.gz
+$ tar xzvf epple2-1.1.tar.gz
 --------
 
 ==== Build Epple ][
@@ -108,11 +127,8 @@ example (from the +buildepple2+ directory you just created):
 
 [source,sh]
 --------
-$ ~/epple2/configure --prefix= \
-CXXFLAGS="-I/usr/include -O4 -msse3" \
-CFLAGS="-I/usr/include" \
-LDFLAGS="-L/usr/lib -mconsole -mthreads -mno-cygwin"
-$ make
+$ ~/epple2/configure --prefix= CXXFLAGS=-I/usr/include LDFLAGS=-L/usr/lib
+$ make CXXFLAGS="-I/usr/include `sdl2-config --cflags`" LDFLAGS="`sdl2-config --cflags` -static-libstdc++ -static-libgcc"
 --------
 
 If all goes well, it will build without any errors.
