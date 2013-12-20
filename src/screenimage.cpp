@@ -133,13 +133,8 @@ void ScreenImage::drawCassette() {
 
 static const char* displays[] = {
     "COLOR MONITOR ",
-    "WHITE MONITOR ",
     "GREEN MONITOR ",
-    "ORANGE MONITOR",
-    "OLD COLOR TV  ",
-    "OLD B & W TV  ",
-    "NEW COLOR TV  ",
-    "NEW B & W TV  ",
+    "TELEVISION    ",
 };
 
 void ScreenImage::drawFnKeys() {

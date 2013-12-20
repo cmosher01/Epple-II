@@ -234,13 +234,8 @@ void AnalogTV::drawCurrent()
 		switch (this->type)
 		{
 			case MONITOR_COLOR: drawMonitorColor(); break;
-			case MONITOR_WHITE: drawMonitorWhite(); break;
 			case MONITOR_GREEN: drawMonitorGreen(); break;
-			case MONITOR_ORANGE: drawMonitorOrange(); break;
 			case TV_OLD_COLOR: drawTVOld(); break;
-			case TV_OLD_BW: drawTVOld(); break;
-			case TV_NEW_COLOR: drawTVNew(); break;
-			case TV_NEW_BW: drawTVNew(); break;
 		}
 	}
 	else
@@ -261,7 +256,7 @@ void AnalogTV::drawMonitorColor()
 	for (int row = 0; row < 192; ++row)
 	{
 		const CB cb = get_cb(row);
-		const bool removeColor = (this->type == TV_NEW_BW || !cb.isColor());
+		const bool removeColor = !cb.isColor();
 		ntsc_to_rgb_monitor(row*AppleNTSC::H+350,AppleNTSC::H-350,rgb);
 		for (int col = 350; col < AppleNTSC::H-2; ++col)
 		{
@@ -350,7 +345,7 @@ void AnalogTV::drawTVNew()
 	for (int row = 0; row < 192; ++row)
 	{
 		const CB cb = get_cb(row);
-		const bool removeColor = (this->type == TV_NEW_BW || !cb.isColor());
+		const bool removeColor = false; //(this->type == TV_NEW_BW || !cb.isColor());
 		ntsc_to_rgb_newtv(row*AppleNTSC::H+350,AppleNTSC::H-350,rgb);
 		for (int col = 350; col < AppleNTSC::H-2; ++col)
 		{
