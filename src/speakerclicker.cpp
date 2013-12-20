@@ -83,7 +83,7 @@ SpeakerClicker::SpeakerClicker():
 	audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
 	audio.channels = 1; // mono
 	audio.silence = 0;
-	audio.samples = 4096;
+	audio.samples = 1024;
 	audio.callback = fillbuf;
 	audio.userdata = 0;
 	SDL_AudioSpec obtained;
@@ -101,13 +101,13 @@ SpeakerClicker::SpeakerClicker():
 		buflck = SDL_CreateMutex();
 		silence = obtained.silence;
 
-		std::cout << "initialized audio: " << std::endl;
-		std::cout << "freq: " << obtained.freq << std::endl;
-		std::cout << "format: " << obtained.format << std::endl;
-		std::cout << "channels: " << (int)obtained.channels << std::endl;
-		std::cout << "silence: " << (int)obtained.silence << std::endl;
-		std::cout << "samples: " << obtained.samples << std::endl;
-		std::cout << "size: " << obtained.size << std::endl;
+//		std::cout << "initialized audio: " << std::endl;
+//		std::cout << "freq: " << obtained.freq << std::endl;
+//		std::cout << "format: " << obtained.format << std::endl;
+//		std::cout << "channels: " << (int)obtained.channels << std::endl;
+//		std::cout << "silence: " << (int)obtained.silence << std::endl;
+//		std::cout << "samples: " << obtained.samples << std::endl;
+//		std::cout << "size: " << obtained.size << std::endl;
 
 		SDL_PauseAudio(0);
 	}
