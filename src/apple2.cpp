@@ -47,9 +47,12 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
 	addressBus(ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassette,slts),
 	picgen(tv,videoMode,this->revision),
 	video(videoMode,addressBus,picgen,textRows),
+#ifdef USE_EMU
         transistors("transistors"),
         cpu(transistors,addressBus),
-//	cpu(addressBus),
+#else
+	cpu(addressBus),
+#endif
 	powerUpReset(*this),
 	revision(1)
 {

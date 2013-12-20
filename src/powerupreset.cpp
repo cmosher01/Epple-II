@@ -44,5 +44,9 @@ void PowerUpReset::tick()
 
 void PowerUpReset::powerOn()
 {
+#ifdef USE_EMU
+	this->pendingTicks = 99; // TODO REMOVE THIS
+#else
 	this->pendingTicks = (int)(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
+#endif
 }

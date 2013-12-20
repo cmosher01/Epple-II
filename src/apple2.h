@@ -39,6 +39,9 @@
 class Emulator;
 class ScreenImage;
 
+//#define USE_EMU 1
+#undef USE_EMU
+
 class Apple2 : public Timable
 {
 	Slots slts;
@@ -53,9 +56,12 @@ class Apple2 : public Timable
 	PictureGenerator picgen;
 	TextCharacters textRows;
 	Video video;
-//	CPU cpu;
+#ifdef USE_EMU
         std::ifstream transistors;
         Emu6502 cpu;
+#else
+	CPU cpu;
+#endif
 	PowerUpReset powerUpReset;
 	int revision;
 
