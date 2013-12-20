@@ -251,7 +251,7 @@ void ScreenImage::displayHz(int hz) {
 
 void ScreenImage::drawPower(bool on) {
     unsigned int* pn = this->pixels;
-    pn += (HEIGHT + 5)*(this->screen_pitch / 4) + 5;
+    pn += (HEIGHT + 5)*SCRW + 5;
     for (int r = 0; r < POWERD; ++r) {
         if (r < LABEL_Y || LABEL_Y + 7 <= r) {
             for (int c = 0; c < POWERD; ++c) {
@@ -276,7 +276,7 @@ void ScreenImage::drawPower(bool on) {
             }
         }
         pn -= POWERD;
-        pn += this->screen_pitch / 4;
+        pn += SCRW;
     }
     notifyObservers();
 }
