@@ -70,7 +70,7 @@ void fillbuf(void *userdata, Uint8 *stream, int len)
 	}
 }
 
-#define TICKS_PER_SAMPLE 47
+#define TICKS_PER_SAMPLE 21
 
 SpeakerClicker::SpeakerClicker():
 	clicked(false),
@@ -79,7 +79,7 @@ SpeakerClicker::SpeakerClicker():
 	done = false;
 
 	SDL_AudioSpec audio;
-	audio.freq = 22050; // samples per second
+	audio.freq = 48000; // samples per second
 	audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
 	audio.channels = 1; // mono
 	audio.silence = 0;
@@ -89,8 +89,8 @@ SpeakerClicker::SpeakerClicker():
 	SDL_AudioSpec obtained;
 	obtained.callback = 0;
 	obtained.userdata = 0;
-/*
- * 	if (SDL_OpenAudio(&audio,&obtained) != 0)
+
+ 	if (SDL_OpenAudio(&audio,&obtained) != 0)
 	{
 		done = true;
 		std::cerr << "Unable to initialize audio: " << SDL_GetError() << std::endl;
@@ -110,7 +110,7 @@ SpeakerClicker::SpeakerClicker():
 		std::cout << "size: " << obtained.size << std::endl;
 
 		SDL_PauseAudio(0);
-	}*/
+	}
 }
 
 
