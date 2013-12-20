@@ -22,7 +22,7 @@ epple2_SOURCES = a2colorsobserved.cpp addressbus.cpp analogtv.cpp apple2.cpp \
 	timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
 	videostaticgenerator.cpp \
 	Circuit.cpp  Common.cpp  Cpu6502.cpp  Cpu6502Helper.cpp  Emu6502.cpp  SegmentCache.cpp  \
-	StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp  v6502.cpp
+	StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp
 
 noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h \
 	card.h cassette.h clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
