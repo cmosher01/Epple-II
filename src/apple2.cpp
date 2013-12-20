@@ -35,6 +35,7 @@
 #include "screenimage.h"
 
 #include <iostream>
+#include <istream>
 #include <fstream>
 
 Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui):
@@ -46,7 +47,9 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
 	addressBus(ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassette,slts),
 	picgen(tv,videoMode,this->revision),
 	video(videoMode,addressBus,picgen,textRows),
-	cpu(addressBus),
+        transistors("transistors"),
+        cpu(transistors,addressBus),
+//	cpu(addressBus),
 	powerUpReset(*this),
 	revision(1)
 {

@@ -34,6 +34,8 @@
 #include "analogtv.h"
 #include "powerupreset.h"
 #include "cassette.h"
+#include "Emu6502.h"
+#include <fstream>
 class Emulator;
 class ScreenImage;
 
@@ -51,7 +53,9 @@ class Apple2 : public Timable
 	PictureGenerator picgen;
 	TextCharacters textRows;
 	Video video;
-	CPU cpu;
+//	CPU cpu;
+        std::ifstream transistors;
+        Emu6502 cpu;
 	PowerUpReset powerUpReset;
 	int revision;
 
