@@ -19,7 +19,7 @@
 #include "config.h"
 #endif
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include "emulator.h"
 #include "configep2.h"
 #include "gui.h"
