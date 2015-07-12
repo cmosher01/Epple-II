@@ -29,6 +29,7 @@
 GUI::GUI() {
     const int result = SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO);
     if (result != 0) {
+        std::cerr << "Failed to initialize SDL: " << SDL_GetError() << std::endl;
         throw GUI::NotInitException();
     }
 
