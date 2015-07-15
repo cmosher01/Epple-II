@@ -1,3 +1,4 @@
+# -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 AC_INIT(epple2, 1.2-SNAPSHOT)
 AC_PREREQ(2.68)
@@ -17,6 +18,36 @@ AC_PROG_INSTALL
 AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_RANLIB
+AC_PATH_PROGS([XA65],[xa65 xa])
+if test "X$ac_cv_path_XA65" == X
+then
+    AC_MSG_ERROR([Cannot find xa (xa65) 6502 cross assembler by Andre Fachat])
+fi
+AC_ARG_VAR([XA65],[path to xa (xa65) 6502 cross assembler by Andre Fachat])
+
+AC_PATH_PROG([LDO65],[ldo65])
+if test "X$ac_cv_path_LDO65" == X
+then
+    AC_MSG_ERROR([Cannot find ldo65, from xa (xa65) 6502 cross assembler by Andre Fachat])
+fi
+AC_ARG_VAR([LDO65],[path to ldo65, from xa (xa65) 6502 cross assembler by Andre Fachat])
+
+AC_PATH_PROG([RELOC65],[reloc65])
+if test "X$ac_cv_path_RELOC65" == X
+then
+    AC_MSG_ERROR([Cannot find reloc, from xa (xa65) 6502 cross assembler by Andre Fachat])
+fi
+AC_ARG_VAR([RELOC65],[path to reloc65, from xa (xa65) 6502 cross assembler by Andre Fachat])
+
+AC_PATH_PROG([M4],[m4])
+if test "X$ac_cv_path_M4" == X
+then
+    AC_MSG_ERROR([Cannot find m4])
+fi
+AC_ARG_VAR([M4],[path to m4])
+
+AC_PATH_PROG([MD5SUM],[md5sum])
+AC_ARG_VAR([MD5SUM],[path to md5sum])
 
 
 
@@ -45,5 +76,5 @@ AC_CHECK_FUNCS([memset sqrt])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile installer/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile rom/Makefile installer/Makefile doc/Makefile])
 AC_OUTPUT

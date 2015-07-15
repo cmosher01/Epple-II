@@ -12,6 +12,7 @@ RUN apt-get update && \
         nginx \
         source-highlight \
         supervisor \
+        xa65 \
         xvfb \
         x11vnc \
         && \
@@ -38,6 +39,7 @@ COPY Makefile.am ./
 
 COPY src/ ./src/
 COPY conf/ ./conf/
+COPY rom/ ./rom/
 COPY installer/ ./installer/
 COPY doc/ ./doc/
 
