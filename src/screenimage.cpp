@@ -74,7 +74,7 @@ void ScreenImage::createScreen() {
         printf("Unable to create window: %s\n", SDL_GetError());
         throw ScreenException();
     }
-    this->renderer = SDL_CreateRenderer(this->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    this->renderer = SDL_CreateRenderer(this->window, -1, 0/*SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC*/);
     if (this->renderer == NULL) {
         std::cerr << SDL_GetError() << std::endl;
         throw ScreenException();

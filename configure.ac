@@ -45,5 +45,5 @@ AC_CHECK_FUNCS([memset sqrt])
 
 
 
-AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile installer/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile installer/Makefile doc/Makefile])
 AC_OUTPUT
