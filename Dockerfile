@@ -64,8 +64,11 @@ COPY default.nginx /etc/nginx/sites-available/default
 RUN ln -s /usr/local/share/doc/epple2 /usr/share/nginx/html/epple2
 
 # supervisor
-CMD ["supervisord"]
-COPY supervisord.conf /etc/supervisor/conf.d/
+RUN rm -R /etc/supervisor/*
+ENTRYPOINT ["supervisord"]
+CMD ["-c", "both"]
+COPY supervisor/includes /etc/supervisor/
+COPY supervisor/commands ./
 
 ENV DISPLAY :0
 ENV SDL_VIDEODRIVER x11
