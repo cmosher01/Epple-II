@@ -26,12 +26,15 @@ WORKDIR /root/
 
 
 
+COPY config.site  /usr/local/share/
+
 COPY bootstrap ./
 
 COPY NEWS ./
 COPY README ./
 COPY AUTHORS ./
 COPY ChangeLog ./
+COPY COPYING* ./
 
 COPY configure.ac ./
 
@@ -51,11 +54,16 @@ RUN ./bootstrap 2>&1 | tee -a $BUILD_LOG
 RUN ./configure 2>&1 | tee -a $BUILD_LOG
 RUN make 2>&1 | tee -a $BUILD_LOG
 RUN make check 2>&1 | tee -a $BUILD_LOG
+RUN make dist 2>&1 | tee -a $BUILD_LOG
+RUN make distcheck 2>&1 | tee -a $BUILD_LOG
 RUN make install 2>&1 | tee -a $BUILD_LOG
 RUN make html 2>&1 | tee -a $BUILD_LOG
 RUN make install-html 2>&1 | tee -a $BUILD_LOG
+RUN make installcheck 2>&1 | tee -a $BUILD_LOG
 
-
+RUN mkdir /usr/local/share/doc/epple2/download && \
+    cd /usr/local/share/doc/epple2/download && \
+    ln -s ~/epple2-*.tar.gz
 
 
 

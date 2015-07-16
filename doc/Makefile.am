@@ -1,7 +1,7 @@
 SUFFIXES = .asciidoc .html
 
 .asciidoc.html :
-	asciidoc -b html5 $<
+	asciidoc -b html5 -a VERSION=@VERSION@ $<
 
 
 
