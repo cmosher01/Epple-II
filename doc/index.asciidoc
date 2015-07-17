@@ -1,6 +1,6 @@
 Epple ][
 ========
-Chris Mosher <chris-keyword-epple2.4a8db3@mosher.mine.nu>
+Christopher A.  Mosher <cmosher01@gmail.com>
 :icons:
 :iconsdir: .
 :toclevels: 3
@@ -52,7 +52,7 @@ include::building.asciidoc[]
 ''''
 
 [small]#Copyright (C) 2009,2012, by
-mailto:chris-keyword-epple2.4a8db3@mosher.mine.nu[Christopher A. Mosher],
+mailto:cmosher01@gmail.com[Christopher A. Mosher],
 Shelton CT, USA.#
 
 image:80x15.png[Creative Commons Attribution-Noncommercial-Share Alike 3.0 USA License]
