@@ -58,4 +58,4 @@ The file will be in the default directory, named +ep2_YYYYMMDDHHMMSS.bmp+.
 [WARNING]
 If you have modification to any floppy images or cassette images, and you
 press the +End+ key, you will LOSE all those changes, unless you
-save them first. See <<_commands,Commands>> for the +save+ command.
+save them first. See <<commands>> for the +save+ command.

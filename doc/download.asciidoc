@@ -16,7 +16,7 @@ http://www.gnu.org/licenses/gpl-3.0-standalone.html[GPLv3].
 
 Epple ][ Program:: link:download/epple2-{VERSION}.tar.gz[epple2-{VERSION}.tar.gz]
 
-See <<_building_from_source,Building>> on how to build from sources.
+See <<building>> on how to build from sources.
 
 Source code is hosted on github:
 https://github.com/cmosher01/Epple-II/[Epple-II]
@@ -28,12 +28,13 @@ https://github.com/cmosher01/Epple-II/[Epple-II]
 
 The _Epple ][ Program_ package is the emulator itself, which emulates the
 Apple ][ or Apple ][ plus _hardware_, as well as the
-<<cards,peripheral card>> hardware. This is the main program, so you will
+<<cards>> hardware. This is the main program, so you will
 certainly need to download this package. To have a full functioning emulator,
 you will also need System ROMs and Card ROMs, as described in the following
 sections.
 
-[[firmware]]
+anchor:firmware[]
+
 === System ROMs&mdash;The Main System Firmware (Demo or Real)
 
 Since the Epple ][ program emulates only the hardware, you will also need to download some _system software_
@@ -65,7 +66,7 @@ from the http://mosher.mine.nu/apple2/[Apple II Library].
 not the Demo System ROM.)
 
 If you are using any of the clock, the standard output, or the
-standard input <<cards,peripheral cards>>, you will need to download their firmware as well,
+standard input <<cards>>, you will need to download their firmware as well,
 which are contained in the _Card ROMs_ package. You can choose either binary format
 (ready to run) or source format (to assemble it yourself using the
 http://www.floodgap.com/retrotech/xa/[xa Assembler]).

@@ -26,7 +26,7 @@ the distribution package is built.
 You can specify a different configuration file for the emulator to use by
 specifying its name as the argument when running the epple2 program.
 
-The format of the configuration file is just lines of <<_commands,commands>>.
+The format of the configuration file is just lines of <<commands>>.
 Comments begin with a hash +#+ character, and continue to the end of the line.
 
 === Firmware
@@ -34,9 +34,9 @@ Comments begin with a hash +#+ character, and continue to the end of the line.
 Firmware, commonly called ROM images or ROMs, will need to be loaded
 into the emulated ROM areas of the emulated Apple
 in order for it to be able to boot the emulated Apple machine.
-The firmware available is described <<firmware,above>>.
+The <<firmware>> available is described above.
 Once the firmware image
-files are installed on your computer, you can use the <<_import,import>>
+files are installed on your computer, you can use the <<import>>
 command in the configuration file to load the image files into the emulator.
 
 === Peripheral Cards
@@ -45,8 +45,8 @@ Another primary concern for configuring the Epple ][ is the insertion of
 peripheral cards into the Apple's slots. The most useful card is probably the
 Disk ][ Controller card; you will need to insert one of these cards if you want
 to be able to load floppy disk images into the emulated Apple. The various
-types of cards available are described on the <<cards,peripheral cards>> section.
-You can use the <<_slot,slot>> command in the configuration file to insert
+types of cards available are described in the <<cards>> section.
+You can use the <<slot>> command in the configuration file to insert
 them into the Apple's slots.
 
 === Sample Configuration Files

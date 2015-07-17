@@ -1,6 +1,12 @@
+anchor:commands[]
+
 === Commands
 
-+<<_slot,slot>> <<_import,import>> <<_load,load>> <<_unload,unload>> <<_save,save>> <<_cassette,cassette>> <<_revision,revision>>+
++<<slot>> <<import>> <<load>> <<unload>> <<save>> <<cassette>> <<revision>>+
+
+
+
+anchor:slot[]
 
 ==== slot
 
@@ -12,7 +18,7 @@ slot <slot> <card>
 
 +<slot>+ Slot number, 0 through 7, to insert the card into.
 
-+<card>+ The type of <<cards,card>> to insert into the slot:
++<card>+ The type of card to insert into the slot (see <<cards>>):
 
 * +language+
 * +firmware+
@@ -38,6 +44,8 @@ slot 0 empty
 The emulated Apple should be _powered off_ before inserting or removing cards.
 
 
+
+anchor:import[]
 
 ==== import
 
@@ -79,7 +87,7 @@ p. 5-26 ``The 16K RAM Card'').
 
 
 
-
+anchor:load[]
 
 ==== load
 
@@ -113,7 +121,7 @@ for Windows (but it supposedly runs under Wine on Linux, too). Thanks to Andy Mc
 
 
 
-
+anchor:unload[]
 
 ==== unload
 
@@ -134,7 +142,7 @@ If the disk has been modified but not saved, the modifications will be DISCARDED
 
 
 
-
+anchor:save[]
 
 ==== save
 
@@ -158,7 +166,7 @@ next to the file-name of a disk image if it has any unsaved changes.
 
 
 
-
+anchor:cassette[]
 
 ==== cassette
 
@@ -176,13 +184,12 @@ cassette save
 +<file-path>+ File path of the (special format) cassette tape image file.
 
 The +cassette+ command allows the user to control the emulated cassette tape player.
-See <<_cassette_tape_interface,Cassette>> for more information about operating the emulated
+See <<cassette_tape>> for more information about operating the emulated
 cassette player and cassette tape image files.
 
 
 
-
-
+anchor:revision[]
 
 ==== revision
 

@@ -1,3 +1,5 @@
+anchor:cassette_tape[]
+
 === Cassette Tape Interface
 
 The Apple ][ and Apple ][ plus machines had the ability to save and load binary
