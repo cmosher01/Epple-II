@@ -1,5 +1,5 @@
 ;    Epple ][ System Demo ROM
-;    Copyright (C) 2009 by Chris Mosher <chris@mosher.mine.nu>
+;    Copyright (C) 2009 by Christopher A. Mosher <cmosher01@gmail.com>
 ;
 ;    This program is free software: you can redistribute it and/or modify
 ;    it under the terms of the GNU General Public License as published by
