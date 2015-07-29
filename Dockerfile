@@ -28,17 +28,9 @@ WORKDIR /root/
 
 COPY config.site  /usr/local/share/
 
-COPY bootstrap ./
+COPY bootstrap configure.ac Makefile.am ./
 
-COPY NEWS ./
-COPY README ./
-COPY AUTHORS ./
-COPY ChangeLog ./
-COPY COPYING* ./
-
-COPY configure.ac ./
-
-COPY Makefile.am ./
+COPY NEWS README AUTHORS ChangeLog COPYING* ./
 
 COPY src/ ./src/
 COPY conf/ ./conf/
