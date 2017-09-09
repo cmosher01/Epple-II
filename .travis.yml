@@ -6,7 +6,7 @@ compiler:
 before_install:
   - sudo apt-get -qq update
 install:
-  - sudo apt-get install -y libsdl2-2.0
+  - sudo apt-get install -y libsdl2-2.0 xa65
 before_script:
   - ./bootstrap
 script:
