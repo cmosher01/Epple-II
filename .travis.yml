@@ -1,10 +1,14 @@
 dist: trusty
-sudo: false
+sudo: required
 language: cpp
 compiler:
   - gcc
+before_install:
+  - sudo apt-get install -y software-properties-common
+  - sudo add-apt-repository "deb http://us.archive.ubuntu.com/ubuntu/ trusty universe"
+  - sudo apt-get -qq update
 install:
-  - sudo apt-get install libsdl2
+  - sudo apt-get install -y libsdl2
 before_script:
   - ./bootstrap
 script:
