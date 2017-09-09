@@ -1,0 +1,11 @@
+dist: trusty
+sudo: false
+language: cpp
+compiler:
+  - gcc
+install:
+  - sudo apt-get install libsdl2
+before_script:
+  - ./bootstrap
+script:
+  - ./configure && make
