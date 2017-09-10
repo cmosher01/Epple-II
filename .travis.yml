@@ -6,7 +6,7 @@ compiler:
 before_install:
   - sudo apt-get -qq update
 install:
-  - sudo apt-get install -y xa65 libsdl2-2.0 libsdl2-dev libglu1-mesa-dev libglu1-mesa
+  - sudo apt-get install -y xa65 libsdl2-2.0 libsdl2-dev libglu1-mesa libglu1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
 before_script:
   - ./bootstrap
 script:
