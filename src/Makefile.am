@@ -4,34 +4,34 @@ METASOURCES=AUTO
 
 bin_PROGRAMS=epple2
 
-AM_CXXFLAGS=-std=c++11 -Wall -O3
+AM_CXXFLAGS=-std=c++14 -Wall -O3
 AM_CPPFLAGS=$(all_includes)
 epple2_LDFLAGS=$(all_libraries)
 
 epple2_CPPFLAGS = $(AM_CPPFLAGS) -DETCDIR=\"$(sysconfdir)\"
 
 epple2_SOURCES = a2colorsobserved.cpp addressbus.cpp analogtv.cpp apple2.cpp \
-	applentsc.cpp card.cpp cassette.cpp clipboardhandler.cpp clockcard.cpp \
-	configep2.cpp cpu.cpp diskbytes.cpp diskcontroller.cpp drive.cpp \
-	emptyslot.cpp emulator.cpp firmwarecard.cpp gui.cpp hypermode.cpp \
-	keyboard.cpp keyboardbuffermode.cpp languagecard.cpp lowpass_1_5_mhz.cpp \
-	lowpass_3_58_mhz.cpp main.cpp memory.cpp paddlebuttonstates.cpp \
-	paddles.cpp picturegenerator.cpp powerupreset.cpp raminitializer.cpp \
-	screenimage.cpp slots.cpp speakerclicker.cpp standardin.cpp \
-	standardinproducer.cpp standardout.cpp steppermotor.cpp textcharacters.cpp \
-	timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
-	videostaticgenerator.cpp \
-	Circuit.cpp  Common.cpp  Cpu6502.cpp  Cpu6502Helper.cpp  Emu6502.cpp  SegmentCache.cpp  \
-	StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp
+applentsc.cpp card.cpp cassette.cpp clipboardhandler.cpp clockcard.cpp \
+configep2.cpp cpu.cpp diskbytes.cpp diskcontroller.cpp drive.cpp \
+emptyslot.cpp emulator.cpp firmwarecard.cpp gui.cpp hypermode.cpp \
+keyboard.cpp keyboardbuffermode.cpp languagecard.cpp lowpass_1_5_mhz.cpp \
+lowpass_3_58_mhz.cpp lss.cpp main.cpp memory.cpp paddlebuttonstates.cpp \
+paddles.cpp picturegenerator.cpp powerupreset.cpp raminitializer.cpp \
+screenimage.cpp slots.cpp speakerclicker.cpp standardin.cpp \
+standardinproducer.cpp standardout.cpp steppermotor.cpp textcharacters.cpp \
+timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
+videostaticgenerator.cpp wozfile.cpp \
+Circuit.cpp  Common.cpp  Cpu6502.cpp  Cpu6502Helper.cpp  Emu6502.cpp  SegmentCache.cpp  \
+StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp
 
 noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h \
-	card.h cassette.h clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
-	diskcontroller.h drive.h e2const.h emptyslot.h emulator.h firmwarecard.h font3x5.h gui.h \
-	hypermode.h keyboardbuffermode.h keyboard.h languagecard.h lowpass_1_5_mhz.h \
-	lowpass_3_58_mhz.h memory.h paddlebuttonstates.h paddles.h picturegenerator.h \
-	powerupreset.h raminitializer.h screenimage.h slots.h speakerclicker.h \
-	standardin.h standardinproducer.h standardout.h steppermotor.h \
-	textcharacterimages.h textcharacters.h timable.h util.h \
-	videoaddressing.h video.h videomode.h videostaticgenerator.h \
-	Circuit.h  Common.h  Cpu6502.h  Cpu6502Helper.h  Emu6502.h  SegmentCache.h  SegmentTypes.h  \
-	StateCalculator.h  Trace.h  TransCache.h  TransNetwork.h  addressbus.h  ptr_less.h  trans.h
+card.h cassette.h clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
+diskcontroller.h drive.h e2const.h emptyslot.h emulator.h firmwarecard.h font3x5.h gui.h \
+hypermode.h keyboardbuffermode.h keyboard.h languagecard.h lowpass_1_5_mhz.h \
+lowpass_3_58_mhz.h lss.h memory.h paddlebuttonstates.h paddles.h picturegenerator.h \
+powerupreset.h raminitializer.h screenimage.h slots.h speakerclicker.h \
+standardin.h standardinproducer.h standardout.h steppermotor.h \
+textcharacterimages.h textcharacters.h timable.h util.h \
+videoaddressing.h video.h videomode.h videostaticgenerator.h wozfile.h \
+Circuit.h  Common.h  Cpu6502.h  Cpu6502Helper.h  Emu6502.h  SegmentCache.h  SegmentTypes.h  \
+StateCalculator.h  Trace.h  TransCache.h  TransNetwork.h  addressbus.h  ptr_less.h  trans.h
