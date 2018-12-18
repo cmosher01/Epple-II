@@ -44,7 +44,7 @@ import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
 # Disk ][ controller card in slot 5, with 13-sector ROMs.
 # This will read (DOS 3.1, 3.2, and 3.2.1) disks, which
 # have 13 sectors per track.
-slot 5 disk
+slot 5 disk13
 import slot 5 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
 # Insert the DOS 3.1 System Master disk into drive 1 of slot 5
 load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.nib

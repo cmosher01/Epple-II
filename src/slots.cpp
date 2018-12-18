@@ -46,6 +46,16 @@ void Slots::reset()
 	std::for_each(this->cards.begin(),this->cards.end(),Slots_Card_reset());
 }
 
+struct Slots_Card_tick
+{
+    void operator() (Card* p) { p->tick(); }
+};
+
+void Slots::tick()
+{
+    std::for_each(this->cards.begin(),this->cards.end(),Slots_Card_tick());
+}
+
 unsigned char Slots::readRom(const int islot, const unsigned short addr, const unsigned char data)
 {
 	return this->cards[islot]->readRom(addr,data);

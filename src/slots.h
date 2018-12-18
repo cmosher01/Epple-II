@@ -35,6 +35,7 @@ public:
 	Slots(ScreenImage& gui);
 	~Slots();
 
+        void tick();
 	unsigned char io(const int islot, const int iswch, const unsigned char b, const bool writing);
 	void reset();
 	unsigned char readRom(const int islot, const unsigned short addr, const unsigned char data);

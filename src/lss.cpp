@@ -175,11 +175,14 @@ LSS::LSS(bool use13SectorDos32LSS):
     setseq(lss13rom,0x23u,0x30u);
     setseq(lss13rom,0x33u,0xD0u);
 
-    for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-        showua2seq(lssrom,seq);
-    }
-    for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-        showua2seq(lss13rom,seq);
+    if (use13SectorDos32LSS) {
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(lss13rom,seq);
+        }
+    } else {
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(lssrom,seq);
+        }
     }
 }
 

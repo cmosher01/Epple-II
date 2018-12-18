@@ -17,7 +17,7 @@ import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
 
 
 # Disk ][ card with 13-sector ROMs
-slot 6 disk
+slot 6 disk13
 import slot 6 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
 
 # Insert DOS 3.1 System Master disk into drive 1

@@ -65,7 +65,8 @@ Apple2::~Apple2()
 
 void Apple2::tick()
 {
-	this->cpu.tick();
+    this->slts.tick();
+    this->cpu.tick();
 	this->video.tick();
 	this->paddles.tick();
 	this->speaker.tick();

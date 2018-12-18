@@ -20,7 +20,10 @@ import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.ex65
 
 The first line uses the <<slot>> command to
 insert a disk contoller card into slot 6, which is the standard
-slot used for disk cards. The next line uses the <<import>>
+slot used for disk cards.
+The +disk+ keyword loads the 16-sector P6 ROM (Logic State Sequencer).
+Alternatively, use +disk13+ to load the 13-sector P6 ROM (for DOS 3.2 or earlier).
+The next line uses the <<import>>
 command to load the card's ROM with the disk controller
 firmware. This firmware is known as the ``bootstrap'' or ``P5'' ROM code.
 It is seen by the Apple ][ at memory addresses $Cs00-$CsFF, where s is the
@@ -28,7 +31,7 @@ slot number (so in the common case of the card being in slot 6, the ROM is
 at $C600-$C6FF). The firmware is copyright by Apple, and is available from
 the http://mosher.mine.nu/apple2/[Apple II Library].
 
-You can also load a floppy disk image (nibble format) into the drive,either by putting
+You can also load a floppy disk image (nibble format) into the drive, either by putting
 the <<load>> command into the +epple2.conf+ file, or by using the command prompt
 in the emulator (+F5+ key). For example, you could load the DOS 3.3 system master into
 slot 6, drive 1, with this command

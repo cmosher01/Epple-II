@@ -392,12 +392,17 @@ void Config::insertCard(const std::string& cardType, int slot, Slots& slts, Scre
 	{
 		card = new FirmwareCard(gui,slot);
 	}
-	else if (cardType == "disk")
+    else if (cardType == "disk") // 16-sector LSS ROM
 	{
-		card = new DiskController(gui,slot);
+        card = new DiskController(gui,slot,false);
 		disk_mask |= (1 << slot);
 	}
-	else if (cardType == "clock")
+    else if (cardType == "disk13") // 13-sector LSS ROM
+    {
+        card = new DiskController(gui,slot,true);
+        disk_mask |= (1 << slot);
+    }
+    else if (cardType == "clock")
 	{
 		card = new ClockCard();
 	}

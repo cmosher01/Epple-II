@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+#include "../config.h"
 #endif
 
 #include <SDL2/SDL.h>
@@ -30,12 +30,12 @@
 #include <stdexcept>
 
 #include <iostream>
+#include <iomanip>
 
-static int run(const std::string& config_file)
-{
+static int run(const std::string& config_file) {
 	GUI gui;
 
-	std::auto_ptr<Emulator> emu(new Emulator());
+    std::unique_ptr<Emulator> emu(new Emulator());
 
 	Config cfg(config_file);
 	emu->config(cfg);
@@ -45,26 +45,77 @@ static int run(const std::string& config_file)
 	return emu->run();
 }
 
+
+
+//std::uint8_t dataBus;
+//std::uint8_t lssrom[0x100];
+//std::uint8_t lss13rom[0x100];
+//std::uint8_t wp(0);
+//std::uint8_t q7(0);
+//std::uint8_t q6(0);
+//std::uint8_t dreg(0);
+//std::uint8_t seq(0x20);
+//std::uint8_t cmd;
+//std::uint8_t adr;
+//std::uint8_t cprint(0);
+
+//void debugLog(const std::uint8_t x) {
+//    if (++cprint == 128 || x==0xD5u) {
+//        cprint  = 0;
+//        printf("\n");
+//    }
+//    printf("%02x", x);
+//}
+
+//void lss(const std::uint8_t cmd) {
+//    if (cmd & 8) {
+//        switch (cmd & 3) {
+//            case 3: dreg = dataBus; break;
+//            case 2: dreg >>= 1; dreg |= (wp << 7); break;
+//            case 1: dreg <<= 1; dreg |= ((cmd & 4) >> 2); break;
+//        }
+//    } else {
+//        debugLog(dreg);
+//        dreg = 0;
+//    }
+//}
+
+//void doTrack(std::uint8_t *ptrk, const std::uint16_t ctrk) {
+//    std::uint8_t *pend(ptrk+ctrk);
+//    while (ptrk < pend) {
+//        for (std::uint8_t m(0x80); m; m >>= 1) {
+//            std::uint8_t pls = (*ptrk & m) ? 1 : 0;
+//            for (int i(0); i < 8; ++i) {
+//                adr = q7<<3 | q6<<2 | (dreg>>7)<<1 | pls;
+//                pls = 0;
+//                cmd = lssrom[seq|adr];
+//                seq = cmd & 0xF0;
+//                lss(cmd);
+//            }
+//        }
+//        ++ptrk;
+//    }
+//}
+
+
+
+
 #ifdef __cplusplus
 extern "C"
 #endif
-int main(int argc, char* argv[])
-{
-	if (argc > 2)
-	{
+int main(int argc, char* argv[]) {
+    if (argc > 2) {
 		throw std::runtime_error("usage: epple2 [config-file]" );
 	}
 
 	int x = E2Const::test();
-	if (x != -1)
-	{
+    if (x != -1) {
 		std::cerr << x << std::endl;
 		throw std::runtime_error("bad constant in e2const.h" );
 	}
 
 	std::string config_file;
-	if (argc > 1)
-	{
+    if (argc > 1) {
 		config_file = argv[1];
 	}
 

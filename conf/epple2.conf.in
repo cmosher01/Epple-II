@@ -14,7 +14,7 @@
 # Demo system ROM for the emulator. This is only to allow the
 # emulator to do something useful when there are no real Apple ROM
 # images provided.
-# 
+#
 import motherboard rom 2C00 $(PREFIX)lib/epple2/system/epple2sys.a65
 
 # These are how to load the real (proprietary) Apple ROMs.
@@ -38,7 +38,7 @@ import slot 2 rom 0 $(PREFIX)lib/epple2/cards/stdin.a65
 slot 4 clock
 import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
 
-#slot 5 disk
+#slot 5 disk13
 #import slot 5 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
 #load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.nib
 

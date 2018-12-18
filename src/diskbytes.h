@@ -27,7 +27,9 @@ private:
 	enum { TRACKS_PER_DISK = 0x23 };
 	enum { BYTES_PER_TRACK = 0x1A00 };
 
-	std::vector<unsigned char> bytes[TRACKS_PER_DISK];
+        bool lss13;
+
+        std::vector<unsigned char> bytes[TRACKS_PER_DISK];
 
 	std::string fileName;
 	std::string filePath;
@@ -36,11 +38,11 @@ private:
 	unsigned int byt; // represents rotational position of disk
 	bool modified;
 
-	void nextByte();
+        void nextByte();
 	void checkForWriteProtection();
 
 public:
-	DiskBytes();
+        DiskBytes(bool lss13);
 	~DiskBytes();
 
 	bool load(const std::string& filePath);

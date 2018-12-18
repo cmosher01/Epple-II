@@ -18,47 +18,46 @@
 #ifndef STEPPERMOTOR_H
 #define STEPPERMOTOR_H
 
-class StepperMotor
-{
+#include <cstdint>
+
+class StepperMotor {
 private:
-	enum { TRACKS_PER_DISK = 0x23 };
-	enum { QTRACKS = TRACKS_PER_DISK << 2 };
+    enum { TRACKS_PER_DISK = 0x23 };
+    enum { QTRACK_MAX = TRACKS_PER_DISK << 2 };
 
-	signed short quarterTrack;
-	signed char pos; // 0 - 7
-	unsigned char mags;
+    // quarter track: 0=t0, 1=t0.25, 2=t0.5, 3=t0.75, 4=t1, ... 140=t35.00
+    // (see TMAP in  WOZ file format)
+    signed short quarterTrack;
+    signed char pos; // 0 - 7
+    unsigned char mags;
 
-	static signed char mapMagPos[];
+    static signed char mapMagPos[];
 
-	static signed char calcDeltaPos(const unsigned char cur, const signed char next)
-	{
-		signed char d = next-cur; // -7 to +7
+    static signed char calcDeltaPos(const unsigned char cur, const signed char next) {
+        signed char d = next-cur; // -7 to +7
 
-		if (d==4 || d==-4)
-		{
-			d = 0;
-		}
-		else if (d>4)
-		{
-			d -= 8;
-		}
-		else if (d<-4)
-		{
-			d += 8;
-		}
+        if (d == 4 || d == -4) {
+            d = 0; // <--- TODO pick random direction?
+        } else if (4 < d) {
+            d -= 8;
+        } else if (d < -4) {
+            d += 8;
+        }
 
-		return d;
-	}
+        return d;
+    }
 
 public:
-	StepperMotor();
-	~StepperMotor();
+    StepperMotor();
+    ~StepperMotor();
 
-	void setMagnet(const unsigned char magnet, const bool on);
-	unsigned char getTrack()
-	{
-		return ((unsigned short)(this->quarterTrack)) >> 2;
-	}
+    void setMagnet(const unsigned char magnet, const bool on);
+    unsigned char getTrack() {
+        return ((unsigned short)(this->quarterTrack)) >> 2;
+    }
+    std::uint8_t getQuarterTrack() {
+        return this->quarterTrack;
+    }
 };
 
 #endif

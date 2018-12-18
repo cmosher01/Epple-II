@@ -34,7 +34,8 @@ protected:
 public:
 	Card();
 	virtual ~Card();
-	virtual void reset();
+        virtual void tick();
+        virtual void reset();
 	virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
 	virtual unsigned char readRom(const unsigned short address, const unsigned char data);
 	virtual bool hasSeventhRom() { return false; }

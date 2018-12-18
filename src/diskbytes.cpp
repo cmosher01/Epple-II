@@ -23,7 +23,8 @@
 #include <ostream>
 #include <fstream>
 
-DiskBytes::DiskBytes()
+DiskBytes::DiskBytes(bool lss13):
+    lss13(lss13)
 {
 	unload();
 }

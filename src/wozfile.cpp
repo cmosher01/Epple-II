@@ -23,7 +23,7 @@
 #include <ostream>
 #include <fstream>
 
-WozFile::WozFile() {
+WozFile::WozFile() : lastQuarterTrack(0) {
     unload();
 }
 
@@ -201,10 +201,8 @@ void WozFile::checkForWriteProtection() {
     outf.close();
 }
 
-void WozFile::save()
-{
-    if (isWriteProtected() || !isLoaded())
-    {
+void WozFile::save() {
+    if (isWriteProtected() || !isLoaded()) {
         return;
     }
 //    std::ofstream out(filePath.c_str(),std::ios::binary);
@@ -215,11 +213,155 @@ void WozFile::save()
 //    this->modified = false;
 }
 
-void WozFile::unload()
-{
-    this->byt = 0;
+void WozFile::unload() {
+    this->bit = 0x80u;
+    this->byt = 0x00u;
     this->writable = true;
     this->loaded = false;
     this->filePath = "";
     this->modified = false;
+}
+
+
+static std::uint8_t bc(std::uint8_t bit) {
+    switch (bit) {
+    case 0x80u: return 0u;
+    case 0x40u: return 1u;
+    case 0x20u: return 2u;
+    case 0x10u: return 3u;
+    case 0x08u: return 4u;
+    case 0x04u: return 5u;
+    case 0x02u: return 6u;
+    case 0x01u: return 7u;
+    }
+    return 255u; // should never happen
+}
+
+static std::uint8_t cb(std::uint8_t bit) {
+    switch (bit) {
+    case 0u: return 0x80u;
+    case 1u: return 0x40u;
+    case 2u: return 0x20u;
+    case 3u: return 0x10u;
+    case 4u: return 0x08u;
+    case 5u: return 0x04u;
+    case 6u: return 0x02u;
+    case 7u: return 0x01u;
+    }
+    return 255u; // should never happen
+}
+
+static void dumpQTrack(std::uint8_t currentQuarterTrack) {
+    if (currentQuarterTrack % 4) {
+        const std::uint8_t hundredths((currentQuarterTrack%4) * 25);
+        printf(" Reading from <---------- track 0x%02X +.%02d\n", currentQuarterTrack/4, hundredths);
+    } else {
+        printf(" Reading from <---------- track 0x%02X\n", currentQuarterTrack/4);
+    }
+}
+
+/*
+ * Rotate the floppy disk by one bit.
+ * In real life we don't care what track we're one, but for the
+ * emulator we need to know. This is because the tracks within the
+ * WOZ file could be different lengths. So in order to know when
+ * we need to loop back to the beginning of the track (circular
+ * track on the floppy), we need to know the actual bit length
+ * of that track in our WOZ file.
+ */
+void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
+    if (!isLoaded()) {
+        return; // there's no disk to rotate
+    }
+
+    // In WOZ track image, bits (i.e., magnetic field reversal on disk,
+    // or lack thereof) are packed into bytes, high bit to low bit.
+    // Really, it's the stream of bits returned by the MC3470 (but also
+    // possibly with random bits zeroed out).
+//    std::uint16_t before = (this->byt*8+bc(this->bit));
+//    printf("disk at bit: %d\n", this->byt*8+bc(this->bit));
+
+    // Move to next bit:
+    this->bit >>= 1;
+
+    // If we hit end of this byte, move on to beginning of next byte
+    if (this->bit == 0) {
+        ++this->byt;
+        this->bit = 0x80u;
+    }
+
+    if (this->tmap[currentQuarterTrack] == 0xFFu) {
+        return;
+    }
+
+    if (currentQuarterTrack != this->lastQuarterTrack) {
+        double oldLen = this->trk_bits[this->tmap[this->lastQuarterTrack]];
+        double newLen = this->trk_bits[this->tmap[currentQuarterTrack]];
+        double dif = newLen/oldLen;
+        if (dif < -0.000001 || 0.000001 < dif) {
+//            dumpQTrack(currentQuarterTrack);
+//            printf("       new track: bit pos: %d ", this->byt*8+bc(this->bit));
+            std::uint16_t newBit = (this->byt*8+bc(this->bit)) * dif;
+            this->byt = newBit / 8;
+            this->bit = cb(newBit % 8);
+//            printf("--> %d\n\n", this->byt*8+bc(this->bit));
+        }
+        this->lastQuarterTrack = currentQuarterTrack;
+    }
+
+    // Check for hitting the end of our track image,
+    // and if so, move back to the beginning.
+    // This is how we emulate a circular track on the floppy.
+    if (this->trk_bits[this->tmap[currentQuarterTrack]] <= this->byt*8+bc(this->bit)) {
+//        printf("\n<rewinding track here>\n");
+        this->byt = 0;
+        this->bit = 0x80u;
+    }
+
+//    std::uint16_t after = (this->byt*8+bc(this->bit));
+//    if (!(after % 0x100u)) {
+//        printf("\nnow at bit %04x\n", after);
+//    }
+//    if (after != before+1) {
+//        printf("\nbit changing from %04x to %04x\n", before, after);
+//    }
+}
+
+
+bool WozFile::getBit(std::uint8_t currentQuarterTrack) {
+    if (!isLoaded()) {
+        printf("\nNO DISK TO READ FROM (will generate random data)\n");
+        return false; // there's no disk, so no pulse
+    }
+    if (this->tmap[currentQuarterTrack] == 0xFFu) {
+//        printf("\nreading (random) from empty q-track: %d\n", currentQuarterTrack);
+        return false; // track doesn't exist
+    }
+    if (this->c_trks <= this->tmap[currentQuarterTrack]) { // shouldn't happen
+        printf("\nBAD TRACK quarterTrack %d mapped to TRKS index %d (count of tracks: %d)\n", currentQuarterTrack, this->tmap[currentQuarterTrack], this->c_trks);
+        return false; // track doesn't exist
+    }
+
+//    if (!(this->byt % 128) && this->bit == 0x01) {
+//        printf("\ngetBit--> ");
+//    }
+//    printf("%02x", this->byt*8+bc(this->bit));
+    return this->trks[this->tmap[currentQuarterTrack]][this->byt] & this->bit;
+}
+
+void WozFile::setBit(std::uint8_t currentQuarterTrack) {
+    if (!isLoaded()) {
+        return; // there's no disk to write data to
+    }
+    if (!this->writable) {
+        return; // write-protected
+    }
+    if (this->c_trks <= this->tmap[currentQuarterTrack]) { // shouldn't happen
+        return; // TODO track doesn't exist: create a new one
+    }
+    if (this->tmap[currentQuarterTrack] == 0xFFu) {
+        // track does not exist, create new one
+    }
+    // TODO extend track length if needed
+    this->trks[this->tmap[currentQuarterTrack]][this->byt] |= this->bit;
 }

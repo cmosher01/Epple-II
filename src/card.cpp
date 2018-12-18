@@ -34,6 +34,9 @@ void Card::reset()
 {
 }
 
+void Card::tick()
+{
+}
 
 
 unsigned char Card::io(const unsigned short /*address*/, const unsigned char data, const bool /*writing*/)
