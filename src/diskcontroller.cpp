@@ -58,33 +58,14 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
         break;
     case 6:
         this->load = on;
-        // TODO use LSS
-//        if (on && this->write && writing) {
-//            set(data);
-//            this->gui.setIO(this->slot,getCurrentDriveNumber(),this->motorOn);
-//            this->gui.setDirty(this->slot,getCurrentDriveNumber(),true);
-//        } else if (!(on || this->write)) {
-//            data = get();
-//        }
+        // TODO when to do these GUI updates?
+//        this->gui.setIO(this->slot,getCurrentDriveNumber(),this->motorOn);
+//        this->gui.setDirty(this->slot,getCurrentDriveNumber(),true);
         break;
     case 7:
         this->write = on;
-        // TODO use LSS
-//        if (this->currentDrive->isWriteProtected()) {
-//            data |= 0x80;
-//        } else {
-//            data &= 0x7F;
-//        }
         break;
     }
-//    if (this->motorOn) {
-//        if (this->dataRegister == 0xD5) {
-//            printf("\ndata register --> ");
-//        }
-//        if (this->dataRegister & 0x80) {
-//            printf("%02x", this->dataRegister);
-//        }
-//    }
     return on ? d : this->dataRegister;
 }
 
@@ -108,10 +89,10 @@ void DiskController::tick() {
 }
 
 void DiskController::rotateCurrentDisk() {
-    ++t;
-    if (t < 0 || 4 <= t) { // 4us interval between bits
+    ++this->t;
+    if (4 <= this->t) { // 4us interval between bits
         this->currentDrive->rotateDiskOneBit(); // (will also generate a read-pulse when it reads a 1-bit)
-        t = 0;
+        this->t = 0;
     } else {
         // clear the read pulse (to make it last only 1us)
         this->currentDrive->clearPulse();
@@ -121,7 +102,6 @@ void DiskController::rotateCurrentDisk() {
 void DiskController::stepLss() {
     std::uint8_t adr = this->write<<3 | this->load<<2 | (this->dataRegister>>7)<<1 | this->currentDrive->readPulse();
     std::uint8_t cmd = this->lssp6rom.read(this->seq|adr);
-//    if (cmd & 3) printf("LSS ROM command byte: 0x%2x\n", cmd);
     this->seq = cmd & 0xF0u;
 
     // LSS command functions (UA2, 9-15, Table 9.3)

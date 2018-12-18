@@ -59,6 +59,10 @@ class WozFile {
     std::uint8_t bit;
     std::uint16_t byt;
 
+    // We need to store which track were on, only so we can detect
+    // a change in tracks, and if so adjust our current byt/bit
+    // to be proportional with the new track. This is discussed
+    // in the WOZ file spec.
     std::uint8_t lastQuarterTrack;
 
     void checkForWriteProtection();
@@ -89,7 +93,7 @@ public:
 
     void rotateOneBit(std::uint8_t currentQuarterTrack);
     bool getBit(std::uint8_t currentQuarterTrack);
-    void setBit(std::uint8_t currentQuarterTrack);
+    void setBit(std::uint8_t currentQuarterTrack, bool on);
 };
 
 #endif // WOZFILE_H

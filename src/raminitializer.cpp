@@ -62,7 +62,7 @@ void RAMInitializer::putBytesUntilFull(int bit, int pat)
 	}
 }
 
-void RAMInitializer::ramPattern1(const int bit) throw (done)
+void RAMInitializer::ramPattern1(const int bit)
 {
 	for (int k = 0; k < 2; ++k)
 	{
@@ -100,7 +100,7 @@ void RAMInitializer::ramPattern1(const int bit) throw (done)
 	}
 }
 
-void RAMInitializer::ramPattern2(const int bit) throw (done)
+void RAMInitializer::ramPattern2(const int bit)
 {
 	for (int i = 0; i < 0x40; ++i)
 	{
@@ -111,7 +111,7 @@ void RAMInitializer::ramPattern2(const int bit) throw (done)
 
 
 
-void RAMInitializer::putn(const int c, bool on, const int bit) throw (done)
+void RAMInitializer::putn(const int c, bool on, const int bit)
 {
 	if (((rand() >> 9) & 0x1F) == 5)
 		on = !on;

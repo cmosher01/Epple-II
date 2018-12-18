@@ -34,28 +34,28 @@ static void setbth(std::uint8_t lssrom[], std::uint8_t x, std::uint8_t both) {
     lssrom[x] = both;
 }
 
-static void showua2seq(std::uint8_t lssrom[], std::uint8_t seq) {
-    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x",
-        lssrom[seq|0x9],
-        lssrom[seq|0xB],
-        lssrom[seq|0xD],
-        lssrom[seq|0xF],
-        lssrom[seq|0x8],
-        lssrom[seq|0xA],
-        lssrom[seq|0xC],
-        lssrom[seq|0xE]
-    );
-    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x |\n",
-        lssrom[seq|0x1],
-        lssrom[seq|0x0],
-        lssrom[seq|0x3],
-        lssrom[seq|0x2],
-        lssrom[seq|0x5],
-        lssrom[seq|0x4],
-        lssrom[seq|0x7],
-        lssrom[seq|0x6]
-    );
-}
+//static void showua2seq(std::uint8_t lssrom[], std::uint8_t seq) {
+//    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x",
+//        lssrom[seq|0x9],
+//        lssrom[seq|0xB],
+//        lssrom[seq|0xD],
+//        lssrom[seq|0xF],
+//        lssrom[seq|0x8],
+//        lssrom[seq|0xA],
+//        lssrom[seq|0xC],
+//        lssrom[seq|0xE]
+//    );
+//    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x |\n",
+//        lssrom[seq|0x1],
+//        lssrom[seq|0x0],
+//        lssrom[seq|0x3],
+//        lssrom[seq|0x2],
+//        lssrom[seq|0x5],
+//        lssrom[seq|0x4],
+//        lssrom[seq|0x7],
+//        lssrom[seq|0x6]
+//    );
+//}
 
 LSS::LSS(bool use13SectorDos32LSS):
     use13SectorDos32LSS(use13SectorDos32LSS) {
@@ -175,15 +175,15 @@ LSS::LSS(bool use13SectorDos32LSS):
     setseq(lss13rom,0x23u,0x30u);
     setseq(lss13rom,0x33u,0xD0u);
 
-    if (use13SectorDos32LSS) {
-        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-            showua2seq(lss13rom,seq);
-        }
-    } else {
-        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-            showua2seq(lssrom,seq);
-        }
-    }
+//    if (use13SectorDos32LSS) {
+//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+//            showua2seq(lss13rom,seq);
+//        }
+//    } else {
+//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+//            showua2seq(lssrom,seq);
+//        }
+//    }
 }
 
 LSS::~LSS() {

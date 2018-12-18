@@ -4,7 +4,7 @@ METASOURCES=AUTO
 
 bin_PROGRAMS=epple2
 
-AM_CXXFLAGS=-std=c++14 -Wall -O3
+AM_CXXFLAGS=-std=c++11 -Wall -O3
 AM_CPPFLAGS=$(all_includes)
 epple2_LDFLAGS=$(all_libraries)
 

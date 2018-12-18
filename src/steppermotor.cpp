@@ -26,9 +26,15 @@
  * @author Chris Mosher
  */
 /*
+
+
 mags ps magval
 3210
 ---- -- ------
+
+Each postition is a quarter track.
+One complete cycle through the 4 phases will
+move the arm 2 tracks. (UA2, 9-7.)
 0001 0  1
 0011 1  3
 0010 2  2
@@ -38,17 +44,19 @@ mags ps magval
 1000 6  8
 1001 7  9
 
-(strange, but defined)
+strange, but still defined
 1011 0  B
 0111 2  7
 1110 4  E
 1101 6  D
 
-(undefined, i.e., no movement)
+all off (no movement)
 0000 ?  0
+
+undefined
 0101 ?  5 // <-- TODO pick one at random?
 1010 ?  A // <-- TODO pick one at random?
-1111 ?  F
+1111 ?  F // TODO what to do here?
 */
 #include "steppermotor.h"
 #include "util.h"
@@ -76,7 +84,7 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
     }
 
     const char newPos = mapMagPos[this->mags];
-    char d;
+    char d = 0;
     if (newPos >= 0) {
         d = calcDeltaPos(this->pos,newPos);
         this->pos = newPos;
@@ -87,19 +95,28 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
         else if (this->quarterTrack > QTRACK_MAX)
             this->quarterTrack = QTRACK_MAX;
     }
-    std::cout << " ARM: magnet " << (unsigned int)magnet << " " << (on ? "on " : "off" );
-    std::cout << " [" <<
-        ((mags&1)?"*":".") <<
-        ((mags&2)?"*":".") <<
-        ((mags&4)?"*":".") <<
-        ((mags&8)?"*":".") <<
-        "]";
-    if (d != 0) {
-        std::cout << " track " << std::hex << (unsigned int)(this->quarterTrack >> 2);
-        int fract = this->quarterTrack & 3;
-        if (fract != 0) {
-            std::cout << (fract == 1 ? " +.25" : fract == 2 ? " +.5" : " +.75");
-        }
-    }
-    std::cout << std::endl;
+//    std::cout << " ARM: magnet " << (unsigned int)magnet << " " << (on ? "on " : "off" );
+//    std::cout << " [" <<
+//        ((mags&1)?"*":".") <<
+//        ((mags&2)?"*":".") <<
+//        ((mags&4)?"*":".") <<
+//        ((mags&8)?"*":".") <<
+//        "]";
+//    if (d != 0) {
+//        std::cout << " track " << std::hex << (unsigned int)(this->quarterTrack >> 2);
+//        int fract = this->quarterTrack & 3;
+//        if (fract != 0) {
+//            std::cout << (fract == 1 ? " +.25" : fract == 2 ? " +.5" : " +.75");
+//        }
+//    }
+//    std::cout << std::endl;
 }
+//static void dumpQTrack(std::uint8_t currentQuarterTrack) {
+//    if (currentQuarterTrack % 4) {
+//        const std::uint8_t hundredths((currentQuarterTrack%4) * 25);
+//        printf("track 0x%02X +.%02d\n", currentQuarterTrack/4, hundredths);
+//    } else {
+//        printf("track 0x%02X\n", currentQuarterTrack/4);
+//    }
+//}
+

@@ -101,7 +101,6 @@ public:
             // we see more than three (emulating the MC3470, see UA2, 9-11)
             ++cContiguousZeroBits;
             if (3 < cContiguousZeroBits) {
-//                if (cContiguousZeroBits == 4) printf("\n<GENERATING RANDOM BIT(S).....>\n");
                 if (randomBit()) {
                     this->pulse = true;
                 }
@@ -117,23 +116,8 @@ public:
     }
 
     void writeBit(bool on) {
-        this->disk.setBit(this->arm.getQuarterTrack());
+        this->disk.setBit(this->arm.getQuarterTrack(), on);
     }
-    //	unsigned char get() const
-    //	{
-    //		return this->disk.get(this->arm.getTrack());
-    //	}
-
-    //	void set(unsigned char value)
-    //	{
-    //		this->disk.put(this->arm.getTrack(),value);
-    //	}
-
-
-
-//    const WozFile& getDiskBytes() {
-//        return this->disk;
-//    }
 };
 
 #endif

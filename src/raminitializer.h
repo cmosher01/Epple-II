@@ -29,9 +29,9 @@ private:
 	unsigned short nextinit;
 
 	void putBytesUntilFull(int bit, int pat);
-	void ramPattern1(const int bit) throw (done);
-	void ramPattern2(const int bit) throw (done);
-	void putn(const int c, bool on, const int bit) throw (done);
+        void ramPattern1(const int bit);
+        void ramPattern2(const int bit);
+        void putn(const int c, bool on, const int bit);
 
 public:
 	RAMInitializer(Memory& mem);
