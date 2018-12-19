@@ -63,15 +63,6 @@ private:
                 this->currentDrive->writeBit(on);
         }
 
-//	unsigned char get() const
-//	{
-//		if (!this->motorOn)
-//		{
-//			return 0xFF;
-//		}
-//		return this->currentDrive->get();
-//	}
-
 	Drive& getDrive(const unsigned char drive)
 	{
 		return (drive == 0) ? this->drive1 : this->drive2;

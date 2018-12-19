@@ -22,12 +22,11 @@
 
 class StepperMotor {
 private:
-    enum { TRACKS_PER_DISK = 0x23 };
-    enum { QTRACK_MAX = TRACKS_PER_DISK << 2 };
+    enum { QTRACKS = 141 };
 
     // quarter track: 0=t0, 1=t0.25, 2=t0.5, 3=t0.75, 4=t1, ... 140=t35.00
-    // (see TMAP in  WOZ file format)
-    signed short quarterTrack;
+    // (see TMAP in WOZ file format spec)
+    std::int16_t quarterTrack;
     signed char pos; // 0 - 7
     unsigned char mags;
 

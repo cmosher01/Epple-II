@@ -58,7 +58,7 @@ static void setbth(std::uint8_t lssrom[], std::uint8_t x, std::uint8_t both) {
 //}
 
 LSS::LSS(bool use13SectorDos32LSS):
-    use13SectorDos32LSS(use13SectorDos32LSS) {
+    use13Sector(use13SectorDos32LSS) {
     /*
      * LSS P6 ROM is stored here with different addressing bits
      * than in the original hardware, just for ease of understanding.
@@ -175,7 +175,7 @@ LSS::LSS(bool use13SectorDos32LSS):
     setseq(lss13rom,0x23u,0x30u);
     setseq(lss13rom,0x33u,0xD0u);
 
-//    if (use13SectorDos32LSS) {
+//    if (use13Sector) {
 //        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
 //            showua2seq(lss13rom,seq);
 //        }

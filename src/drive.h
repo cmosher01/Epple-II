@@ -63,7 +63,7 @@ public:
     void unloadDisk() {
         this->disk.unload();
     }
-    bool isLoaded() {
+    bool isLoaded() const {
         return this->disk.isLoaded();
     }
 
@@ -108,7 +108,7 @@ public:
         }
     }
 
-    bool readPulse() {
+    bool readPulse() const {
         return this->pulse;
     }
     void clearPulse() {

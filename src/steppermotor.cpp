@@ -63,7 +63,7 @@ undefined
 #include <iostream>
 
 StepperMotor::StepperMotor():
-    quarterTrack(QTRACK_MAX >> 1), // start in the middle of the disk... just for fun
+    quarterTrack(QTRACKS >> 1), // start in the middle of the disk... just for fun
 // TODO if we want to be extremely accurate, we should save each arm's position on shutdown and restore on startup
 // (because in the real-life Apple ][, the arm stays in the same position when powered off).
 	pos(0),
@@ -83,6 +83,8 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
         this->mags &= ~mask;
     }
 
+//    const std::uint8_t oldQT = this->quarterTrack;
+
     const char newPos = mapMagPos[this->mags];
     char d = 0;
     if (newPos >= 0) {
@@ -92,31 +94,22 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
         this->quarterTrack += d;
         if (this->quarterTrack < 0)
             this->quarterTrack = 0;
-        else if (this->quarterTrack > QTRACK_MAX)
-            this->quarterTrack = QTRACK_MAX;
+        else if (QTRACKS <= this->quarterTrack)
+            this->quarterTrack = QTRACKS-1;
     }
-//    std::cout << " ARM: magnet " << (unsigned int)magnet << " " << (on ? "on " : "off" );
-//    std::cout << " [" <<
-//        ((mags&1)?"*":".") <<
-//        ((mags&2)?"*":".") <<
-//        ((mags&4)?"*":".") <<
-//        ((mags&8)?"*":".") <<
-//        "]";
-//    if (d != 0) {
-//        std::cout << " track " << std::hex << (unsigned int)(this->quarterTrack >> 2);
-//        int fract = this->quarterTrack & 3;
-//        if (fract != 0) {
-//            std::cout << (fract == 1 ? " +.25" : fract == 2 ? " +.5" : " +.75");
-//        }
-//    }
-//    std::cout << std::endl;
-}
-//static void dumpQTrack(std::uint8_t currentQuarterTrack) {
-//    if (currentQuarterTrack % 4) {
-//        const std::uint8_t hundredths((currentQuarterTrack%4) * 25);
-//        printf("track 0x%02X +.%02d\n", currentQuarterTrack/4, hundredths);
-//    } else {
-//        printf("track 0x%02X\n", currentQuarterTrack/4);
-//    }
-//}
 
+//    const std::uint8_t newQT = this->quarterTrack;
+//    const std::int8_t deltaQT = newQT - oldQT;
+
+//    printf("ARM: ph%d %s [%c%c%c%c] T$%02X.%02d %s %+0.2f\n",
+//       (std::uint8_t)magnet,
+//       on ? "+" : "-",
+//       (mags&1)?'*':'.',
+//       (mags&2)?'*':'.',
+//       (mags&4)?'*':'.',
+//       (mags&8)?'*':'.',
+//       this->quarterTrack / 4,
+//       (this->quarterTrack % 4) * 25,
+//       deltaQT>0 ? "-->" : deltaQT<0 ? "<--" : "   ",
+//       (deltaQT % 4) / 4.0);
+}

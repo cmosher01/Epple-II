@@ -25,7 +25,7 @@
 class LSS
 {
 private:
-    bool use13SectorDos32LSS;
+    bool use13Sector;
     std::uint8_t lssrom[0x100];
     std::uint8_t lss13rom[0x100];
 
@@ -34,7 +34,7 @@ public:
     ~LSS();
 
     std::uint8_t read(const std::uint8_t addr) {
-        return use13SectorDos32LSS ? lss13rom[addr] : lssrom[addr];
+        return use13Sector ? lss13rom[addr] : lssrom[addr];
     }
 };
 

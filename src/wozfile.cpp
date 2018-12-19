@@ -306,7 +306,7 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
         this->byt = 0;
         this->bit = 0x80u;
     }
-}
+ }
 
 
 
@@ -317,6 +317,7 @@ bool WozFile::getBit(std::uint8_t currentQuarterTrack) {
     }
 
     if (this->tmap[currentQuarterTrack] == 0xFFu) {
+//        printf("Reading from uninitialized track; will generate random data.\n");
         return false; // empty track
     }
 

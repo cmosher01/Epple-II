@@ -104,6 +104,8 @@ static int run(const std::string& config_file) {
 extern "C"
 #endif
 int main(int argc, char* argv[]) {
+    setbuf(stdout, NULL);
+
     if (argc > 2) {
 		throw std::runtime_error("usage: epple2 [config-file]" );
 	}
