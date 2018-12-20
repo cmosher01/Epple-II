@@ -34,28 +34,70 @@ static void setbth(std::uint8_t lssrom[], std::uint8_t x, std::uint8_t both) {
     lssrom[x] = both;
 }
 
-//static void showua2seq(std::uint8_t lssrom[], std::uint8_t seq) {
-//    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x",
-//        lssrom[seq|0x9],
-//        lssrom[seq|0xB],
-//        lssrom[seq|0xD],
-//        lssrom[seq|0xF],
-//        lssrom[seq|0x8],
-//        lssrom[seq|0xA],
-//        lssrom[seq|0xC],
-//        lssrom[seq|0xE]
-//    );
-//    printf("| %02x %02x %02x %02x | %02x %02x %02x %02x |\n",
-//        lssrom[seq|0x1],
-//        lssrom[seq|0x0],
-//        lssrom[seq|0x3],
-//        lssrom[seq|0x2],
-//        lssrom[seq|0x5],
-//        lssrom[seq|0x4],
-//        lssrom[seq|0x7],
-//        lssrom[seq|0x6]
-//    );
-//}
+static void inst(std::uint8_t seq, std::uint8_t inst) {
+    const std::uint8_t next_seq((inst & 0xF0u) >> 4);
+    const bool stdseq((seq == 0x0Fu && next_seq == 0x00u) || next_seq == seq+1);
+    const std::uint8_t cmd(inst & 0x0Fu);
+
+    printf("\x1b[31m");
+    if (cmd & 8u) {
+        switch (cmd & 3u) {
+        case 3:
+            printf("==");
+            break;
+        case 2:
+            printf("W>");
+            break;
+        case 1:
+            if ((cmd & 4u) >> 2) {
+                printf("<1");
+            } else {
+                printf("<0");
+            }
+            break;
+        default:
+            printf("\x1b[0m--");
+        }
+    } else {
+        printf("00");
+    }
+    printf("\x1b[0m");
+
+    if (stdseq) {
+        printf("  ");
+    } else {
+        printf(":\x1b[34m%X\x1b[0m", next_seq);
+    }
+    printf(" ");
+}
+
+static void showua2seq(std::uint8_t lssrom[], std::uint8_t seq) {
+    const std::uint8_t s(seq >> 4);
+    printf("%1X: | ", s);
+    inst(s,lssrom[seq|0x9]);
+    inst(s,lssrom[seq|0xB]);
+    inst(s,lssrom[seq|0xD]);
+    inst(s,lssrom[seq|0xF]);
+    printf("| ");
+    inst(s,lssrom[seq|0x8]);
+    inst(s,lssrom[seq|0xA]);
+    inst(s,lssrom[seq|0xC]);
+    inst(s,lssrom[seq|0xE]);
+    printf("| ");
+    inst(s,lssrom[seq|0x1]);
+    inst(s,lssrom[seq|0x0]);
+    inst(s,lssrom[seq|0x3]);
+    inst(s,lssrom[seq|0x2]);
+    printf("| ");
+    inst(s,lssrom[seq|0x5]);
+    inst(s,lssrom[seq|0x4]);
+    inst(s,lssrom[seq|0x7]);
+    inst(s,lssrom[seq|0x6]);
+    printf("\n");
+    if (s == 7) {
+        printf("   +---------------------+---------------------+---------------------+--------------------\n");
+    }
+}
 
 LSS::LSS(bool use13SectorDos32LSS):
     use13Sector(use13SectorDos32LSS) {
