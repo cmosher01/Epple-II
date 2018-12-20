@@ -90,8 +90,11 @@ void DiskController::tick() {
     rotateCurrentDisk();
 
     // run two LSS cycles = 2MHz
+
     stepLss();
+    // pulse lasts only 500 nanoseconds (1 LSS clock cycle), so clear it now:
     this->currentDrive->clearPulse();
+
     stepLss();
 }
 
@@ -109,8 +112,14 @@ void DiskController::stepLss() {
     this->seq = cmd & 0xF0u;
 
     // LSS command functions (UA2, 9-15, Table 9.3)
-//    printf("%02x:", cmd);
     if (cmd & 8u) {
+        if (cmd & 3u) {
+            if (this->write) {
+                const bool one = (seq&0x80u) != (this->prev_seq&0x80u);
+                this->prev_seq = seq;
+                this->currentDrive->writeBit(one);
+            }
+        }
         switch (cmd & 3u) {
         case 3:
             this->dataRegister = this->dataBusReadOnlyCopy;
@@ -118,15 +127,10 @@ void DiskController::stepLss() {
         case 2:
             this->dataRegister >>= 1;
             this->dataRegister |= (isWriteProtected() << 7);
-            // TODO how to handle writing?
             break;
         case 1:
             this->dataRegister <<= 1;
             this->dataRegister |= ((cmd & 4u) >> 2);
-//            printf(this->dataRegister & 0x80u ? "\x1b[30;42m" : "\x1b[30;43m");
-//            printf("%02X\x1b[0m ", this->dataRegister);
-//            if (this->dataRegister & 0x80u) printf("\n");
-            // TODO how to handle writing?
             break;
         }
     } else {

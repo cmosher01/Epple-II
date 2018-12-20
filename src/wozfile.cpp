@@ -254,7 +254,7 @@ static std::uint8_t cb(std::uint8_t bit) {
 
 /*
  * Rotate the floppy disk by one bit.
- * In real life we don't care what track we're one, but for the
+ * In real life we don't care what track we're on, but for the
  * emulator we need to know. This is because the tracks within the
  * WOZ file could be different lengths. So in order to know when
  * we need to loop back to the beginning of the track (circular
