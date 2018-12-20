@@ -312,7 +312,7 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
 
 bool WozFile::getBit(std::uint8_t currentQuarterTrack) {
     if (!isLoaded()) {
-        printf("No disk to read from; will generate random data.\n");
+//        printf("No disk to read from; will generate random data.\n");
         return false; // there's no disk, so no pulse
     }
 

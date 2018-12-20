@@ -45,21 +45,19 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
     case 2:
     case 3:
         this->currentDrive->setMagnet(q,on);
-        this->gui.setTrack(this->slot,getCurrentDriveNumber(),getTrack());
+        this->gui.setTrack(this->slot, getCurrentDriveNumber(), getTrack());
         break;
     case 4:
-        this->motorOn = on;
-        this->gui.setIO(this->slot,getCurrentDriveNumber(),on);
+        this->motor.power(on);
         break;
     case 5:
-        this->gui.clearCurrentDrive(this->slot,getCurrentDriveNumber());
+        this->gui.clearCurrentDrive(this->slot, getCurrentDriveNumber());
         this->currentDrive = (on ? &this->drive2 : &this->drive1);
-        this->gui.setCurrentDrive(this->slot,getCurrentDriveNumber(),getTrack(),this->motorOn);
+        this->gui.setCurrentDrive(this->slot, getCurrentDriveNumber(),getTrack(), this->motor.isOn());
         break;
     case 6:
         this->load = on;
         // TODO when to do these GUI updates?
-//        this->gui.setIO(this->slot,getCurrentDriveNumber(),this->motorOn);
 //        this->gui.setDirty(this->slot,getCurrentDriveNumber(),true);
         break;
     case 7:
@@ -83,9 +81,11 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
  * (When the motor is on, that is.)
  */
 void DiskController::tick() {
-    if (!this->motorOn) {
+    this->gui.setIO(this->slot, getCurrentDriveNumber(), this->motor.isOn());
+    if (!this->motor.isOn()) {
         return;
     }
+    this->motor.tick(); // only need to send tick when motor is powered on
 
     rotateCurrentDisk();
 

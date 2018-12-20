@@ -17,6 +17,7 @@
 */
 #include "card.h"
 #include "drive.h"
+#include "drivemotor.h"
 #include "wozfile.h"
 #include "lss.h"
 #include "screenimage.h"
@@ -41,7 +42,12 @@ private:
 
         bool load; // Q6
         bool write; // Q7
-        bool motorOn; // TODO WOZ make it delay power-off by about 1 second.
+
+        /*
+         * Only one drive's motor can be on at a time,
+         * so we only need one instance.
+         */
+        DriveMotor motor;
 
         // Maintain a copy of the last thing on the data bus, so it can
         // be read by the LSS algorithm when needed.
@@ -57,7 +63,7 @@ private:
         // TODO for a rev. 0 motherboard, the disk controller will auto reset the CPU (see UA2, 9-13)
 
         void writeBit(bool on) {
-                if (!this->motorOn) {
+                if (!this->motor.isOn()) {
                         return;
                 }
                 this->currentDrive->writeBit(on);
@@ -89,7 +95,7 @@ public:
 		this->gui.clearCurrentDrive(this->slot,getCurrentDriveNumber());
 
 		this->currentDrive = &this->drive1;
-		this->motorOn = false;
+                this->motor.reset();
 
 		this->gui.setCurrentDrive(this->slot,getCurrentDriveNumber(),getTrack(),false);
 	}
@@ -119,7 +125,7 @@ public:
 
 	bool isMotorOn()
 	{
-		return this->motorOn;
+                return this->motor.isOn();
 	}
 
 //        const WozFile& getDiskBytes(unsigned char disk)
