@@ -141,11 +141,11 @@ void ScreenImage::drawFnKeys() {
     int r(76);
     int c(1);
     drawText(
-            "                                FULLSCRN   SCAN-LINES                     KEYBOARD", r++, c);
+            "                               FULLSCRN    SCAN-LINES                                                        KEYBOARD", r++, c);
     drawText(
-            "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  REPT   HYPER   BUFFER   RESET    PASTE     SAVE BMP     QUIT!", r++, c);
+            "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT   HYPER   BUFFER   ", r++, c);
     drawText(
-            "      F1              F2          F3          F4       F5   F10     F11     F12     Break    Insert    PrintScreen   End", r++, c);
+            "      F1              F2          F3          F4       F5    F6       F7        F8       F9    F10     F11     F12     ", r++, c);
 
     if (this->fullscreen)
         invertText(76, 32, 42); // FULLSCRN
@@ -158,10 +158,10 @@ void ScreenImage::drawFnKeys() {
         invertText(76, 43, 55); // SCAN-LINES
 
     if (this->hyper)
-        invertText(77, 67, 74); // HYPER
+        invertText(77, 102, 109); // HYPER
 
     if (this->buffer)
-        invertText(77, 75, 83); // BUFFER
+        invertText(77, 110, 118); // BUFFER
 
     drawDisplayLabel();
 }
@@ -184,12 +184,12 @@ void ScreenImage::cycleDisplayLabel() {
 
 void ScreenImage::toggleHyperLabel() {
     this->hyper = !this->hyper;
-    invertText(77, 67, 74); // HYPER
+    invertText(77, 102, 109); // HYPER
 }
 
 void ScreenImage::toggleKdbBufferLabel() {
     this->buffer = !this->buffer;
-    invertText(77, 75, 83); // BUFFER
+    invertText(77, 110, 118); // BUFFER
 }
 
 void ScreenImage::invertText(int row, int begincol, int endcol) {

@@ -304,10 +304,10 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
      * simple key-presses that we send to the apple.
      */
 
-    if (sym == SDLK_PAUSE) {
+    if (sym == SDLK_F6) {
         this->apple2.reset();
         return;
-    } else if (sym == SDLK_INSERT) {
+    } else if (sym == SDLK_F7) {
         // Feed input from the clipboard to the Apple keyboard
         std::string s = this->clip.getText();
         for (unsigned int i = 0; i < s.length(); ++i) {
@@ -364,11 +364,11 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         this->screenImage.enterCommandMode();
         return;
     }// ...else exit the entire emulation
-    else if (sym == SDLK_END) {
+    else if (sym == SDLK_F9) {
         this->quit = true;
         return;
     }// ...else save a screen shot
-    else if (sym == SDLK_PRINTSCREEN) {
+    else if (sym == SDLK_F8) {
         this->screenImage.saveBMP();
         return;
     }
