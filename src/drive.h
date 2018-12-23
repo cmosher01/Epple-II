@@ -32,7 +32,7 @@ private:
     StepperMotor& arm;
 
     bool pulse;
-    std::uint8_t cContiguousZeroBits;
+    std::uint8_t bitBufferRead;
 
 
 
@@ -48,7 +48,7 @@ public:
         disk(disk),
         arm(arm),
         pulse(false),
-        cContiguousZeroBits(0),
+        bitBufferRead(0),
         generator(std::chrono::system_clock::now().time_since_epoch().count()),
         distribution(0,1) {
     }
@@ -93,18 +93,12 @@ public:
     void rotateDiskOneBit() {
         this->disk.rotateOneBit(this->arm.getQuarterTrack());
 
-        if (this->disk.getBit(this->arm.getQuarterTrack())) {
-            this->pulse = true;
-            cContiguousZeroBits = 0;
+        bitBufferRead <<= 1;
+        bitBufferRead |= this->disk.getBit(this->arm.getQuarterTrack());
+        if (bitBufferRead & 0x0Fu) {
+            this->pulse = (bitBufferRead & 0x02u) >> 1;
         } else {
-            // keep a count of contiguous zero-bits and generate random bits when
-            // we see more than three (emulating the MC3470, see UA2, 9-11)
-            ++cContiguousZeroBits;
-            if (3 < cContiguousZeroBits) {
-                if (randomBit()) {
-                    this->pulse = true;
-                }
-            }
+            this->pulse = randomBit();
         }
     }
 
