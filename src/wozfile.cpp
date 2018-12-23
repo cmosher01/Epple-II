@@ -24,7 +24,27 @@
 #include <fstream>
 #include <cmath>
 
-WozFile::WozFile() : lastQuarterTrack(0) {
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0')
+
+struct trk_t {
+    std::uint16_t blockFirst;
+    std::uint16_t blockCount;
+    std::uint32_t bitCount;
+};
+
+WozFile::WozFile() : tmap(0) {
+    for (int i(0); i < C_QTRACK; ++i) {
+        this->trk[i] = 0;
+    }
     unload();
 }
 
@@ -41,13 +61,13 @@ bool WozFile::load(const std::string& filePath) {
         unload();
     }
 
-    std::uint32_t woz1;
-    in.read((char*)&woz1, sizeof(woz1));
-    if (woz1 != 0x315A4F57u) {
-        printf("WOZ1 magic bytes missing.");
-        throw "WOZ1 magic bytes missing";
+    std::uint32_t woz2;
+    in.read((char*)&woz2, sizeof(woz2));
+    if (woz2 != 0x325A4F57u) {
+        printf("WOZ2 magic bytes missing.");
+        throw "WOZ2 magic bytes missing";
     }
-    printf("WOZ1 magic bytes present\n");
+    printf("WOZ2 magic bytes present\n");
 
     std::uint32_t sanity;
     in.read((char*)&sanity, sizeof(sanity));
@@ -72,82 +92,111 @@ bool WozFile::load(const std::string& filePath) {
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
                 in.read((char*)buf, chunk_size);
                 printf("INFO version %d\n", *buf);
+                if (*buf != 2) {
+                    printf("File is not WOZ2 version.\n");
+                    throw "File is not WOZ2 version";
+                }
                 five_25 = (buf[1]==1);
                 printf("Disk type: %s\n", five_25 ? "5.25" : buf[1]==2 ? "3.5" : "?");
+                if (!five_25) {
+                    printf("Only 5 1/4\" disk images are supported.\n");
+                    throw "Only 5 1/4\" disk images are supported";
+                }
                 this->writable = !(buf[2]==1);
                 printf("Write protected?: %s\n", this->writable ? "No" : "Yes");
-                printf("Imaged with cross-track sync?: %s\n", buf[3]==1 ? "Yes" : "No");
-                printf("MC3470 fake bits removed?: %s\n", buf[4]==1 ? "Yes" : "No");
+                this->sync = buf[3]==1;
+                printf("Imaged with cross-track sync?: %s\n", this->sync ? "Yes" : "No");
+                this->cleaned = buf[4]==1;
+                printf("MC3470 fake bits removed?: %s\n", this->cleaned ? "Yes" : "No");
+                this->creator = std::string((char*)buf+5, 32);
                 printf("Creator: \"%.32s\"\n", buf+5);
+                this->timing = buf[39];
                 delete[] buf;
             }
             break;
             case 0x50414D54: { // TMAP
-                std::uint8_t* buf = new std::uint8_t[chunk_size];
-                in.read((char*)buf, chunk_size);
-                if (!five_25) {
-                    printf("Can only handle 5.25 floppy disk images.\n");
-                    throw "Can only handle 5.25 floppy disk images.";
-                } else {
-                    printf("\x1b[31;47m-------------------------------------------\x1b[0m\n");
-                    std::uint8_t i(0);
-                    for (std::uint16_t t(0); t <= 3500; t += 25) {
-                        if (buf[i] == 0xFFu) {
-                            printf("\x1b[31;47m");
-                        }
-                        if (t % 100) {
-                            printf("TMAP track 0x%02X +.%02d: TRKS track index 0x%02X", t/100, t%100, buf[i++]);
-                        } else {
-                            printf("TMAP track 0x%02X     : TRKS track index 0x%02X", t/100, buf[i++]);
-                        }
-                        printf("\x1b[0m\n");
-                    }
-                    printf("\x1b[31;47m-------------------------------------------\x1b[0m\n");
-                    for (std::uint8_t qt(0); qt <= 140; ++qt) {
-                        this->tmap[qt] = buf[qt];
-                    }
+                this->tmap = new std::uint8_t[chunk_size];
+                in.read((char*)this->tmap, chunk_size);
+
+                this->initalQtrack = 0;
+                while (this->initalQtrack < chunk_size && this->tmap[this->initalQtrack] == 0xFFu) {
+                    ++this->initalQtrack;
                 }
-                delete[] buf;
+                if (this->initalQtrack == chunk_size) {
+                    this->initalQtrack = 0xFFu;
+                    printf("Could not find any initial track (%02X).\n", this->initalQtrack);
+                }
+
+                this->finalQtrack = chunk_size-1;
+                while (this->finalQtrack != 0xFFu && this->tmap[this->finalQtrack] == 0xFFu) {
+                    --this->finalQtrack;
+                }
+                if (this->finalQtrack == 0xFFu) {
+                    printf("Could not find any final track (%02X).\n", this->finalQtrack);
+                }
+
+                printf("\x1b[31;47m-------------------------------------------\x1b[0m\n");
+                for (std::uint8_t qt(0); qt < chunk_size; ++qt) {
+                    const std::uint16_t t(qt*25);
+                    if (tmap[qt] == 0xFFu) {
+                        printf("\x1b[31;47m");
+                    }
+                    if (t % 100) {
+                        printf("TMAP track 0x%02X +.%02d: TRKS track index 0x%02X", t/100, t%100, tmap[qt]);
+                    } else {
+                        printf("TMAP track 0x%02X     : TRKS track index 0x%02X", t/100, tmap[qt]);
+                    }
+                    printf("\x1b[0m");
+                    if (qt == this->initalQtrack && qt == this->finalQtrack) {
+                        printf(" <-- lone track");
+                    } else if (qt == this->initalQtrack) {
+                        printf(" <-- inital track");
+                    } else if (qt == this->finalQtrack) {
+                        printf(" <-- final track");
+                    }
+                    printf("\n");
+                }
+                printf("\x1b[31;47m-------------------------------------------\x1b[0m\n");
             }
             break;
             case 0x534B5254: { // TRKS
+                if (chunk_size < C_QTRACK*8) {
+                    throw "TRKS chunk doesn't have 160 track entries";
+                }
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
                 in.read((char*)buf, chunk_size);
-                if (chunk_size % 6656) {
-                    printf("chunk size is not an even multiple of 6656.");
-                }
-                this->c_trks = chunk_size / 6656;
-                printf("Count of tracks: 0x%02X\n", this->c_trks);
-                if (this->c_trks > 141) {
-                    printf("Error: cannot handle more than 141 tracks.");
-                    throw "Error: cannot handle more than 141 tracks";
-                }
-                for (std::uint8_t t(0); t < this->c_trks; ++t) {
-                    printf("track 0x%02X:\n", t);
-                    std::uint16_t usedBytes = *(std::uint16_t*)&buf[t*6656+6646+0];
-                    printf("    used bytes: 0x%0X\n", usedBytes);
-                    this->trk_bits[t] = *(std::uint16_t*)&buf[t*6656+6646+2];
-                    printf("    count of bits: 0x%0X\n", this->trk_bits[t]);
-                    std::uint16_t spliceBit = *(std::uint16_t*)&buf[t*6656+6646+4];
-                    if (spliceBit == 0xFFFFu) {
-                        printf("    no splice information exists\n");
-                    } else {
-                        printf("    bit after splice point: 0x%0X\n", spliceBit);
-                    }
-                    std::uint8_t spliceNib = *(std::uint8_t*)&buf[t*6656+6646+6];
-                    printf("    Nibble value to use for splice: 0x%0X\n", spliceNib);
-                    std::uint8_t cSpliceBit = *(std::uint8_t*)&buf[t*6656+6646+7];
-                    printf("    Bit count of splice nibble: 0x%0X\n", cSpliceBit);
-
-                    std::uint8_t *base = (std::uint8_t*)&buf[t*6656+0];
-                    std::uint8_t *pd = base;
-                    printf("    beginning of data: 0x: ");
-                    for (int cd(0); cd < 32; ++cd) {
-                        printf("%02X", *pd++);
-                    }
-                    printf("\n");
-                    for (int i(0); i < 6646; ++i) {
-                        this->trks[t][i] = *base++;
+                std::uint8_t* te = buf;
+                for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+                    struct trk_t ts;
+                    ts.blockFirst = *((std::uint16_t*)te)-3;
+                    te += 2;
+                    ts.blockCount = *((std::uint16_t*)te);
+                    te += 2;
+                    ts.bitCount = *((std::uint32_t*)te);
+                    te += 4;
+                    if (ts.blockCount) {
+                        printf("TRK index %02X: start byte in BITS %08x; %08x bytes; %08x bits ", qt, ts.blockFirst<<9, ts.blockCount<<9, ts.bitCount);
+                        this->trk_bits[qt] = ts.bitCount;
+                        this->trk[qt] = new std::uint8_t[ts.blockCount<<9];
+                        memcpy(this->trk[qt], buf+C_QTRACK*8+(ts.blockFirst<<9), ts.blockCount<<9);
+                        printf("("
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               BYTE_TO_BINARY_PATTERN
+                               "...)\n",
+                            BYTE_TO_BINARY(this->trk[qt][0]),
+                            BYTE_TO_BINARY(this->trk[qt][1]),
+                            BYTE_TO_BINARY(this->trk[qt][2]),
+                            BYTE_TO_BINARY(this->trk[qt][3]),
+                            BYTE_TO_BINARY(this->trk[qt][4]),
+                            BYTE_TO_BINARY(this->trk[qt][5]),
+                            BYTE_TO_BINARY(this->trk[qt][6]),
+                            BYTE_TO_BINARY(this->trk[qt][7]));
                     }
                 }
                 delete[] buf;
@@ -155,9 +204,9 @@ bool WozFile::load(const std::string& filePath) {
             break;
             case 0x4154454D: { // META
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
-                in.read((char*)buf, chunk_size);
+                in.read(reinterpret_cast<char*>(buf), chunk_size);
                 std::uint32_t i(0);
-                char* pc((char*)buf);
+                char* pc(reinterpret_cast<char*>(buf));
                 while (i++ < chunk_size) {
                     if (*pc == '\t') {
                         printf(": ");
@@ -170,6 +219,7 @@ bool WozFile::load(const std::string& filePath) {
             }
             break;
             default: { // unknown type of chunk; safely skip past it and ignore it
+                // TODO save all unknown chunks and write out during save (at end of file)
                 in.seekg(chunk_size, in.cur);
             }
             break;
@@ -188,6 +238,22 @@ bool WozFile::load(const std::string& filePath) {
 
     this->loaded = true;
     this->modified = false;
+
+    // TODO if the file is not write protected, then "fill out" our tracks:
+    // 1. create new TRKS entries and full copies of duplicate TMAP pointers
+    // 2. create new TRKS entries (and fill with zeroes) for FF entries in TMAP. (with length of avg of adjacent tracks?)
+    //
+    // ...
+    // 6.50: FF x            08 - 00 00 00
+    // 6.75: 02 \            02 - d5 aa 96
+    // 7.00: 02 - d5 aa 96   03 - d5 aa 96
+    // 7.25: 02 /            04 - d5 aa 96
+    // 7.50: FF x            09 - 00 00 00
+    // 7.75: 05 \            05 - d5 aa 96
+    // 8.00: 05 - d5 aa 96   06 - d5 aa 96
+    // 8.25: 05 /            07 - d5 aa 96
+    // 8.50: FF x            0A - 00 00 00
+    // ...
 
     return true;
 }
@@ -221,8 +287,17 @@ void WozFile::unload() {
     this->loaded = false;
     this->filePath = "";
     this->modified = false;
+    if (this->tmap) {
+        delete [] this->tmap;
+        this->tmap = 0;
+    }
+    for (int i(0); i < C_QTRACK; ++i) {
+        if (this->trk[i]) {
+            delete [] this->trk[i];
+            this->trk[i] = 0;
+        }
+    }
 }
-
 
 static std::uint8_t bc(std::uint8_t bit) {
     switch (bit) {
@@ -266,6 +341,11 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
         return; // there's no disk to rotate
     }
 
+    if (C_QTRACK <= currentQuarterTrack) {
+        printf("attempt to move to illegal track.\n");
+        return;
+    }
+
     // Move to next bit
     this->bit >>= 1;
 
@@ -288,11 +368,11 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
     // previous, based on each track's length (tracks can be of
     // different lengths in the WOZ image).
     if (currentQuarterTrack != this->lastQuarterTrack) {
-        double oldLen = this->trk_bits[this->tmap[this->lastQuarterTrack]];
-        double newLen = this->trk_bits[this->tmap[currentQuarterTrack]];
-        double ratio = newLen/oldLen;
-        if (!(fabs(1-ratio) < 0.0001f)) {
-            std::uint16_t newBit = (this->byt*8+bc(this->bit)) * ratio;
+        const double oldLen = this->trk_bits[this->tmap[this->lastQuarterTrack]];
+        const double newLen = this->trk_bits[this->tmap[currentQuarterTrack]];
+        const double ratio = newLen/oldLen;
+        if (!(fabs(1-ratio) < 0.0001)) {
+            const std::uint16_t newBit = static_cast<std::uint16_t>(round((this->byt*8+bc(this->bit)) * ratio));
             this->byt = newBit / 8;
             this->bit = cb(newBit % 8);
         }
@@ -306,7 +386,7 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
         this->byt = 0;
         this->bit = 0x80u;
     }
- }
+}
 
 
 
@@ -321,12 +401,7 @@ bool WozFile::getBit(std::uint8_t currentQuarterTrack) {
         return false; // empty track
     }
 
-    if (this->c_trks <= this->tmap[currentQuarterTrack]) { // shouldn't happen
-        printf("INVALID quarterTrack %d mapped to TRKS index %d (count of tracks: %d)\n", currentQuarterTrack, this->tmap[currentQuarterTrack], this->c_trks);
-        return false;
-    }
-
-    return this->trks[this->tmap[currentQuarterTrack]][this->byt] & this->bit;
+    return this->trk[this->tmap[currentQuarterTrack]][this->byt] & this->bit;
 }
 
 void WozFile::setBit(std::uint8_t currentQuarterTrack, bool on) {
@@ -338,19 +413,11 @@ void WozFile::setBit(std::uint8_t currentQuarterTrack, bool on) {
         return; // write-protected
     }
 
-    if (this->c_trks <= this->tmap[currentQuarterTrack]) {
-        return; // TODO track doesn't exist: create a new one
-    }
-
-    if (this->tmap[currentQuarterTrack] == 0xFFu) {
-        // track does not exist, create new one
-    }
-
-    // TODO extend track length if needed????
-
     if (on) {
-        this->trks[this->tmap[currentQuarterTrack]][this->byt] |= this->bit;
+        this->trk[this->tmap[currentQuarterTrack]][this->byt] |= this->bit;
     } else {
-        this->trks[this->tmap[currentQuarterTrack]][this->byt] &= ~this->bit;
+        this->trk[this->tmap[currentQuarterTrack]][this->byt] &= ~this->bit;
     }
+
+    // TODO: also write preceding and following quarter tracks (at relative position, and if they exist)
 }

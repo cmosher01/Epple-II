@@ -43,23 +43,23 @@ static void inst(std::uint8_t seq, std::uint8_t inst) {
     if (cmd & 8u) {
         switch (cmd & 3u) {
         case 3:
-            printf("==");
+            printf("LDR");
             break;
         case 2:
-            printf("W>");
+            printf("SRP");
             break;
         case 1:
             if ((cmd & 4u) >> 2) {
-                printf("<1");
+                printf("SL1");
             } else {
-                printf("<0");
+                printf("SL0");
             }
             break;
         default:
-            printf("\x1b[0m--");
+            printf("\x1b[0m...");
         }
     } else {
-        printf("00");
+        printf("CLR");
     }
     printf("\x1b[0m");
 
@@ -95,7 +95,7 @@ static void showua2seq(std::uint8_t lssrom[], std::uint8_t seq) {
     inst(s,lssrom[seq|0x6]);
     printf("\n");
     if (s == 7) {
-        printf("   +---------------------+---------------------+---------------------+--------------------\n");
+        printf("   +-------------------------+-------------------------+-------------------------+------------------------\n");
     }
 }
 
@@ -217,15 +217,15 @@ LSS::LSS(bool use13SectorDos32LSS):
     setseq(lss13rom,0x23u,0x30u);
     setseq(lss13rom,0x33u,0xD0u);
 
-//    if (use13Sector) {
-//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-//            showua2seq(lss13rom,seq);
-//        }
-//    } else {
-//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-//            showua2seq(lssrom,seq);
-//        }
-//    }
+    if (use13Sector) {
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(lss13rom,seq);
+        }
+    } else {
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(lssrom,seq);
+        }
+    }
 }
 
 LSS::~LSS() {
