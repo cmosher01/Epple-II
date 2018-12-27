@@ -25,6 +25,7 @@ DiskController::DiskController(ScreenImage& gui, int slot, bool lss13):
     currentDrive(&this->drive1),
     load(false),
     write(false),
+    ioStepped(false),
     lssp6rom(lss13),
     seq(0x20), // gotta start somewhere
     t(0) {
@@ -38,6 +39,8 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
 
     const unsigned char q = (addr & 0x000E) >> 1;
     const bool on = (addr & 0x0001);
+
+//    printf("Q%d<--%s\n", q, on?"ON":"OFF");
 
     switch (q) {
     case 0:
@@ -57,19 +60,22 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
         break;
     case 6:
         this->load = on;
-        // TODO when to do these GUI updates?
-//        this->gui.setDirty(this->slot,getCurrentDriveNumber(),true);
         break;
     case 7:
         this->write = on;
         break;
     }
-//    if (this->dataRegister == 0xD5u) {
-//        printf("\n");
-//    }
-//    if (this->dataRegister & 0x80u) {
-//        printf("%02X ", this->dataRegister);
-//    }
+    if (this->write && !this->load) {
+        this->gui.setDirty(this->slot,getCurrentDriveNumber(),true);
+    }
+
+    // UA2, 9-23, Figure 9.12
+    // 2 LSS cycles need to happen AFTER setting the Qx switch, and
+    // BEFORE reading LSS's update of the data register
+    this->ioStepped = false;
+    tick();
+    this->ioStepped = true; // flag that we ran it already
+
     return on ? d : this->dataRegister;
 }
 
@@ -81,8 +87,13 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
  * (When the motor is on, that is.)
  */
 void DiskController::tick() {
+    if (this->ioStepped) { // if we already ran it, above in io(), skip here
+        this->ioStepped = false;
+        return;
+    }
     this->gui.setIO(this->slot, getCurrentDriveNumber(), this->motor.isOn());
     if (!this->motor.isOn()) {
+        this->ioStepped = false;
         return;
     }
     this->motor.tick(); // only need to send tick when motor is powered on
@@ -90,7 +101,6 @@ void DiskController::tick() {
     rotateCurrentDisk();
 
     // run two LSS cycles = 2MHz
-
     stepLss();
     // pulse lasts only 500 nanoseconds (1 LSS clock cycle), so clear it now:
     this->currentDrive->clearPulse();

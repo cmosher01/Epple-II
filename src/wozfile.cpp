@@ -51,6 +51,12 @@ WozFile::WozFile() : tmap(0) {
 WozFile::~WozFile() {
 }
 
+static void print_compat(std::uint16_t compat, std::uint16_t mask, const char *name) {
+    if (compat & mask) {
+        printf("    Apple %s\n", name);
+    }
+}
+
 bool WozFile::load(const std::string& filePath) {
     std::ifstream in(filePath.c_str(),std::ios::binary|std::ios::in);
     if (!in.is_open()) {
@@ -111,6 +117,23 @@ bool WozFile::load(const std::string& filePath) {
                 this->creator = std::string((char*)buf+5, 32);
                 printf("Creator: \"%.32s\"\n", buf+5);
                 this->timing = buf[39];
+                printf("Timing: %d/8 microseconds per bit\n", this->timing);
+                std::uint16_t compat = *((std::uint16_t*)buf+40);
+                printf("Campatible hardware: ");
+                if (!compat) {
+                    printf("unknown\n");
+                } else {
+                    printf("\n");
+                    print_compat(compat, 0x0001, "][");
+                    print_compat(compat, 0x0002, "][ plus");
+                    print_compat(compat, 0x0004, "//e");
+                    print_compat(compat, 0x0008, "//c");
+                    print_compat(compat, 0x0010, "//e (enhanced)");
+                    print_compat(compat, 0x0020, "IIGS");
+                    print_compat(compat, 0x0040, "IIc Plus");
+                    print_compat(compat, 0x0080, "///");
+                    print_compat(compat, 0x0100, "/// plus");
+                }
                 delete[] buf;
             }
             break;
@@ -118,13 +141,13 @@ bool WozFile::load(const std::string& filePath) {
                 this->tmap = new std::uint8_t[chunk_size];
                 in.read((char*)this->tmap, chunk_size);
 
-                this->initalQtrack = 0;
-                while (this->initalQtrack < chunk_size && this->tmap[this->initalQtrack] == 0xFFu) {
-                    ++this->initalQtrack;
+                this->initialQtrack = 0;
+                while (this->initialQtrack < chunk_size && this->tmap[this->initialQtrack] == 0xFFu) {
+                    ++this->initialQtrack;
                 }
-                if (this->initalQtrack == chunk_size) {
-                    this->initalQtrack = 0xFFu;
-                    printf("Could not find any initial track (%02X).\n", this->initalQtrack);
+                if (this->initialQtrack == chunk_size) {
+                    this->initialQtrack = 0xFFu;
+                    printf("Could not find any initial track (%02X).\n", this->initialQtrack);
                 }
 
                 this->finalQtrack = chunk_size-1;
@@ -147,10 +170,10 @@ bool WozFile::load(const std::string& filePath) {
                         printf("TMAP track 0x%02X     : TRKS track index 0x%02X", t/100, tmap[qt]);
                     }
                     printf("\x1b[0m");
-                    if (qt == this->initalQtrack && qt == this->finalQtrack) {
+                    if (qt == this->initialQtrack && qt == this->finalQtrack) {
                         printf(" <-- lone track");
-                    } else if (qt == this->initalQtrack) {
-                        printf(" <-- inital track");
+                    } else if (qt == this->initialQtrack) {
+                        printf(" <-- initial track");
                     } else if (qt == this->finalQtrack) {
                         printf(" <-- final track");
                     }
@@ -177,8 +200,9 @@ bool WozFile::load(const std::string& filePath) {
                     if (ts.blockCount) {
                         printf("TRK index %02X: start byte in BITS %08x; %08x bytes; %08x bits ", qt, ts.blockFirst<<9, ts.blockCount<<9, ts.bitCount);
                         this->trk_bits[qt] = ts.bitCount;
-                        this->trk[qt] = new std::uint8_t[ts.blockCount<<9];
-                        memcpy(this->trk[qt], buf+C_QTRACK*8+(ts.blockFirst<<9), ts.blockCount<<9);
+                        this->trk_byts[qt] = ts.blockCount<<9;
+                        this->trk[qt] = new std::uint8_t[this->trk_byts[qt]];
+                        memcpy(this->trk[qt], buf+C_QTRACK*8+(ts.blockFirst<<9), this->trk_byts[qt]);
                         printf("("
                                BYTE_TO_BINARY_PATTERN
                                BYTE_TO_BINARY_PATTERN
@@ -272,12 +296,22 @@ void WozFile::save() {
     if (isWriteProtected() || !isLoaded()) {
         return;
     }
-//    std::ofstream out(filePath.c_str(),std::ios::binary);
-    // TODO SAVE FILE!
-//    out.flush();
-//    out.close();
+    std::ofstream out(filePath.c_str(), std::ios::binary);
 
-//    this->modified = false;
+    // TODO: SAVE WOZ 2.0 format FILE PROPERLY!
+
+    for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+
+        // staight dump of track FOR DEBUGGING ONLY
+        if (this->trk[qt]) {
+            printf("dumping q-track: %02X, %08X bytes\n", qt, this->trk_byts[qt]);
+            out.write(reinterpret_cast<char*>(this->trk[qt]), this->trk_byts[qt]);
+        }
+    }
+    out.flush();
+    out.close();
+
+//    TODO: this->modified = false;
 }
 
 void WozFile::unload() {
@@ -413,6 +447,7 @@ void WozFile::setBit(std::uint8_t currentQuarterTrack, bool on) {
         return; // write-protected
     }
 
+//    printf("%c",(on?'1':'0')); fflush(stdout);
     if (on) {
         this->trk[this->tmap[currentQuarterTrack]][this->byt] |= this->bit;
     } else {

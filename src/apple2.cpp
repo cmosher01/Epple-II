@@ -63,17 +63,17 @@ Apple2::~Apple2()
 }
 
 
-void Apple2::tick()
-{
-    this->slts.tick();
+void Apple2::tick() {
     this->cpu.tick();
-	this->video.tick();
-	this->paddles.tick();
-	this->speaker.tick();
-	this->cassette.tick();
+    this->slts.tick();
+    this->video.tick();
+    this->paddles.tick();
+    this->speaker.tick();
+    this->cassette.tick();
 
-	if (this->revision > 0)
-		this->powerUpReset.tick();
+    if (this->revision > 0) {
+        this->powerUpReset.tick();
+    }
 }
 
 void Apple2::powerOn()

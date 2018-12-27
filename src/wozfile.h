@@ -59,7 +59,7 @@ class WozFile {
     // map of quarter-tracks from T00.00 through T39.75, values are indexes into trk
     std::uint8_t* tmap;
     // first actual quarter-track (e.g., 0 for normal 35-track disk), or 0xFF if no tracks
-    std::uint8_t initalQtrack;
+    std::uint8_t initialQtrack;
     // last actual quarter-track (e.g., 136 for normal 35-track disk), or 0xFF if no tracks
     std::uint8_t finalQtrack;
 
@@ -67,6 +67,8 @@ class WozFile {
     std::uint8_t* trk[C_QTRACK];
     // count of bits in each track
     std::uint32_t trk_bits[C_QTRACK];
+    // count of allocated bytes
+    std::uint16_t trk_byts[C_QTRACK];
 
     // bit and byt together represent the rotational position
     // of the floppy disk.

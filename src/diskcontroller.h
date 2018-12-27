@@ -42,6 +42,7 @@ private:
 
         bool load; // Q6
         bool write; // Q7
+        bool ioStepped;
 
         /*
          * Only one drive's motor can be on at a time,

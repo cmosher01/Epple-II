@@ -35,6 +35,10 @@ bool DriveMotor::isOn() const {
 void DriveMotor::power(bool on) {
     if (on) {
         this->on = true;
+        if (this->pendingTicks > 0) {
+            this->pendingTicks = 0;
+//            printf("MOTOR: cancel pending power off\n");
+        }
 //        printf("MOTOR: power on\n");
     } else {
         // delay power-off by about one second (a little longer, for momentum)
