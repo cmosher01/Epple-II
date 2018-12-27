@@ -298,11 +298,92 @@ void WozFile::save() {
     }
     std::ofstream out(filePath.c_str(), std::ios::binary);
 
-    // TODO: SAVE WOZ 2.0 format FILE PROPERLY!
+    std::uint32_t woz2(0x325A4F57u);
+    out.write((char*)&woz2, sizeof(woz2));
+    std::uint32_t sanity(0x0A0D0AFFu);
+    out.write((char*)&sanity, sizeof(sanity));
+    std::uint32_t crc(0u); // TODO calc CRC
+    out.write((char*)&crc, sizeof(crc));
 
+
+
+    std::uint32_t chunk_id;
+    std::uint32_t chunk_size;
+
+    // INFO
+    chunk_id = 0x4F464E49u;
+    out.write((char*)&chunk_id, sizeof(chunk_id));
+    chunk_size = 60;
+    out.write((char*)&chunk_size, sizeof(chunk_size));
+
+    std::uint8_t vers(2);
+    out.write((char*)&vers, sizeof(vers));
+    std::uint8_t floppy_size(1);
+    out.write((char*)&floppy_size, sizeof(floppy_size));
+    std::uint8_t write_protected(!this->writable);
+    out.write((char*)&write_protected, sizeof(write_protected));
+    std::uint8_t sync(0);
+    out.write((char*)&sync, sizeof(sync));
+    std::uint8_t cleaned(0);
+    out.write((char*)&cleaned, sizeof(cleaned));
+    const char* creator = "epple2                          ";
+    out.write(creator, 32);
+    std::uint8_t sided(1);
+    out.write((char*)&sided, sizeof(sided));
+    std::uint8_t sector_format(0);
+    out.write((char*)&sector_format, sizeof(sector_format));
+    std::uint8_t us_per_bit(32);
+    out.write((char*)&us_per_bit, sizeof(us_per_bit));
+    std::uint16_t compat_hw(0);
+    out.write((char*)&compat_hw, sizeof(compat_hw));
+    std::uint16_t ram(0);
+    out.write((char*)&ram, sizeof(ram));
+
+    std::uint16_t largest_track(0);
     for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+        if (largest_track < (this->trk_byts[qt]>>9)) {
+            largest_track = (this->trk_byts[qt]>>9);
+        }
+    }
+    out.write((char*)&largest_track, sizeof(largest_track));
+    //fill
+    for (int i(0); i < 14; ++i) {
+        std::uint8_t fill(0);
+        out.write((char*)&fill, sizeof(fill));
+    }
 
-        // staight dump of track FOR DEBUGGING ONLY
+
+    // TMAP
+    chunk_id = 0x50414D54u;
+    out.write((char*)&chunk_id, sizeof(chunk_id));
+    chunk_size = 160;
+    out.write((char*)&chunk_size, sizeof(chunk_size));
+    for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+        out.write((char*)&this->tmap[qt], 1);
+    }
+
+
+
+    // TRKS
+    chunk_id = 0x534B5254u;
+    out.write((char*)&chunk_id, sizeof(chunk_id));
+    chunk_size = 0; // TODO
+    for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+        chunk_size += 8+this->trk_byts[qt];
+    }
+    out.write((char*)&chunk_size, sizeof(chunk_size));
+    uint16_t block(3);
+    for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
+        struct trk_t ts;
+        ts.blockFirst = block;
+        ts.blockCount = (this->trk_byts[qt]>>9);
+        block += ts.blockCount;
+        ts.bitCount = this->trk_bits[qt];
+        out.write((char*)&ts, sizeof(ts));
+    }
+
+    // (BITS)
+    for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
         if (this->trk[qt]) {
             printf("dumping q-track: %02X, %08X bytes\n", qt, this->trk_byts[qt]);
             out.write(reinterpret_cast<char*>(this->trk[qt]), this->trk_byts[qt]);
@@ -311,7 +392,7 @@ void WozFile::save() {
     out.flush();
     out.close();
 
-//    TODO: this->modified = false;
+    this->modified = false;
 }
 
 void WozFile::unload() {
