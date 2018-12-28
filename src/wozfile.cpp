@@ -23,6 +23,7 @@
 #include <ostream>
 #include <fstream>
 #include <cmath>
+#include <cstring>
 
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 #define BYTE_TO_BINARY(byte)  \
@@ -367,7 +368,7 @@ void WozFile::save() {
     // TRKS
     chunk_id = 0x534B5254u;
     out.write((char*)&chunk_id, sizeof(chunk_id));
-    chunk_size = 0; // TODO
+    chunk_size = 0;
     for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
         chunk_size += 8+this->trk_byts[qt];
     }
@@ -385,7 +386,6 @@ void WozFile::save() {
     // (BITS)
     for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
         if (this->trk[qt]) {
-            printf("dumping q-track: %02X, %08X bytes\n", qt, this->trk_byts[qt]);
             out.write(reinterpret_cast<char*>(this->trk[qt]), this->trk_byts[qt]);
         }
     }
