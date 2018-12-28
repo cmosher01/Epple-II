@@ -33,6 +33,12 @@ COPY bootstrap configure.ac Makefile.am ./
 
 COPY NEWS README AUTHORS ChangeLog COPYING* ./
 
+ADD https://mosher.mine.nu/monitor.a65 ./
+ADD https://mosher.mine.nu/applesoft.a65 ./
+ADD https://mosher.mine.nu/disk2.a65 ./
+ADD https://mosher.mine.nu/choplifter.woz ./
+COPY setup.conf ./
+
 COPY src/ ./src/
 COPY conf/ ./conf/
 COPY rom/ ./rom/
@@ -75,4 +81,5 @@ COPY supervisor/commands ./
 ENV DISPLAY :0
 ENV SDL_VIDEODRIVER x11
 
-EXPOSE 80 5900
+# EXPOSE 80 5900
+EXPOSE 5900

@@ -11,7 +11,7 @@ redirect_stderr=true
 stdout_logfile_maxbytes=0
 
 [program:epple2]
-command=epple2
+command=epple2 setup.conf
 stdout_logfile=/dev/stdout
 redirect_stderr=true
 stdout_logfile_maxbytes=0
