@@ -10,7 +10,7 @@ RUN apt-get update && \
         automake \
         build-essential \
         libsdl2-dev \
-        nginx \
+#        nginx \
         source-highlight \
         supervisor \
         xa65 \
@@ -45,24 +45,25 @@ ENV BUILD_LOG /var/log/build.log
 
 RUN ./bootstrap 2>&1 | tee -a $BUILD_LOG
 RUN ./configure 2>&1 | tee -a $BUILD_LOG
+RUN make clean 2>&1 | tee -a $BUILD_LOG
 RUN make 2>&1 | tee -a $BUILD_LOG
-RUN make check 2>&1 | tee -a $BUILD_LOG
-RUN make dist 2>&1 | tee -a $BUILD_LOG
-RUN make distcheck 2>&1 | tee -a $BUILD_LOG
+#RUN make check 2>&1 | tee -a $BUILD_LOG
+#RUN make dist 2>&1 | tee -a $BUILD_LOG
+#RUN make distcheck 2>&1 | tee -a $BUILD_LOG
 RUN make install 2>&1 | tee -a $BUILD_LOG
-RUN make html 2>&1 | tee -a $BUILD_LOG
-RUN make install-html 2>&1 | tee -a $BUILD_LOG
-RUN make installcheck 2>&1 | tee -a $BUILD_LOG
+#RUN make html 2>&1 | tee -a $BUILD_LOG
+#RUN make install-html 2>&1 | tee -a $BUILD_LOG
+#RUN make installcheck 2>&1 | tee -a $BUILD_LOG
 
-RUN mkdir /usr/local/share/doc/epple2/download && \
-    cd /usr/local/share/doc/epple2/download && \
-    ln -s ~/epple2-*.tar.gz
+#RUN mkdir /usr/local/share/doc/epple2/download && \
+#    cd /usr/local/share/doc/epple2/download && \
+#    ln -s ~/epple2-*.tar.gz
 
 
 
-COPY nginx.conf /etc/nginx/
-COPY default.nginx /etc/nginx/sites-available/default
-RUN ln -s /usr/local/share/doc/epple2 /usr/share/nginx/html/epple2
+#COPY nginx.conf /etc/nginx/
+#COPY default.nginx /etc/nginx/sites-available/default
+#RUN ln -s /usr/local/share/doc/epple2 /usr/share/nginx/html/epple2
 
 # supervisor
 RUN rm -R /etc/supervisor/*
