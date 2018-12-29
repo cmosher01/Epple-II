@@ -18,6 +18,7 @@
 #include "emulator.h"
 #include "configep2.h"
 #include "e2const.h"
+#include "tinyfiledialogs.h"
 
 #include <SDL2/SDL.h>
 
@@ -136,7 +137,9 @@ int Emulator::run() {
                 switch (event.type) {
                         // If SDL is going away...
                     case SDL_QUIT:
-                        this->quit = true;
+                        if (isSafeToQuit()) {
+                            this->quit = true;
+                        }
                         break;
                     case SDL_KEYDOWN:
                         // If we're collecting a command line for changing any
@@ -365,7 +368,9 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else exit the entire emulation
     else if (sym == SDLK_F9) {
-        this->quit = true;
+        if (isSafeToQuit()) {
+            this->quit = true;
+        }
         return;
     }// ...else save a screen shot
     else if (sym == SDLK_F8) {
@@ -434,4 +439,28 @@ void Emulator::processCommand() {
 
     Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassette);
     cmdline.erase(cmdline.begin(), cmdline.end());
+}
+
+bool Emulator::isSafeToQuit() {
+    if (!this->apple2.slts.isDirty()) {
+        return true;
+    }
+
+    const int resp = tinyfd_messageBox(
+        "Save changes",
+        "You have unsaved changes to your floppy disk images.\nDo you want to SAVE them?",
+        "yesnocancel",
+        "warning",
+        0);
+
+    if (resp == 0) { // cancel
+        return false;
+    }
+
+    if (resp == 1) { // yes (save)
+        this->apple2.slts.save(0);
+        this->apple2.slts.save(1);
+    }
+
+    return true;
 }

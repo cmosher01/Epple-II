@@ -103,3 +103,7 @@ bool Card::isDirty()
 {
 	return false;
 }
+
+void Card::save(int unit)
+{
+}

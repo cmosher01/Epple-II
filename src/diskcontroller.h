@@ -119,7 +119,7 @@ public:
 		this->gui.setDirty(this->slot,getCurrentDriveNumber(),false);
 	}
 
-	void saveDisk(unsigned char drive)
+        void save(int drive)
 	{
 		this->getDrive(drive).saveDisk();
 		this->gui.setDirty(this->slot,getCurrentDriveNumber(),false);

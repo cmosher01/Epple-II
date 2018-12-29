@@ -26,6 +26,7 @@
 #include "standardin.h"
 #include "clockcard.h"
 #include "cassette.h"
+#include "tinyfiledialogs.h"
 
 #include <iostream>
 #include <istream>
@@ -265,11 +266,20 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
 
 		if (cmd == "load")
 		{
-			std::string fnib;
-			std::getline(tok,fnib);
-			trim(fnib);
-			loadDisk(slts,slot,drive,fnib);
-		}
+            std::string fn_optional;
+            std::getline(tok,fn_optional);
+            trim(fn_optional);
+            if (fn_optional.length() == 0) {
+                char const *ft[1] = { "*.woz" };
+                char const *fn = tinyfd_openFileDialog("Load floppy", "", 1, ft, "WOZ 2.0 disk images", 0);
+                if (fn) {
+                    fn_optional = std::string(fn);
+                }
+            }
+            if (fn_optional.length() > 0) {
+                loadDisk(slts,slot,drive,fn_optional);
+            }
+        }
 		else if (cmd == "unload")
 		{
 			unloadDisk(slts,slot,drive);
@@ -368,9 +378,7 @@ void Config::saveDisk(Slots& slts, int slot, int drive)
 	{
 		throw ConfigException("Invalid drive; must be 1 or 2");
 	}
-	Card* card = slts.get(slot);
-	DiskController* controller = (DiskController*)card;
-	controller->saveDisk(drive-1);
+    slts.get(slot)->save(drive-1);
 }
 
 void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui)

@@ -535,5 +535,7 @@ void WozFile::setBit(std::uint8_t currentQuarterTrack, bool on) {
         this->trk[this->tmap[currentQuarterTrack]][this->byt] &= ~this->bit;
     }
 
+    this->modified = true;
+
     // TODO: also write preceding and following quarter tracks (at relative position, and if they exist)
 }

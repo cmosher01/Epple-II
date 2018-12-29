@@ -133,6 +133,12 @@ void Slots::forceGuiUpdate()
 		this->gui.updateSlotName(slot,this->cards[slot]);
 }
 
+void Slots::save(int unit) {
+    for (std::vector<Card*>::iterator i = this->cards.begin(); i != this->cards.end(); ++i) {
+        (*i)->save(unit);
+    }
+}
+
 /*
 struct isAnyDiskDriveMotorOnCard
 {

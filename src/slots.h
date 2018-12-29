@@ -46,7 +46,8 @@ public:
 	Card* get(const int slot);
 	void remove(const int slot);
 	bool isDirty();
-	void forceGuiUpdate();
+        void save(int unit);
+        void forceGuiUpdate();
 };
 
 #endif

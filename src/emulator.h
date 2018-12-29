@@ -60,6 +60,7 @@ class Emulator
 	void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
 	void cmdKey(const SDL_KeyboardEvent& keyEvent);
 	void processCommand();
+        bool isSafeToQuit();
 
 public:
 	Emulator();

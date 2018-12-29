@@ -47,8 +47,6 @@ static int run(const std::string& config_file) {
 	return emu->run();
 }
 
-
-
 #ifdef __cplusplus
 extern "C"
 #endif

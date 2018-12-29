@@ -22,7 +22,8 @@ standardinproducer.cpp standardout.cpp steppermotor.cpp textcharacters.cpp \
 timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
 videostaticgenerator.cpp wozfile.cpp \
 Circuit.cpp  Common.cpp  Cpu6502.cpp  Cpu6502Helper.cpp  Emu6502.cpp  SegmentCache.cpp  \
-StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp
+StateCalculator.cpp  Trace.cpp  TransCache.cpp  TransNetwork.cpp \
+tinyfiledialogs.cpp
 
 noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h \
 card.h cassette.h clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
@@ -34,4 +35,5 @@ standardin.h standardinproducer.h standardout.h steppermotor.h \
 textcharacterimages.h textcharacters.h timable.h util.h \
 videoaddressing.h video.h videomode.h videostaticgenerator.h wozfile.h \
 Circuit.h  Common.h  Cpu6502.h  Cpu6502Helper.h  Emu6502.h  SegmentCache.h  SegmentTypes.h  \
-StateCalculator.h  Trace.h  TransCache.h  TransNetwork.h  addressbus.h  ptr_less.h  trans.h
+StateCalculator.h  Trace.h  TransCache.h  TransNetwork.h  addressbus.h  ptr_less.h  trans.h \
+tinyfiledialogs.h
