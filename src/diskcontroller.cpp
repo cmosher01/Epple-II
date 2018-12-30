@@ -125,8 +125,8 @@ void DiskController::stepLss() {
     if (cmd & 8u) {
         if (cmd & 3u) {
             if (this->write) {
-                const bool one = (seq&0x80u) != (this->prev_seq&0x80u);
-                this->prev_seq = seq;
+                const bool one = (this->seq&0x80u) != (this->prev_seq&0x80u);
+                this->prev_seq = this->seq;
                 this->currentDrive->writeBit(one);
             }
         }

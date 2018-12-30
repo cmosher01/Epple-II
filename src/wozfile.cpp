@@ -411,6 +411,8 @@ void WozFile::unload() {
             delete [] this->trk[i];
             this->trk[i] = 0;
         }
+        this->trk_bits[i] = 0;
+        this->trk_byts[i] = 0;
     }
 }
 
