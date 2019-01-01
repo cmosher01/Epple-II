@@ -83,7 +83,7 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
         this->mags &= ~mask;
     }
 
-//    const std::uint8_t oldQT = this->quarterTrack;
+    const std::uint8_t oldQT = this->quarterTrack;
 
     const char newPos = mapMagPos[this->mags];
     char d = 0;
@@ -91,6 +91,20 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
         d = calcDeltaPos(this->pos,newPos);
         this->pos = newPos;
 
+        // TODO: delay moving arm by a small amount
+        // For example, Locksmith, in order to write "quarter tracks" (i.e., T+.25 or T+.75), it positions
+        // to the correct track (by turning two adjacent magnets on), then turns them both off in rapid
+        // succession. In real life the arm doesn't move in such a case. In order to emulate that, we need
+        // to delay the arm move for a bit, to see if the magnets change in the meantime.
+        /*
+         * ARM: ph2 + [..*.] T$0D.00     +0.00
+         * ARM: ph3 + [..**] T$0D.25 --> +0.25
+         * switching from tmap[34] --> [35]
+         *
+         * ARM: ph3 - [..*.] T$0D.00 <-- -0.25   <-\
+         * switching from tmap[35] --> [34]      <--\-- this needs to get delayed
+         * ARM: ph2 - [....] T$0D.00     +0.00
+         */
         this->quarterTrack += d;
         if (this->quarterTrack < 0)
             this->quarterTrack = 0;
@@ -98,18 +112,18 @@ void StepperMotor::setMagnet(const unsigned char magnet, const bool on) {
             this->quarterTrack = QTRACKS-1;
     }
 
-//    const std::uint8_t newQT = this->quarterTrack;
-//    const std::int8_t deltaQT = newQT - oldQT;
+    const std::uint8_t newQT = this->quarterTrack;
+    const std::int8_t deltaQT = newQT - oldQT;
 
-//    printf("ARM: ph%d %s [%c%c%c%c] T$%02X.%02d %s %+0.2f\n",
-//       (std::uint8_t)magnet,
-//       on ? "+" : "-",
-//       (mags&1)?'*':'.',
-//       (mags&2)?'*':'.',
-//       (mags&4)?'*':'.',
-//       (mags&8)?'*':'.',
-//       this->quarterTrack / 4,
-//       (this->quarterTrack % 4) * 25,
-//       deltaQT>0 ? "-->" : deltaQT<0 ? "<--" : "   ",
-//       (deltaQT % 4) / 4.0);
+    printf("ARM: ph%d %s [%c%c%c%c] T$%02X.%02d %s %+0.2f\n",
+       (std::uint8_t)magnet,
+       on ? "+" : "-",
+       (mags&1)?'*':'.',
+       (mags&2)?'*':'.',
+       (mags&4)?'*':'.',
+       (mags&8)?'*':'.',
+       this->quarterTrack / 4,
+       (this->quarterTrack % 4) * 25,
+       deltaQT>0 ? "-->" : deltaQT<0 ? "<--" : "   ",
+       (deltaQT % 4) / 4.0);
 }

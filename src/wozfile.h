@@ -94,6 +94,17 @@ class WozFile {
     std::string creator;
 
     void checkForWriteProtection();
+    void expandTracks();
+    void reduceTracks();
+    bool trackIsZeroes(std::uint8_t qt);
+    bool tracksAreIdentical(std::uint8_t qt1, std::uint8_t qt2);
+    void removeTrack(const int trackIndex);
+    std::uint32_t calcNewTrackLengthBits(std::uint8_t qt);
+    void copyTrack(std::uint8_t qt_dest, std::uint8_t qt_src);
+    void createNewTrack(const std::uint8_t qt);
+    void dumpTmap();
+    void dumpTracks();
+    void rawSet(std::uint8_t currentQuarterTrack, bool on);
 
 public:
     WozFile();
@@ -122,6 +133,7 @@ public:
     void rotateOneBit(std::uint8_t currentQuarterTrack);
     bool getBit(std::uint8_t currentQuarterTrack);
     void setBit(std::uint8_t currentQuarterTrack, bool on);
+    void rawSet();
 };
 
 #endif // WOZFILE_H
