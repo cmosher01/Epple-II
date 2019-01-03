@@ -125,7 +125,7 @@ bool WozFile::load(const std::string& filePath) {
     in.read((char*)&woz2, sizeof(woz2));
     if (woz2 != 0x325A4F57u) {
         printf("WOZ2 magic bytes missing.");
-        throw "WOZ2 magic bytes missing";
+        return false;
     }
     printf("WOZ2 magic bytes present\n");
 
@@ -133,7 +133,7 @@ bool WozFile::load(const std::string& filePath) {
     in.read((char*)&sanity, sizeof(sanity));
     if (sanity != 0x0A0D0AFFu) {
         printf("FF 0A 0D 0A bytes corrupt.\n");
-        throw "FF 0A 0D 0A bytes corrupt";
+        return false;
     }
 
     std::uint32_t crc_given;
@@ -154,13 +154,13 @@ bool WozFile::load(const std::string& filePath) {
                 printf("INFO version %d\n", *buf);
                 if (*buf != 2) {
                     printf("File is not WOZ2 version.\n");
-                    throw "File is not WOZ2 version";
+                    return false;
                 }
                 five_25 = (buf[1]==1);
                 printf("Disk type: %s\n", five_25 ? "5.25" : buf[1]==2 ? "3.5" : "?");
                 if (!five_25) {
                     printf("Only 5 1/4\" disk images are supported.\n");
-                    throw "Only 5 1/4\" disk images are supported";
+                    return false;
                 }
                 this->writable = !(buf[2]==1);
                 printf("Write protected?: %s\n", this->writable ? "No" : "Yes");
@@ -217,7 +217,8 @@ bool WozFile::load(const std::string& filePath) {
             break;
             case 0x534B5254: { // TRKS
                 if (chunk_size < C_QTRACK*8) {
-                    throw "TRKS chunk doesn't have 160 track entries";
+                    printf("ERROR: TRKS chunk doesn't have 160 track entries.\n");
+                    return false;
                 }
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
                 in.read((char*)buf, chunk_size);
@@ -724,7 +725,8 @@ std::uint32_t WozFile::calcNewTrackLengthBits(const std::uint8_t qt) {
     }
     // corner case: no existing tracks at all
     if (!t1 && !t2) {
-        return 0xC5C0u;
+        // 0xC780 yields COPY ][ PLUS disk speed of 200ms
+        return 0xC780u;
     }
     // nominal case: average flanking tracks
     if (t1 && t2) {
