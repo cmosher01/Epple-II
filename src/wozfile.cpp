@@ -511,7 +511,7 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
     // previous, based on each track's length (tracks can be of
     // different lengths in the WOZ image).
     if (currentQuarterTrack != this->lastQuarterTrack) {
-        printf("switching from tmap[%02x] --> [%02x]\n", this->lastQuarterTrack, currentQuarterTrack);
+//        printf("switching from tmap[%02x] --> [%02x]\n", this->lastQuarterTrack, currentQuarterTrack);
         const double oldLen = this->trk_bits[this->tmap[this->lastQuarterTrack]];
         const double newLen = this->trk_bits[this->tmap[currentQuarterTrack]];
         const double ratio = newLen/oldLen;
@@ -640,8 +640,8 @@ void WozFile::reduceTracks() {
             break;
         }
     }
-    dumpTmap();
-    dumpTracks();
+//    dumpTmap();
+//    dumpTracks();
 }
 
 static std::uint16_t bytesForBits(const std::uint32_t c_bits) {

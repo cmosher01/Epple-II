@@ -87,6 +87,9 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
  * (When the motor is on, that is.)
  */
 void DiskController::tick() {
+    this->arm1.tick();
+    this->arm2.tick();
+
     if (this->ioStepped) { // if we already ran it, above in io(), skip here
         this->ioStepped = false;
         return;

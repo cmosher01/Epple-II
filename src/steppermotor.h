@@ -25,15 +25,21 @@ private:
     enum { QTRACKS = 160 };
     // quarter track: 0=t0, 1=t0.25, 2=t0.5, 3=t0.75, 4=t1, ... 140=t35.00 ... 159=t39.75
     // (see TMAP in WOZ2 file format spec)
-    std::int16_t quarterTrack;
+    std::uint8_t quarterTrack;
 
-    signed char pos; // 0 - 7
-    unsigned char mags;
+    std::int8_t pos;
+    std::uint8_t mags;
 
-    static signed char mapMagPos[];
+    std::int8_t pendingPos;
+    std::uint32_t pendingTicks;
 
-    static signed char calcDeltaPos(const unsigned char cur, const signed char next) {
-        signed char d = next-cur; // -7 to +7
+    static std::int8_t mapMagPos[];
+
+    void moveCog();
+    void calculateTrack(const std::int8_t delta);
+
+    static std::int8_t calcDeltaPos(const std::int8_t cur, const std::int8_t next) {
+        std::int8_t d = next-cur; // -7 to +7
 
         if (d == 4 || d == -4) {
             d = 0; // <--- TODO pick random direction?
@@ -50,13 +56,14 @@ public:
     StepperMotor();
     ~StepperMotor();
 
-    void setMagnet(const unsigned char magnet, const bool on);
-    unsigned char getTrack() {
-        return ((unsigned short)(this->quarterTrack)) >> 2;
+    void setMagnet(const std::uint8_t magnet, const bool on);
+    std::uint8_t getTrack() {
+        return this->quarterTrack >> 2;
     }
     std::uint8_t getQuarterTrack() {
         return this->quarterTrack;
     }
+    void tick();
 };
 
 #endif
