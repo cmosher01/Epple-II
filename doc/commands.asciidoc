@@ -91,33 +91,29 @@ anchor:load[]
 
 ==== load
 
-The +load+ command loads a (nibble) floppy disk image into one of the emulated disk drives.
+The +load+ command loads a https://applesaucefdc.com/woz/[WOZ 2.0 format] floppy disk image into one of the emulated disk drives.
 
 
 --------
-load slot <slot> drive <drive> <file-path>
+load slot <slot> drive <drive> [ <file-path> ]
 --------
 
 
-+<slot>+ Slot number, 0 through 7, of Disk ][ controller card to load the nibble image into.
++<slot>+ Slot number, 0 through 7, of Disk ][ controller card to load the disk image into.
 
-+<drive>+ Drive number, 1 or 2, of the disk drive on the controller card to load the nibble image into.
++<drive>+ Drive number, 1 or 2, of the disk drive on the controller card to load the disk image into.
 
-+<file-path>+ Path of the nibble floppy disk image to import.
++<file-path>+ Optional path of the disk image to import. If omitted, a dialog box will be presented to select the file to load.
 
-The +load+ command will load a nibble image into a disk drive. Specify the slot that
+The +load+ command will load a WOZ 2.0 image into a disk drive. Specify the slot that
 contains a Disk ][ controller peripheral card, and specify which drive number (1 or 2).
 
 [NOTE]
-The floppy disk image MUST be a NIBBLE DISK IMAGE.
-Other formats (for example, DOS order, +.do+, PRODOS order,
-+.po+, +.dsk+, or anything else) must first be converted to nibble format. A nibble image contains
-all 35 tracks, in order 0-36, each track being 6656 ($1A00) bytes long. Nibble image files
-will generally have a filetype of +.nib+.
+The floppy disk image MUST be a WOZ 2.0 DISK IMAGE.
+Other formats (for example, nibble, +.nib+, DOS order, +.do+, PRODOS order,
++.po+, +.dsk+, or anything else) must first be converted to WOZ 2.0 format.
 
-
-The best floppy disk image conversion tool I've found is http://ciderpress.sourceforge.net/[CiderPress],
-for Windows (but it supposedly runs under Wine on Linux, too). Thanks to Andy McFadden.
+You can use https://applesaucefdc.com/[Applesauce] to generate such files from original floppy disks. Or you can convert +.dsk+ or +.d13+ images using +to_woz2+ (source: https://github.com/cmosher01/Apple-II-Disk-Tools ).
 
 
 
@@ -149,14 +145,12 @@ anchor:save[]
 The +save+ command saves changes made on an emulated floppy disk back to the original image file.
 
 --------
-save slot <slot> drive <drive> <file-path>
+save slot <slot> drive <drive>
 --------
 
 +<slot>+ Slot number, 0 through 7, of Disk ][ controller card to which the drive is attached.
 
 +<drive>+ Drive number, 1 or 2, of the disk drive on the controller card to save.
-
-+<file-path>+ Path of the nibble floppy disk image to import.
 
 The +save+ command saves any changes that the emulated Apple ][ has made to the floppy
 disk image. It is important to note that the emulator operates on the image only in memory, and does

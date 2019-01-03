@@ -44,18 +44,13 @@ buffer is on.
 * +F4+ Toggles between showing scan lines on the display, or duplicating
 each scan line to the following line, to fill-in the otherwise black line.
 * +F5+ Go to ``command entry'' mode.
+* +F6+ Emulates the RESET key.
+* +F7+ Pastes characters from the clipboard into the emulated Apple
+(as if they had been typed on the keyboard).
+* +F8+ Save a bitmap file of the current EPPLE ][ screen.
+The file will be in the default directory, named +ep2_YYYYMMDDHHMMSS.bmp+.
+* +F9+ Quit the EPPLE ][ program, immediately!
 * +F10+ Emulates the REPT key.
 * +F11+ Toggles between running the emulator at authentic speed
 (1.02 MHz CPU), or as fast as possible.
 * +F12+ Toggles the keyboard buffer.
-* +Break+ Emulates the RESET key.
-* +Insert+ Pastes characters from the clipboard into the emulated Apple
-(as if they had been typed on the keyboard).
-* +Print&nbsp;Screen+ Save a bitmap file of the current EPPLE ][ screen.
-The file will be in the default directory, named +ep2_YYYYMMDDHHMMSS.bmp+.
-* +End+ Quit the EPPLE ][ program, immediately!
-
-[WARNING]
-If you have modification to any floppy images or cassette images, and you
-press the +End+ key, you will LOSE all those changes, unless you
-save them first. See <<commands>> for the +save+ command.
