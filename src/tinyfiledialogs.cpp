@@ -135,8 +135,8 @@ misrepresented as being the original software.
 
 char const tinyfd_version [8] = "3.3.8";
 
-int tinyfd_verbose = 0 ; /* on unix: prints the command line calls */
-int tinyfd_silent = 1 ; /* 1 (default) or 0 : on unix,
+int tinyfd_verbose = 1 ; /* on unix: prints the command line calls */
+int tinyfd_silent = 0 ; /* 1 (default) or 0 : on unix,
                         hide errors and warnings from called dialog*/
 
 #if defined(TINYFD_NOLIB) && defined(_WIN32)
@@ -4317,7 +4317,7 @@ int tinyfd_messageBox(
                 }
                 if ( aMessage && strlen(aMessage) ) 
                 {
-                        strcat(lDialogString, " --no-wrap --text=\"") ;
+                        strcat(lDialogString, " --text=\"") ;
                         strcat(lDialogString, aMessage) ;
                         strcat(lDialogString, "\"") ;
                 }
