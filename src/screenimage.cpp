@@ -37,11 +37,12 @@ static const char* power =
         " @       @@@     @     @    @@@@@  @   @";
 
 #define POWERD 56
-#define LABEL_Y 24
+#define LABEL_Y 20
 #define ON_CLR 0xF0D050
 #define OFF_CLR 0x807870
 #define SCRW 640
 #define SCRH 480
+#define ASPECT_RATIO 1.191 /* UA2, p. 8-28 */
 
 static const int HEIGHT = E2Const::VISIBLE_ROWS_PER_FIELD * 2;
 static const int WIDTH = AppleNTSC::H - AppleNTSC::PIC_START - 2;
@@ -69,16 +70,20 @@ void ScreenImage::toggleFullScreen() {
 }
 
 void ScreenImage::createScreen() {
-    this->window= SDL_CreateWindow("Epple ][", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCRW, SCRH, SDL_WINDOW_SHOWN);
+    this->window = SDL_CreateWindow("Epple ][", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCRW, SCRH*ASPECT_RATIO, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
     if (this->window == NULL) {
         printf("Unable to create window: %s\n", SDL_GetError());
         throw ScreenException();
     }
-    this->renderer = SDL_CreateRenderer(this->window, -1, 0/*SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC*/);
+
+    this->renderer = SDL_CreateRenderer(this->window, -1, 0);
     if (this->renderer == NULL) {
         std::cerr << SDL_GetError() << std::endl;
         throw ScreenException();
     }
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+
     this->texture = SDL_CreateTexture(this->renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, SCRW, SCRH);
     if (this->texture == NULL) {
         std::cerr << SDL_GetError() << std::endl;
@@ -230,12 +235,6 @@ void ScreenImage::drawChar(const char ch, int row, int col, int color, int bgcol
         pn -= FONTW;
         pn += SCRW;
     }
-    // TODO
-//    const int e = SDL_UpdateTexture(this->texture, NULL, this->pixels, SCRW * sizeof (unsigned int));
-//    if (e) {
-//        std::cerr << SDL_GetError() << std::endl;
-//    }
-    // TODO	SDL_UpdateRect(this->screen,col*FONTW,row*FONTH,(col+1)*FONTW,(row+1)*FONTH);
 }
 
 void ScreenImage::displayHz(int hz) {
@@ -247,7 +246,7 @@ void ScreenImage::displayHz(int hz) {
 void ScreenImage::drawPower(bool on) {
     unsigned int* pn = this->pixels;
     pn += (HEIGHT + 5)*SCRW + 5;
-    for (int r = 0; r < POWERD; ++r) {
+    for (int r = 0; r < POWERD/ASPECT_RATIO; ++r) {
         if (r < LABEL_Y || LABEL_Y + 7 <= r) {
             for (int c = 0; c < POWERD; ++c) {
                 *pn++ = on ? ON_CLR : OFF_CLR;
