@@ -51,6 +51,7 @@ public:
     ScreenImage();
     ~ScreenImage();
 
+    void exitFullScreen();
     void toggleFullScreen();
     void drawPower(bool on);
     void notifyObservers();

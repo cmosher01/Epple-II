@@ -63,6 +63,12 @@ cassettename(32, ' ') {
     createScreen();
 }
 
+void ScreenImage::exitFullScreen() {
+    if (this->fullscreen) {
+        toggleFullScreen();
+    }
+}
+
 void ScreenImage::toggleFullScreen() {
     this->fullscreen = !this->fullscreen;
     const int flags = this->fullscreen ? SDL_WINDOW_FULLSCREEN : 0;

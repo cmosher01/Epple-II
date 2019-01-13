@@ -368,6 +368,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else exit the entire emulation
     else if (sym == SDLK_F9) {
+        this->screenImage.exitFullScreen();
         if (isSafeToQuit()) {
             this->quit = true;
         }

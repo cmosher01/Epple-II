@@ -270,6 +270,7 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
             std::getline(tok,fn_optional);
             trim(fn_optional);
             if (fn_optional.length() == 0) {
+                gui.exitFullScreen();
                 char const *ft[1] = { "*.woz" };
                 char const *fn = tinyfd_openFileDialog("Load floppy", "", 1, ft, "WOZ 2.0 disk images", 0);
                 if (fn) {
