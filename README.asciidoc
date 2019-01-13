@@ -2,6 +2,8 @@ epple2 (Emulated Apple ][)
 ==========================
 Christopher A. Mosher <cmosher01@gmail.com>
 
+image:https://travis-ci.org/cmosher01/Epple-II.svg?branch=master["Build Status", link="https://travis-ci.org/cmosher01/Epple-II"]
+
 Home page: http://mosher.mine.nu/epple2[]
 
 +epple2+ is an emulator of the *Apple ][* and *Apple ][ plus*

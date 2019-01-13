@@ -32,11 +32,14 @@ portability in mind. It uses the http://www.libsdl.org/[SDL] graphics library.
 * 640x480 resolution
 * Floating data bus, and video scanner
 * Cards: Disk ][, language, firmware, clock
+* Accurate drive controller logic state sequencer emulation (16 and 13 sector disks)
+* WOZ 2 disk image format, supports all copy-protected disks
+* Drive emulates track arm; accurately writes quarter-tracks
 * Paddles (mouse emulates two paddles)
 * Cassette tape interface
 * PR#1 writes to standard output
 * Accurate keyboard emulation, including the repeat key
-* It even emulates the POWER light!
+* POWER light
 
 include::screenshots.asciidoc[]
 
