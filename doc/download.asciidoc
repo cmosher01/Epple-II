@@ -46,10 +46,9 @@ from it ($D000-$FFFF) (into a file on your PC) and use it. Alternatively, you ca
 download footnoteref:[disclaimer] the firmware images from the http://mosher.mine.nu/apple2/[Apple II Library].
 
 If you do not want to download the proprietary firmware, you can still use the emulator (albeit
-in a restricted manner) with the free (GPLv3) _System ROM (Demo)_ package. Download
-the file for your platform and
-install as appropriate. You can choose either binary format (ready to run), or source if you want
-to assemble it yourself (using the http://www.floodgap.com/retrotech/xa/[xa Assembler]).
+in a rudimentary manner) with the free (GPLv3) _System ROM (Demo)_ package (included with the EPPLE ][ download).
+The source code is also available; you can
+assemble it using the http://www.floodgap.com/retrotech/xa/[xa Assembler] .
 The Demo System ROM only provides commands to dump or set memory bytes,
 or run a program in memory. It is not compatible with any Apple software, nor can it read from disks.
 It's just a free simple demo system to make the emulator do something reasonable.

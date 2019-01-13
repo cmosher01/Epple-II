@@ -97,7 +97,7 @@ RUN
 
 image::pinkmystery.png[]
 
-Jim Sather's book 
+Jim Sather's book
 http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
 which was the primary
 reference for the internal design of the EPPLE ][ emulator, describes the video
@@ -120,11 +120,45 @@ RUN
 
 
 
+=== Display Aspect Ratio
+
+image::aspectratio.png[]
+
+Jim Sather also describes the aspect ratio of the Apple ][ when
+displayed on a TV screen (p. 8-28). Software developers would need
+to take this into account when trying to draw accurate shapes.
+The EPPLE ][ emulates the correct aspect ratio.
+For example, the following Applesoft BASIC program draws a
+rectangle, and a proper square:
+
+[source,vbs]
+---------------------------------
+NEW
+
+10 HGR
+15 REM
+16 REM   RECTANGLE (VIOLET)
+20 A = 36 : B = 136
+30 HCOLOR = 2
+40 HPLOT A,A TO A,B TO B,B TO B,A TO A,A
+45 REM
+46 REM   SQUARE (GREEN)
+50 A = 25 : B = 147
+60 HCOLOR = 1
+70 HPLOT A,A TO A,B TO (B*1.19+.5),B TO (B*1.19+.5),A TO A,A
+
+RUN
+HOME
+---------------------------------
+
+
+
 === Split Screen HIRES/LORES colors
 
-image::splitcolors.png[]
+image::splitcolorstv.png[]
+image::splitcolorsmon.png[]
 
-Jim Sather's book 
+Jim Sather's book
 http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
 shows an Applesoft BASIC
 program and assembly language subroutine on pages 3-16 and 3-17 (reproduced
@@ -171,3 +205,19 @@ E000G
 
 RUN
 ---------------------------------
+
+
+
+=== Miscellaneous
+
+image::gplrom.png[]
+
+Example of the Demo System ROM provided with the EPPLE ][ emulator.
+
+image::static.png[]
+
+Random TV "static" when no video signal is present.
+
+image::apple2.png[]
+
+Apple System ROM showing the APPLE ][ title.
