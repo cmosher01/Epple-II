@@ -67,7 +67,7 @@ void Emulator::powerOffComputer() {
 }
 
 void Emulator::config(Config& cfg) {
-    cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassette);
+    cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut);
 }
 
 void Emulator::init() {
@@ -432,13 +432,14 @@ void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent) {
 
 void Emulator::processCommand() {
     this->screenImage.exitCommandMode();
+    this->screenImage.drawPower(this->timable == &this->apple2);
     this->pendingCommandExit = true;
 
     if (cmdline.empty()) {
         return;
     }
 
-    Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassette);
+    Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut);
     cmdline.erase(cmdline.begin(), cmdline.end());
 }
 

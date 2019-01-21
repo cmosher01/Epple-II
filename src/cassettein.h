@@ -15,43 +15,34 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CASSETTE_H
-#define CASSETTE_H
+#ifndef CASSETTEIN_H
+#define CASSETTEIN_H
 
-#include <vector>
 #include <string>
 #include <cstdint>
+#include "cassette.h"
 
-#include "screenimage.h"
+class CassetteIn : public Cassette {
+    private:
+        float *samp;
+        std::uint32_t samp_siz;
 
-class Cassette {
-    protected:
-        ScreenImage& gui;
+        bool positive;
+        std::int_fast8_t slope_was;
 
-        std::uint_fast32_t t;
-        std::uint_fast32_t t_active;
+        virtual std::string port();
+        void note_pos();
 
-        bool playing; // tape is moving
-
-        bool modified;
-        std::string file;
-
-        // save all data to file, return true if it worked
-        virtual bool write() { return true; }
-        virtual std::string port() { return ""; }
-        void note(const char *n);
-
-    public:
-        Cassette(ScreenImage& gui);
-        virtual ~Cassette();
-
-        virtual bool eject(); // returns false if user cancels operation
-        void save();
-
-        bool isLoaded();
-        bool isModified();
+public:
+        CassetteIn(ScreenImage& gui);
+        virtual ~CassetteIn();
 
         virtual void tick();
+        bool input();
+
+        bool load(const std::string& filePath);
+        void rewind();
+        virtual bool eject();
 };
 
 #endif

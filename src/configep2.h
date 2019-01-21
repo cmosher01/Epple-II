@@ -22,7 +22,8 @@
 class Memory;
 class Slots;
 class ScreenImage;
-class Cassette;
+class CassetteIn;
+class CassetteOut;
 
 class ConfigException
 {
@@ -41,14 +42,14 @@ private:
 	static void unloadDisk(Slots& slts, int slot, int drive);
 	static void saveDisk(Slots& slts, int slot, int drive);
 	static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui);
-	static void tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette);
+        static void tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
 
 public:
 	Config(const std::string& file_path);
 	~Config();
 
-	void parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette);
-	static void parseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette);
+        void parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+        static void parseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
 };
 
 #endif

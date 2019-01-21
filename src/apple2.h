@@ -33,7 +33,8 @@
 #include "speakerclicker.h"
 #include "analogtv.h"
 #include "powerupreset.h"
-#include "cassette.h"
+#include "cassettein.h"
+#include "cassetteout.h"
 #include "Emu6502.h"
 #include <fstream>
 class Emulator;
@@ -51,8 +52,9 @@ class Apple2 : public Timable
 	SpeakerClicker speaker;
 	Memory rom;
 	Memory ram;
-	Cassette cassette;
-	AddressBus addressBus;
+        CassetteIn cassetteIn;
+        CassetteOut cassetteOut;
+        AddressBus addressBus;
 	PictureGenerator picgen;
 	TextCharacters textRows;
 	Video video;

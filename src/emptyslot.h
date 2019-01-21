@@ -26,7 +26,7 @@ public:
 	EmptySlot() {}
 	virtual ~EmptySlot() {}
 
-	virtual std::string getName() { return "empty"; }
+        virtual std::string getName() { return "[empty]"; }
 
 	// empty slots have no ROMs, so just return data (for floating bus emulation)
 	virtual unsigned char readRom(const unsigned short address, const unsigned char data) { return data; }

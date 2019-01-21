@@ -42,7 +42,8 @@ private:
     unsigned int cmdpos;
     void createScreen();
     std::vector<std::string> slotnames;
-    std::string cassettename;
+    std::string cassInName;
+    std::string cassOutName;
 
     static std::string truncateFilePath(const std::string& filepath);
 
@@ -87,9 +88,10 @@ public:
     void setIO(int slot, int drive, bool on);
     void setDirty(int slot, int drive, bool dirty);
 
-    void setCassetteFile(const std::string& filepath);
-    void setCassetteDirty(bool dirty);
-    void setCassettePos(int pos, int siz);
+    void setCassetteInFile(const std::string& filepath);
+    void setCassetteOutFile(const std::string& filepath);
+    void setCassetteDirty(bool dirty); // cassette out only
+    void setCassettePos(unsigned int pos, unsigned int siz); // cassette in only
 
     void setLangCard(int slot, bool readEnable, bool writeEnable, int bank);
     void setFirmCard(int slot, bool bank, bool F8);

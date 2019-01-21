@@ -22,11 +22,12 @@
 #include "paddles.h"
 #include "paddlebuttonstates.h"
 #include "speakerclicker.h"
-#include "cassette.h"
+#include "cassettein.h"
+#include "cassetteout.h"
 #include "slots.h"
 
-AddressBus::AddressBus(Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, Cassette& cassette, Slots& slts):
-	ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassette(cassette), slts(slts)
+AddressBus::AddressBus(Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
+    ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts)
 {
 }
 
@@ -132,7 +133,7 @@ unsigned char AddressBus::readSwitch(unsigned short address)
 		}
 		else if (islot == 0x2)
 		{
-			this->cassette.output();
+            this->cassetteOut.output();
 		}
 		else if (islot == 0x3)
 		{
@@ -158,7 +159,7 @@ unsigned char AddressBus::readSwitch(unsigned short address)
 			int sw2 = iswch & 0x7;
 			if (sw2 == 0)
 			{
-				setD7(this->cassette.input());
+                setD7(this->cassetteIn.input());
 			}
 			else if (sw2 < 4)
 			{

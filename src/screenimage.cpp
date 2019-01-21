@@ -43,6 +43,7 @@ static const char* power =
 #define SCRW 640
 #define SCRH 480
 #define ASPECT_RATIO 1.191 /* UA2, p. 8-28 */
+#define R_SLOT 67
 
 static const int HEIGHT = E2Const::VISIBLE_ROWS_PER_FIELD * 2;
 static const int WIDTH = AppleNTSC::H - AppleNTSC::PIC_START - 2;
@@ -59,7 +60,8 @@ buffer(true),
 fillLines(true),
 display(AnalogTV::MONITOR_COLOR),
 slotnames(8),
-cassettename(32, ' ') {
+cassInName(32, ' '),
+cassOutName(32, ' ') {
     createScreen();
 }
 
@@ -111,7 +113,7 @@ void ScreenImage::drawLabels() {
 }
 
 void ScreenImage::drawSlots() {
-    int r(65);
+    int r(R_SLOT-1);
     int c(17);
     drawText("SLOTS:", r++, c);
     for (int slot(0); slot < 8; ++slot) {
@@ -132,11 +134,20 @@ void ScreenImage::drawSlot(int slot, int r, int c) {
 
 void ScreenImage::drawCassette() {
     int r(65);
-    int c(85);
-    drawText("CASSETTE:", r, c);
-    c += 9;
-    drawText(this->cassettename, r, c);
-    const int len = this->cassettename.length();
+    int c(80);
+    drawText("CASSETTE:  IN<-", r, c);
+    c += 15;
+    drawText(this->cassInName, r, c);
+    int len = this->cassInName.length();
+    if (len < 40) {
+        drawText(std::string(40 - len, ' '), r, c + len);
+    }
+    ++r;
+    c = 81+9;
+    drawText("OUT->", r, c);
+    c += 5;
+    drawText(this->cassOutName, r, c);
+    len = this->cassOutName.length();
     if (len < 40) {
         drawText(std::string(40 - len, ' '), r, c + len);
     }
@@ -156,7 +167,7 @@ void ScreenImage::drawFnKeys() {
     drawText(
             "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT   HYPER   BUFFER   ", r++, c);
     drawText(
-            "      F1              F2          F3          F4       F5    F6       F7        F8       F9    F10     F11     F12     ", r++, c);
+            "       F1             F2          F3          F4       F5    F6       F7        F8       F9    F10     F11     F12     ", r++, c);
 
     if (this->fullscreen)
         invertText(76, 32, 42); // FULLSCRN
@@ -251,7 +262,7 @@ void ScreenImage::displayHz(int hz) {
 
 void ScreenImage::drawPower(bool on) {
     unsigned int* pn = this->pixels;
-    pn += (HEIGHT + 5)*SCRW + 5;
+    pn += (HEIGHT + 35)*SCRW + 5;
     for (int r = 0; r < POWERD/ASPECT_RATIO; ++r) {
         if (r < LABEL_Y || LABEL_Y + 7 <= r) {
             for (int c = 0; c < POWERD; ++c) {
@@ -337,7 +348,7 @@ void ScreenImage::backspaceCommand() {
 }
 
 void ScreenImage::updateSlotName(const int slot, Card* card) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(20);
     const std::string& name = card->getName();
     this->slotnames[slot] = name;
@@ -356,7 +367,7 @@ void ScreenImage::removeCard(const int slot, Card* card /* empty */) {
  */
 void ScreenImage::setDiskFile(int slot, int drive, const std::string& filepath) {
     std::string f = truncateFilePath(filepath);
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(37 + 32 * drive);
     drawText(f, r, c);
 
@@ -383,7 +394,7 @@ std::string ScreenImage::truncateFilePath(const std::string& filepath) {
 }
 
 void ScreenImage::clearCurrentDrive(int slot, int drive) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(35 + 32 * drive);
     drawChar(' ', r, c);
     this->slotnames[slot][c - 20] = ' ';
@@ -393,7 +404,7 @@ void ScreenImage::clearCurrentDrive(int slot, int drive) {
 }
 
 void ScreenImage::setCurrentDrive(int slot, int drive, int track, bool on) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(35 + 32 * drive);
     drawChar(' ', r, c, 0xFFFFFF, on ? 0xFF0000 : 0);
     c += 15;
@@ -413,7 +424,7 @@ void ScreenImage::setCurrentDrive(int slot, int drive, int track, bool on) {
 }
 
 void ScreenImage::setTrack(int slot, int drive, int track) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(52 + 32 * drive);
     char nibh = Util::hexDigit((((unsigned char) track) >> 4) & 0xF);
     drawChar(nibh, r, c);
@@ -425,19 +436,19 @@ void ScreenImage::setTrack(int slot, int drive, int track) {
 }
 
 void ScreenImage::setIO(int slot, int drive, bool on) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(35 + 32 * drive);
     drawChar(' ', r, c, 0xFFFFFF, on ? 0xFF0000 : 0);
 }
 
 void ScreenImage::setDirty(int slot, int drive, bool dirty) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(36 + 32 * drive);
     drawChar(dirty ? '*' : ' ', r, c);
     this->slotnames[slot][c - 20] = dirty ? '*' : ' ';
 }
 
-void ScreenImage::setCassetteFile(const std::string& filepath) {
+void ScreenImage::setCassetteInFile(const std::string& filepath) {
     std::string f = truncateFilePath(filepath);
     int r(65);
     int c(85 + 11);
@@ -449,18 +460,34 @@ void ScreenImage::setCassetteFile(const std::string& filepath) {
         drawText(d, r, c + f.length());
     }
 
-    this->cassettename.replace(c - 94, 12, 12, ' ');
-    this->cassettename.replace(c - 94, f.length(), f);
+    this->cassInName.replace(c - 94, 12, 12, ' ');
+    this->cassInName.replace(c - 94, f.length(), f);
+}
+
+void ScreenImage::setCassetteOutFile(const std::string& filepath) {
+    std::string f = truncateFilePath(filepath);
+    int r(66);
+    int c(85 + 11);
+    drawText(f, r, c);
+
+    const int dlen = 12 - f.length();
+    if (dlen > 0) {
+        std::string d(dlen, ' ');
+        drawText(d, r, c + f.length());
+    }
+
+    this->cassOutName.replace(c - 94, 12, 12, ' ');
+    this->cassOutName.replace(c - 94, f.length(), f);
 }
 
 void ScreenImage::setCassetteDirty(bool dirty) {
-    int r(65);
+    int r(66);
     int c(85 + 10);
     drawChar(dirty ? '*' : ' ', r, c);
-    this->cassettename[c - 94] = dirty ? '*' : ' ';
+    this->cassOutName[c - 94] = dirty ? '*' : ' ';
 }
 
-void ScreenImage::setCassettePos(int pos, int siz) {
+void ScreenImage::setCassettePos(unsigned int pos, unsigned int siz) {
     int r(65);
     int c(110);
     std::ostringstream os;
@@ -474,7 +501,7 @@ void ScreenImage::setCassettePos(int pos, int siz) {
 0: language RW B2
  */
 void ScreenImage::setLangCard(int slot, bool readEnable, bool writeEnable, int bank) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(29);
     drawChar(readEnable ? 'R' : ' ', r, c);
     this->slotnames[slot][c - 20] = readEnable ? 'R' : ' ';
@@ -496,7 +523,7 @@ void ScreenImage::setLangCard(int slot, bool readEnable, bool writeEnable, int b
 0: firmware D F8
  */
 void ScreenImage::setFirmCard(int slot, bool bank, bool F8) {
-    int r(66 + slot);
+    int r(R_SLOT + slot);
     int c(29);
     drawChar(bank ? 'D' : ' ', r, c);
     this->slotnames[slot][c - 20] = bank ? 'D' : ' ';

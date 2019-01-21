@@ -43,8 +43,9 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
 	kbd(keypresses,fhyper,buffered),
 	rom(AddressBus::MOTHERBOARD_ROM_SIZ),
 	ram(AddressBus::MOTHERBOARD_RAM_SIZ),
-	cassette(gui),
-	addressBus(ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassette,slts),
+    cassetteIn(gui),
+    cassetteOut(gui),
+    addressBus(ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
 	picgen(tv,videoMode,this->revision),
 	video(videoMode,addressBus,picgen,textRows),
 #ifdef USE_EMU
@@ -69,7 +70,8 @@ void Apple2::tick() {
     this->video.tick();
     this->paddles.tick();
     this->speaker.tick();
-    this->cassette.tick();
+    this->cassetteIn.tick();
+    this->cassetteOut.tick();
 
     if (this->revision > 0) {
         this->powerUpReset.tick();

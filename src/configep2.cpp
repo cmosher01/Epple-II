@@ -25,7 +25,8 @@
 #include "standardout.h"
 #include "standardin.h"
 #include "clockcard.h"
-#include "cassette.h"
+#include "cassettein.h"
+#include "cassetteout.h"
 #include "tinyfiledialogs.h"
 
 #include <iostream>
@@ -74,7 +75,7 @@ static void trim(std::string& str)
 	}
 }
 
-void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette)
+void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	std::ifstream* pConfig;
 
@@ -144,7 +145,7 @@ void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenI
 		trim(line);
 		if (!line.empty())
 		{
-			parseLine(line,ram,rom,slts,revision,gui,cassette);
+            parseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
 		}
 		std::getline(*pConfig,line);
 	}
@@ -153,11 +154,11 @@ void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenI
 
 	// TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
-void Config::parseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette)
+void Config::parseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	try
 	{
-		tryParseLine(line,ram,rom,slts,revision,gui,cassette);
+        tryParseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
 	}
 	catch (const ConfigException& err)
 	{
@@ -165,7 +166,7 @@ void Config::parseLine(const std::string& line, Memory& ram, Memory& rom, Slots&
 	}
 }
 
-void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, Cassette& cassette)
+void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	std::istringstream tok(line);
 
@@ -301,29 +302,49 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
 
 		if (cas == "rewind")
 		{
-			cassette.rewind();
+            cassetteIn.rewind();
 		}
-		else if (cas == "new")
+        else if (cas == "blank")
 		{
 			std::string fcas;
 			std::getline(tok,fcas);
 			trim(fcas);
-			cassette.newFile(fcas);
+            if (!fcas.empty()) {
+                cassetteOut.blank(fcas);
+            }
 		}
 		else if (cas == "load")
 		{
-			std::string fcas;
-			std::getline(tok,fcas);
-			trim(fcas);
-			cassette.load(fcas);
+            std::string fn_optional;
+            std::getline(tok,fn_optional);
+            trim(fn_optional);
+            if (fn_optional.length() == 0) {
+                gui.exitFullScreen();
+                char const *ft[1] = { "*.wav" };
+                char const *fn = tinyfd_openFileDialog("Load cassette audio", "", 1, ft, "WAVE cassette images", 0);
+                if (fn) {
+                    fn_optional = std::string(fn);
+                }
+            }
+            if (fn_optional.length() > 0) {
+                cassetteIn.load(fn_optional);
+            }
 		}
-		else if (cas == "unload")
+        else if (cas == "eject")
 		{
-			cassette.unload();
-		}
+            std::string eject;
+            tok >> eject;
+            if (eject == "in") {
+                cassetteIn.eject();
+            } else if (eject == "out") {
+                cassetteOut.eject();
+            } else {
+                throw ConfigException("error: unknown cassette to eject: "+eject);
+            }
+        }
 		else if (cas == "save")
 		{
-			cassette.save();
+            cassetteOut.save();
 		}
 		else
 		{
