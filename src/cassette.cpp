@@ -21,6 +21,7 @@
 #include <cstdlib>
 #include "tinyfiledialogs.h"
 #include "cassette.h"
+#include "e2const.h"
 
 Cassette::Cassette(ScreenImage& gui):
     gui(gui),
@@ -45,7 +46,7 @@ void Cassette::tick() {
          * Automatically stop the tape if the Apple doesn't use
          * it within the given number of cycles.
          */
-        if (this->t_active+100000 <= this->t) {
+        if (this->t_active+3*E2Const::AVG_CPU_HZ <= this->t) {
             note("STOP");
             std::cout << "cassette: t=" << this->t << std::endl;
             this->playing = false;

@@ -104,7 +104,7 @@ bool CassetteOut::blank(const std::string& filePath) {
 bool CassetteOut::eject() {
     const bool ok = Cassette::eject();
     if (ok) {
-        this->gui.setCassetteOutFile("(no tape)");
+        this->gui.setCassetteOutFile("[empty]");
         this->samp_out.clear();
     }
     return ok;

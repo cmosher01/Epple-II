@@ -83,6 +83,7 @@ void CassetteIn::tick() {
             this->playing = false;
             this->gui.setCassettePos(this->samp_siz,this->samp_siz);
             note_pos();
+            return;
         }
 
         this->gui.setCassettePos(p,this->samp_siz);
@@ -229,12 +230,12 @@ bool CassetteIn::load(const std::string& filePath) {
     SDL_BuildAudioCVT(&cvt, wav_spec.format, wav_spec.channels, wav_spec.freq, AUDIO_F32, 1, E2Const::AVG_CPU_HZ/10);
     cvt.len = wav_length;
     cvt.buf = reinterpret_cast<std::uint8_t*>(std::malloc(cvt.len_mult * cvt.len));
-    memcpy(cvt.buf, wav_buffer, cvt.len);
+    std::memcpy(cvt.buf, wav_buffer, cvt.len);
     SDL_FreeWAV(wav_buffer);
 
     SDL_ConvertAudio(&cvt);
     this->samp = reinterpret_cast<float*>(cvt.buf);
-    this->samp_siz = cvt.len_cvt/4;
+    this->samp_siz = cvt.len_cvt/4u;
 
     note("LOAD");
     note_pos();
@@ -250,7 +251,7 @@ bool CassetteIn::load(const std::string& filePath) {
 bool CassetteIn::eject() {
     const bool ok = Cassette::eject();
     if (ok) {
-        this->gui.setCassetteInFile("(no tape)");
+        this->gui.setCassetteInFile("[empty]");
         this->gui.setCassettePos(0,0);
         std::free(this->samp);
         this->samp_siz = 0;

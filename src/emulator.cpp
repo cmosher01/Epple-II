@@ -444,6 +444,10 @@ void Emulator::processCommand() {
 }
 
 bool Emulator::isSafeToQuit() {
+    if (!this->apple2.cassetteOut.eject()) {
+        return false;
+    }
+
     if (!this->apple2.slts.isDirty()) {
         return true;
     }

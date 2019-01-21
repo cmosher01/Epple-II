@@ -168,18 +168,16 @@ The +cassette+ command performs various operations of the emulated cassette tape
 
 
 --------
-cassette new <file-path>
-cassette load <file-path>
-cassette unload
+cassette load [ <file-path> ]
 cassette rewind
+cassette blank <file-path>
 cassette save
+cassette eject { in | out }
 --------
 
-+<file-path>+ File path of the (special format) cassette tape image file.
++<file-path>+ File path of the cassette tape image file, a standard WAVE file.
 
-The +cassette+ command allows the user to control the emulated cassette tape player.
-See <<cassette_tape>> for more information about operating the emulated
-cassette player and cassette tape image files.
+See <<cassette_tape>> for more information about operating the emulated cassette tape interface.
 
 
 
@@ -198,6 +196,5 @@ revision <rev>
 
 The +revision+ command chooses which revision of the Apple ][ motherboard to
 use. The only revisions that make any difference (for now, at least) are 0 or 1. Zero
-is the original (now quite rare) version of the motherboard, that only had two hi-res
+is the original (rare) version of the motherboard, that only had two hi-res
 colors (green and purple), and always displayed text with green and purple fringes.
-Revision 1 and later motherboards are the ones we are more familiar with.

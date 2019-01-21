@@ -2,52 +2,76 @@ anchor:cassette_tape[]
 
 === Cassette Tape Interface
 
-The Apple ][ and Apple ][ plus machines had the ability to save and load binary
+The Apple ][ and Apple ][ plus machines have the ability to save and load binary
 data to and from cassette tape. The user would attach a standard cassette tape
-recorder to the jacks on the back of the Apple ][, and use the monitor +R+ and +W+
-commands, or the Applesoft BASIC commands +LOAD+ and +SAVE+, to read and write data
+recorder to the jacks on the back of the Apple ][, and use the monitor commands
++R+ and +W+, or the BASIC commands +LOAD+ and +SAVE+, to read and write data
 on the cassette tape. The user would have to press the play and/or record buttons
 on the player at the right time.
 
-The Epple ][ emulates the cassette interface, using a file to hold the
-recorded portion of the tape. The file will grow in length as necessary
-to hold data that the emulated Apple is writing to the ``tape.''
-The emulator will not overwrite existing data on a tape image.
-The emulator will automatically ``press'' the play or record buttons that
-would have been necessary when using the original machine.
+The Apple ][ has two cassette ports, CASSETTE IN and CASSETTE OUT. To save a program to
+tape, the user would attach a cassette recorder to the CASSETTE OUT port, load a blank
+cassette into the recorder, press RECORD (and PLAY), then on the Apple type SAVE. When
+finished, the user would press STOP, and eject the tape.
+
+To load a previously saved program
+from tape, the user would attach the player to the CASSETTE IN port, then load and REWIND
+the tape. The user would PLAY the tape until the header tone could be heard, then STOP.
+On the Apple ][ the user would type LOAD and immediately press PLAY on the cassette player.
+After the file loaded, the user would STOP and eject the tape.
+
+The Epple ][ emulates the cassette interface, using a standard WAVE (PCM) file to
+hold the recorded portion of the tape. It provides two ports, one for CASSETTE IN and
+a separate one for CASSETTE OUT. Generally you'll use only one at a time. Use CASSETTE IN
+for LOADing a program, or CASSETTE OUT for SAVEing a program.
+
+To load a program from a cassette image WAVE file, use +cassette load+
+to put the tape into the cassette player. The tape will automatically rewind and
+advance to the header tone. Then use the Apple LOAD command to load the program
+from the tape. If the Apple gives you +ERR+, that means it could not interpret the
+WAVE audio correctly.
+If you want to rewind the tape, you can use the +casssette rewind+ command.
+Use +cassette eject in+ to close the file.
+
+To save an in-memory program to a cassette tape image WAVE file, use
++cassette blank <file-path>+ to put a new blank tape image into
+the cassette recorder. Then use the Apple SAVE command to record to the tape, and then
++cassette save+ to save the WAVE file. Use +cassette eject out+ to close the file.
+
+The emulator will not overwrite existing data in a tape image file.
 
 ==== Commands
 
-+cassette new <file-path>+
++cassette load [ <file-path> ]+
 
-This creates a new empty file (on the host computer) that represents a cassette tape image.
-The file must not already exist.
-
-+cassette load <file-path>+
-
-This loads an existing file (from the host computer) containing a cassette tape image.
-The tape is automatically positioned at its beginning (fully rewound).
-
-+cassette unload+
-
-This removes the file from the cassette tape. Note that you must manually save
-the file using the +cassette save+ command (described below).
-
-[WARNING]
-Unloading an unsaved file will lose any changes made to the file, without warning.
+This loads an existing WAVE file (from the host computer) containing a cassette tape image
+onto the CASSETTE IN port,
+in preparation for loading the program from it. If +file-path+
+is omitted, a dialog box will be presented to select the file to load.
+The tape is automatically positioned at the first header tone.
 
 +cassette rewind+
 
-This command ``rewinds'' the cassette tape, positioning it at the beginning
-of the tape (for subsequent reading). You do not need to rewind the tape
-before saving or unloading it, of course.
+This command rewinds the tape currently on the CASSETTE IN port.
+This command first positions the tape to its beginning,
+and then ``fast-forwards'' to the first header tone.
+
++cassette blank <file-path>+
+
+This creates a new empty file (on the host computer) that represents a cassette tape image,
+and loads it onto the CASSETTE OUT port,
+in preparation for saving a program to it.
+The file must not already exist. The file type should be +.wav+ to indicate a WAVE format file.
 
 +cassette save+
 
 This command saves the changed tape to the file. Note that the display will show
 an asterisk +*+ next to the file name if there are unsaved changes that need to
-be saved. Unsaved changes will be lost without warning if the file is unloaded
-or if you quit the program.
+be saved.
+
++cassette eject { in | out }+
+
+This removes the file from the specified cassette port (CASSETTE IN port, or CASSETE OUT port).
 
 ==== Example of Saving to Tape
 
@@ -70,8 +94,6 @@ are going to save to a cassette tape image file.
 
 ]RUN
 HELLO
-
-]
 ------------------------
 
 We first need to load a tape image file into the cassette machine.
@@ -79,24 +101,22 @@ Enter command mode by pressing +F5+, then make a new tape
 image file.
 
 ------------------------
-command: cassette new hello.tap
+command: cassette blank hello.wav
 ------------------------
 
-This will create a new, empty tape file image named +hello.tap+
+This will create a new, empty tape file image named +hello.wav+
 in the current default directory. (We could have specified a full path
 name for the file if we wanted to place it in a different directory.)
-Notice that the emulator now displays the name of the tape image file,
-along with the position and length of the tape image, which is now +0/0+.
+Notice that the emulator now displays the name of the tape image file.
 
 Next, we tell Applesoft to save the program to the cassette. For this,
 we just use the +SAVE+ command. Note that this is not the
 DOS +SAVE+ command; the DOS command has a file name after
 +SAVE+. We just use +SAVE+ with no file name.
 
+[source,vbs]
 ------------------------
 ]SAVE
-
-]
 ------------------------
 
 It will take 10 seconds or so for it to save. Notice that the
@@ -109,11 +129,19 @@ the tape image file.
 command: cassette save
 ------------------------
 
-We can now unload the file from the emulator (which is like ejecting
-the tape from the cassette player).
+Now do a NEW to clear the program, and LIST to prove that it's gone.
+
+[source,vbs]
+------------------------
+]NEW
+
+]LIST
+------------------------
+
+We can now eject the tape (close the file).
 
 ------------------------
-command: cassette unload
+command: cassette eject out
 ------------------------
 
 ==== Example of Loading from Tape
@@ -123,25 +151,26 @@ we will need to first load the tape image file back into the cassette machine.
 Press +F5+ to enter command mode and load the image file.
 
 ------------------------
-command: cassette load hello.tap
+command: cassette load
 ------------------------
 
-This will load hello.tap (in the current default directory). Notice the
+This will bring up the Open File dialog box. Choose
+hello.wav file you just saved. Notice the
 emulator now displays the name of the tape image file, along with the
-position and length of the tape image, which in this case is +0/33481+.
+position and length of the tape image. Notice the emulator automatically
+advances the tape to the first header section.
 
 Next, we tell Applesoft to load the program from the cassette. For this,
 we just use the +LOAD+ command. Note that this is not the
 DOS +LOAD+ command; the DOS command has a file name after
 +LOAD+. We just use +LOAD+ with no file name.
 
+[source,vbs]
 ------------------------
 ]LOAD
-
-]
 ------------------------
 
-It will take 10 seconds or so for it to load. Notice that the
+It will take several seconds for it to load. Notice that the
 current position of the tape is counting up as the Apple loads
 the program. When it is finished, the program will be loaded.
 
@@ -154,37 +183,4 @@ the program. When it is finished, the program will be loaded.
 
 ]RUN
 HELLO
-
-]
 ------------------------
-
-==== Tape Image File Format
-
-The format of the tape image file is unique to the Epple ][
-It is stored in a low-level format that represents the waveform that the Apple writes
-to the cassette tape.
-
-The file is a binary format. Each byte in the file represents the length of one half of one cycle
-(of voltage level variation) written to the tape. The length is in 10-microsecond units.
-
-For example, a tape image file might have the following binary bytes (in decimal):
-+65  65  65  65  65  20  25  50  50  25  25  25  25  50  50+
-Since each byte represents a 10-microsecond unit, these bytes represent the following
-half-cycle lengths in microseconds:
-+650 650 650 650 650 200 250 500 500 250 250 250 250 500 500+
-The meaning of these half-cycle lengths to the Apple is as follows:
-
-------------------------
-|-------HEADER------|--sync-|-1-bit-|-0-bit-|-0-bit-|-1-bit-|
-|                   |       |       |       |       |       |
-|650 650 650 650 650|200 250|500 500|250 250|250 250|500 500|
-------------------------
-
-where +HEADER+ is a header section the Apple writes (to skip any
-unrecordable leader section on a real cassette tape); +sync+ is a
-synchronization cycle; and the subsequent cycles are the actual
-bits of data saved on the tape. A 500-microsecond cycle (which
-is stored in the file as two 250 microsecond half-cycles)
-represents a *zero* bit, and a 1-millisecond cycle (which is
-stored in the file as two 500 microsecond half-cycles)
-represents a *one* bit.
