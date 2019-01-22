@@ -157,17 +157,26 @@ void CassetteIn::rewind() {
     this->playing = false;
     note_pos();
 
+    this->gui.setCassettePos(this->t/10,this->samp_siz);
+}
 
-
-
+void CassetteIn::tone() {
+    if (!isLoaded()) {
+        return;
+    }
+    note_pos();
 
     note("FAST FORWARD TO TONE");
 
+    this->playing = false;
+
     const unsigned int HEAD_SAMPLES = 17;
     std::int_fast8_t slope_was = 0;
-    uint i_was = 0;
-    uint c_head = 0;
-    for (std::uint_fast32_t i = 1; i < this->samp_siz; ++i) {
+    std::uint_fast32_t i_was = 0;
+    std::uint_fast32_t c_head = 0;
+
+    const std::uint_fast32_t start = this->t/10 > 0 ? this->t/10 : 1;
+    for (std::uint_fast32_t i = start; i < this->samp_siz; ++i) {
         std::int_fast8_t slope_is = slope(this->samp[i-1], this->samp[i]);
         if (slope_is) {
             if (slope_is != slope_was) {
@@ -244,6 +253,7 @@ bool CassetteIn::load(const std::string& filePath) {
     this->gui.setCassetteInFile(filePath);
 
     rewind();
+    tone();
 
 	return true;
 }

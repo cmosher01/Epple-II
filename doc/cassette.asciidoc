@@ -52,9 +52,15 @@ The tape is automatically positioned at the first header tone.
 
 +cassette rewind+
 
-This command rewinds the tape currently on the CASSETTE IN port.
-This command first positions the tape to its beginning,
-and then ``fast-forwards'' to the first header tone.
+This command rewinds the tape currently on the CASSETTE IN port. After rewinding
+the tape, you will typically need to fast-forward to the head tone using
+the +cassette tone+ command.
+
++cassette tone+
+
+If more than one program is stored in one WAVE file, then after loading the first
+program, you may need to fast-forward to the next header tone. This command will
+do just that.
 
 +cassette blank <file-path>+
 

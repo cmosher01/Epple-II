@@ -304,6 +304,10 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
 		{
             cassetteIn.rewind();
 		}
+        else if (cas == "tone")
+        {
+            cassetteIn.tone();
+        }
         else if (cas == "blank")
 		{
 			std::string fcas;

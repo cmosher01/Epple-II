@@ -42,6 +42,7 @@ public:
 
         bool load(const std::string& filePath);
         void rewind();
+        void tone();
         virtual bool eject();
 };
 

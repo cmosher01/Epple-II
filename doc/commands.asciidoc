@@ -170,6 +170,7 @@ The +cassette+ command performs various operations of the emulated cassette tape
 --------
 cassette load [ <file-path> ]
 cassette rewind
+cassette tone
 cassette blank <file-path>
 cassette save
 cassette eject { in | out }
