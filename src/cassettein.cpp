@@ -19,6 +19,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
+#include <cstring>
 #include <SDL2/SDL_audio.h>
 #include <SDL2/SDL_log.h>
 #include "tinyfiledialogs.h"
