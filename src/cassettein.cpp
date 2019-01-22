@@ -170,7 +170,7 @@ void CassetteIn::tone() {
 
     this->playing = false;
 
-    const unsigned int HEAD_SAMPLES = 17;
+    const unsigned int HEAD_SAMPLES = 1020;
     std::int_fast8_t slope_was = 0;
     std::uint_fast32_t i_was = 0;
     std::uint_fast32_t c_head = 0;
