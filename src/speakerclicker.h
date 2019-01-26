@@ -1,6 +1,7 @@
 /*
     epple2
-    Copyright (C) 2008 by Christopher A. Mosher <cmosher01@gmail.com>
+
+    Copyright © 2008, 2019 by Christopher A. Mosher <cmosher01@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,13 +19,17 @@
 #ifndef SPEAKERCLICKER_H
 #define SPEAKERCLICKER_H
 
-class SpeakerClicker
-{
-private:
-	bool clicked;
-	int t;
+#include <cstdint>
+#include <SDL2/SDL_audio.h>
+
+class SpeakerClicker {
+    private:
+        SDL_AudioDeviceID devid;
+        std::uint8_t silence;
+        bool clicked;
+        std::uint8_t t;
 	bool positive;
-public:
+    public:
 	SpeakerClicker();
 	~SpeakerClicker();
 	void tick();

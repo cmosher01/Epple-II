@@ -16,149 +16,80 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "speakerclicker.h"
-#include <SDL2/SDL.h>
+#include "e2const.h"
+#include <SDL2/SDL_audio.h>
 #include <iostream>
 #include <ostream>
-#include <deque>
 
-std::deque<char> locbuf;
-volatile bool done;
-SDL_cond* bufchg;
-SDL_mutex* buflck;
-volatile int silence;
-
-// TODO figure out why sound is so choppy, and fix it
-void fillbuf(void *userdata, Uint8 *stream, int len)
-{
-	int tot(0);
-	while (len && !done)
-	{
-		// wait for locbuf to have some data
-		// (it gets filled up by tick() method)
-		SDL_LockMutex(buflck);
-		while (locbuf.empty() && !done)
-		{
-			SDL_CondWait(bufchg,buflck);
-		}
-		if (done)
-		{
-			SDL_UnlockMutex(buflck);
-			return;
-		}
-		while (locbuf.size() > 0 && len > 0)
-		{
-			int v = locbuf.front();
-			*stream++ = v;
-
-			if (v < 0) v = -v;
-			tot += v;
-
-			--len;
-			locbuf.pop_front();
-		}
-		if (tot <= 0)
-		{
-			if (locbuf.size() >= 1024)
-				locbuf.clear();
-		}
-		else
-		{
-			if (locbuf.size() >= 65536)
-				locbuf.clear();
-		}
-		SDL_UnlockMutex(buflck);
-	}
-}
-
-#define TICKS_PER_SAMPLE 21
+#define TICKS_PER_SAMPLE 50
 
 SpeakerClicker::SpeakerClicker():
-	clicked(false),
-	t(TICKS_PER_SAMPLE)
-{
-	done = false;
-
+    devid(0),
+    silence(128),
+    clicked(false),
+    t(TICKS_PER_SAMPLE),
+    positive(false) {
 	SDL_AudioSpec audio;
-	audio.freq = 48000; // samples per second
+    audio.freq = E2Const::AVG_CPU_HZ/TICKS_PER_SAMPLE; // samples per second
 	audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
 	audio.channels = 1; // mono
-	audio.silence = 0;
-	audio.samples = 1024;
-	audio.callback = fillbuf;
+    audio.silence = 128;
+    audio.samples = 512;
+    audio.callback = 0;
 	audio.userdata = 0;
-	SDL_AudioSpec obtained;
+
+    SDL_AudioSpec obtained;
 	obtained.callback = 0;
 	obtained.userdata = 0;
 
- 	if (SDL_OpenAudio(&audio,&obtained) != 0)
-	{
-		done = true;
+    this->devid = SDL_OpenAudioDevice(0,0,&audio,&obtained,0);
+    if (!this->devid) {
 		std::cerr << "Unable to initialize audio: " << SDL_GetError() << std::endl;
-	}
-	else
-	{
-		bufchg = SDL_CreateCond();
-		buflck = SDL_CreateMutex();
-		silence = obtained.silence;
+    } else {
+        this->silence = obtained.silence;
 
-//		std::cout << "initialized audio: " << std::endl;
-//		std::cout << "freq: " << obtained.freq << std::endl;
-//		std::cout << "format: " << obtained.format << std::endl;
-//		std::cout << "channels: " << (int)obtained.channels << std::endl;
-//		std::cout << "silence: " << (int)obtained.silence << std::endl;
-//		std::cout << "samples: " << obtained.samples << std::endl;
-//		std::cout << "size: " << obtained.size << std::endl;
-
-		SDL_PauseAudio(0);
+        std::cout << "initialized audio: " << std::endl;
+        std::cout << "    device ID: " << this->devid << std::endl;
+        std::cout << "    freq: " << obtained.freq << std::endl;
+        std::cout << "    format: " << obtained.format << std::endl;
+        std::cout << "    channels: " << (int)obtained.channels << std::endl;
+        std::cout << "    silence: " << (int)obtained.silence << std::endl;
+        std::cout << "    samples: " << obtained.samples << std::endl;
+        std::cout << "    size: " << obtained.size << std::endl;
+        SDL_PauseAudioDevice(this->devid, 0);
 	}
 }
 
 
-SpeakerClicker::~SpeakerClicker()
-{
-	if (done)
-	{
+SpeakerClicker::~SpeakerClicker() {
+    if (!this->devid) {
 		return;
 	}
-	done = true;
-	SDL_LockMutex(buflck);
-	SDL_CondSignal(bufchg);
-	SDL_UnlockMutex(buflck);
-	SDL_CloseAudio();
-	SDL_DestroyCond(bufchg);
-	SDL_DestroyMutex(buflck);
+    SDL_CloseAudioDevice(this->devid);
 }
 
-void SpeakerClicker::tick()
-{
-	if (done)
-	{
+void SpeakerClicker::tick() {
+    if (!this->devid) {
 		return;
 	}
 
-	--this->t;
-	if (this->t <= 0)
-	{
-		this->t = TICKS_PER_SAMPLE;
-		int amp;
-		if (this->clicked)
-		{
-			amp = this->positive ? silence+100 : silence-100;
+    if (!--this->t) {
+        std::uint8_t amp;
+        if (this->clicked) {
+            amp = this->positive ? this->silence+100u : this->silence-100u;
 			this->positive = !this->positive;
-			this->clicked = false;
-		}
-		else
-		{
-			amp = silence;
-		}
-		SDL_LockMutex(buflck);
-		locbuf.push_back(amp);
-		SDL_CondSignal(bufchg);
-		SDL_UnlockMutex(buflck);
-	}
+            this->clicked = false;
+        } else {
+            amp = silence;
+        }
+        const int failed = SDL_QueueAudio(this->devid, &amp, sizeof(amp));
+        if (failed) {
+            std::cerr << "SDL_QueueAudio failed " << SDL_GetError() << std::endl;
+        }
+        this->t = TICKS_PER_SAMPLE;
+    }
 }
 
-void SpeakerClicker::click()
-{
+void SpeakerClicker::click() {
 	this->clicked = true;
 }
