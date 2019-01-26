@@ -47,6 +47,11 @@ void Emulator::toggleComputerPower() {
 }
 
 void Emulator::powerOnComputer() {
+    if (this->apple2.revision == 0) {
+        unsigned char key = 33u + rand()%94;
+        this->keypresses.push(key);
+        this->lastKeyDown = key;
+    }
     this->apple2.powerOn();
     this->screenImage.drawPower(true);
     this->display.setNoise(false);
