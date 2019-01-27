@@ -107,8 +107,9 @@ void ScreenImage::createScreen() {
 
 void ScreenImage::drawLabels() {
     drawText("EPPLE ][", 0, 141);
-    drawSlots();
+    drawText("ANNUNCIATORS: 0:  1:  2:  3:", 65, 17);
     drawCassette();
+    drawSlots();
     drawFnKeys();
 }
 
@@ -256,7 +257,7 @@ void ScreenImage::drawChar(const char ch, int row, int col, int color, int bgcol
 
 void ScreenImage::displayHz(int hz) {
     char s[20];
-    sprintf(s, "%4.2f MHz   ", hz / 1e6);
+    sprintf(s, "%5.3f MHz   ", hz / 1e6);
     drawText(s, 3, 141);
 }
 
@@ -433,6 +434,10 @@ void ScreenImage::setTrack(int slot, int drive, int track) {
     char nibl = Util::hexDigit((unsigned char) track & 0xF);
     drawChar(nibl, r, c);
     this->slotnames[slot][c - 20] = nibl;
+}
+
+void ScreenImage::setAnnunciator(int ann, bool on) {
+    drawChar(' ', 65, 33+4*ann, 0xFFFFFF, on ? 0xFF0000 : 0);
 }
 
 void ScreenImage::setIO(int slot, int drive, bool on) {

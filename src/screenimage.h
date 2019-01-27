@@ -82,6 +82,8 @@ public:
 
     void setDiskFile(int slot, int drive, const std::string& filename);
 
+    void setAnnunciator(int ann, bool on);
+
     void clearCurrentDrive(int slt, int drv);
     void setCurrentDrive(int slt, int drv, int track, bool on);
     void setTrack(int slot, int drive, int track);

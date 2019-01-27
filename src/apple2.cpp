@@ -45,7 +45,7 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
 	ram(AddressBus::MOTHERBOARD_RAM_SIZ),
     cassetteIn(gui),
     cassetteOut(gui),
-    addressBus(ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
+    addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
 	picgen(tv,videoMode,this->revision),
 	video(videoMode,addressBus,picgen,textRows),
 #ifdef USE_EMU

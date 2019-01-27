@@ -26,8 +26,8 @@
 #include "cassetteout.h"
 #include "slots.h"
 
-AddressBus::AddressBus(Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
-    ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts)
+AddressBus::AddressBus(ScreenImage& gui, int revision, Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
+    gui(gui), revision(revision), ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts)
 {
 }
 
@@ -50,7 +50,7 @@ unsigned char AddressBus::read(const unsigned short address)
 	{
 		if ((address >> 12) == 0xC)
 		{
-			// 11007sssxxxxxxxx
+            // 11007sss,xxxxxxxx
 			const bool seventh = address & 0x0800;
 			const int slot = (address >> 8) & 7;
 			if (seventh)
@@ -91,7 +91,7 @@ void AddressBus::write(const unsigned short address, const unsigned char d)
 	{
 		if ((address >> 12) == 0xC)
 		{
-			// 11007sssxxxxxxxx
+            // 11007sss,xxxxxxxx
 			const bool seventh = address & 0x0800;
 			const int slot = (address >> 8) & 7;
 			if (!seventh && slot == 0)
@@ -137,11 +137,14 @@ unsigned char AddressBus::readSwitch(unsigned short address)
 		}
 		else if (islot == 0x3)
 		{
+            if (this->revision == 0) {
+                this->cassetteOut.output();
+            }
 			this->speaker.click();
 		}
 		else if (islot == 0x4)
 		{
-			// ignore utility strobe
+            // TODO ? utility strobe
 		}
 		else if (islot == 0x5)
 		{
@@ -151,7 +154,12 @@ unsigned char AddressBus::readSwitch(unsigned short address)
 			}
 			else
 			{
-				// ignore annunciator outputs
+                // 11000000,01011aaf
+                // aa = annunciator, 0-3
+                // f == on/off
+                const bool on = iswch & 1;
+                const int ann = (iswch >> 1) & 3;
+                this->gui.setAnnunciator(ann, on);
 			}
 		}
 		else if (islot == 0x6)
