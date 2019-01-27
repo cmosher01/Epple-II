@@ -15,4 +15,18 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "lowpass_1_5_mhz.h"
+#ifndef FILTERCHROMA
+#define FILTERCHROMA
+
+class FilterChroma {
+    private:
+        float xv[4];
+        float yv[4];
+
+    public:
+        FilterChroma();
+        ~FilterChroma();
+        float next(const float v);
+};
+
+#endif

@@ -15,8 +15,8 @@ applentsc.cpp card.cpp cassette.cpp cassettein.cpp cassetteout.cpp \
 clipboardhandler.cpp clockcard.cpp \
 configep2.cpp cpu.cpp diskbytes.cpp diskcontroller.cpp drive.cpp drivemotor.cpp \
 emptyslot.cpp emulator.cpp firmwarecard.cpp gui.cpp hypermode.cpp \
-keyboard.cpp keyboardbuffermode.cpp languagecard.cpp lowpass_1_5_mhz.cpp \
-lowpass_3_58_mhz.cpp lss.cpp main.cpp memory.cpp paddlebuttonstates.cpp \
+keyboard.cpp keyboardbuffermode.cpp languagecard.cpp filterchroma.cpp \
+filterluma.cpp lss.cpp main.cpp memory.cpp paddlebuttonstates.cpp \
 paddles.cpp picturegenerator.cpp powerupreset.cpp raminitializer.cpp \
 screenimage.cpp slots.cpp speakerclicker.cpp standardin.cpp \
 standardinproducer.cpp standardout.cpp steppermotor.cpp textcharacters.cpp \
@@ -30,8 +30,8 @@ noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h
 card.h cassette.h cassettein.h cassetteout.h \
 clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
 diskcontroller.h drive.h drivemotor.h e2const.h emptyslot.h emulator.h firmwarecard.h font3x5.h gui.h \
-hypermode.h keyboardbuffermode.h keyboard.h languagecard.h lowpass_1_5_mhz.h \
-lowpass_3_58_mhz.h lss.h memory.h paddlebuttonstates.h paddles.h picturegenerator.h \
+hypermode.h keyboardbuffermode.h keyboard.h languagecard.h filterchroma.h \
+filterluma.h lss.h memory.h paddlebuttonstates.h paddles.h picturegenerator.h \
 powerupreset.h raminitializer.h screenimage.h slots.h speakerclicker.h \
 standardin.h standardinproducer.h standardout.h steppermotor.h \
 textcharacterimages.h textcharacters.h timable.h util.h \

@@ -29,8 +29,8 @@
 #include "analogtv.h"
 #include "screenimage.h"
 #include "applentsc.h"
-#include "lowpass_3_58_mhz.h"
-#include "lowpass_1_5_mhz.h"
+#include "filterluma.h"
+#include "filterchroma.h"
 
 #include <map>
 
@@ -494,7 +494,7 @@ CB AnalogTV::get_cb(int lineno)
 }
 
 
-std::map<CB,IQ> cacheCB;
+static std::map<CB,IQ> cacheCB;
 
 const double AnalogTV::IQ_OFFSET_DEGREES = 33;
 const double AnalogTV::IQ_OFFSET_RADIANS = AnalogTV::IQ_OFFSET_DEGREES * 3.1415927 / 180;
@@ -538,30 +538,25 @@ IQ AnalogTV::get_iq_factor(const CB& cb)
 
 const int AnalogTV::IQINTOFF(130);
 
-void AnalogTV::ntsc_to_yiq(const int isignal, const int siglen, const IQ& iq_factor, int yiq[])
-{
-	Lowpass_3_58_MHz filterY;
-	Lowpass_1_5_MHz filterI;
-	Lowpass_1_5_MHz filterQ;
-	for (int off = 0; off < siglen; ++off)
-	{
-		const int sig = this->signal[isignal + off];
-		const int y = filterY.next(sig); // + 40; // to show blacker-than-black levels
-		int i;
-		int q;
-		if (y < -2)
-		{
-			i = 0;
-			q = 0;
-		}
-		else
-		{
-			i = filterI.next((int)(sig * iq_factor.get(off & 3)));
-			q = filterQ.next((int)(sig * iq_factor.get((off + 3) & 3)));
-		}
+void AnalogTV::ntsc_to_yiq(const int isignal, const int siglen, const IQ& iq_factor, int yiq[]) {
+    FilterLuma filterY;
+    FilterChroma filterI;
+    FilterChroma filterQ;
+    for (int off = 0; off < siglen; ++off) {
+        const int sig = this->signal[isignal + off];
+        const int y = filterY.next(sig);
+        int i;
+        int q;
+        if (y < -2) {
+            i = 0;
+            q = 0;
+        } else {
+            i = filterI.next(sig * iq_factor.get(off & 3));
+            q = filterQ.next(sig * iq_factor.get((off + 3) & 3));
+        }
 
-		yiq[off] = (((q+IQINTOFF)&0xff) << 16) | (((i+IQINTOFF)&0xff) << 8) | ((y+IQINTOFF)&0xff);
-	}
+        yiq[off] = (((q+IQINTOFF)&0xff) << 16) | (((i+IQINTOFF)&0xff) << 8) | ((y+IQINTOFF)&0xff);
+    }
 }
 
 int inline AnalogTV::yiq2rgb(const int yiq)
