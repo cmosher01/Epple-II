@@ -32,7 +32,7 @@ class Slots;
 class AddressBus {
     private:
         ScreenImage& gui;
-        int revision;
+        int& revision;
         Memory& ram;
         Memory& rom;
         Keyboard& kbd;
@@ -47,7 +47,7 @@ class AddressBus {
         unsigned char data; // this emulates the (floating) data bus
 
     public:
-        AddressBus(ScreenImage& gui, int revision, Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts);
+        AddressBus(ScreenImage& gui, int& revision, Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts);
         ~AddressBus();
 
         unsigned char read(const unsigned short address);

@@ -26,7 +26,7 @@
 #include "cassetteout.h"
 #include "slots.h"
 
-AddressBus::AddressBus(ScreenImage& gui, int revision, Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
+AddressBus::AddressBus(ScreenImage& gui, int& revision, Memory& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
     gui(gui), revision(revision), ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts)
 {
 }

@@ -46,7 +46,7 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
     cassetteIn(gui),
     cassetteOut(gui),
     addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
-	picgen(tv,videoMode,this->revision),
+    picgen(tv,videoMode,revision),
 	video(videoMode,addressBus,picgen,textRows),
 #ifdef USE_EMU
         transistors("transistors"),

@@ -13,7 +13,7 @@ epple2_CPPFLAGS = $(AM_CPPFLAGS) -DETCDIR=\"$(sysconfdir)\"
 epple2_SOURCES = a2colorsobserved.cpp addressbus.cpp analogtv.cpp apple2.cpp \
 applentsc.cpp card.cpp cassette.cpp cassettein.cpp cassetteout.cpp \
 clipboardhandler.cpp clockcard.cpp \
-configep2.cpp cpu.cpp diskbytes.cpp diskcontroller.cpp drive.cpp drivemotor.cpp \
+configep2.cpp cpu.cpp diskcontroller.cpp drive.cpp drivemotor.cpp \
 emptyslot.cpp emulator.cpp firmwarecard.cpp gui.cpp hypermode.cpp \
 keyboard.cpp keyboardbuffermode.cpp languagecard.cpp filterchroma.cpp \
 filterluma.cpp lss.cpp main.cpp memory.cpp paddlebuttonstates.cpp \
@@ -28,7 +28,7 @@ tinyfiledialogs.cpp
 
 noinst_HEADERS = a2colorsobserved.h addressbus.h analogtv.h apple2.h applentsc.h \
 card.h cassette.h cassettein.h cassetteout.h \
-clipboardhandler.h clockcard.h configep2.h cpu.h diskbytes.h \
+clipboardhandler.h clockcard.h configep2.h cpu.h \
 diskcontroller.h drive.h drivemotor.h e2const.h emptyslot.h emulator.h firmwarecard.h font3x5.h gui.h \
 hypermode.h keyboardbuffermode.h keyboard.h languagecard.h filterchroma.h \
 filterluma.h lss.h memory.h paddlebuttonstates.h paddles.h picturegenerator.h \
