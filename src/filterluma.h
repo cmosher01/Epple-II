@@ -20,13 +20,13 @@
 
 class FilterLuma {
     private:
-        float xv[6];
-        float yv[4];
+        double xv[6];
+        double yv[4];
 
     public:
         FilterLuma();
         ~FilterLuma();
-        float next(const float v);
+        double next(const double v);
 };
 
 #endif

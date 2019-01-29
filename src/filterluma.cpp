@@ -33,7 +33,7 @@ FilterLuma::FilterLuma() {
 FilterLuma::~FilterLuma() {
 }
 
-float FilterLuma::next(const float v) {
+double FilterLuma::next(const double v) {
     xv[0] = xv[1]; xv[1] = xv[2]; xv[2] = xv[3]; xv[3] = xv[4]; xv[4] = xv[5];
     xv[5] = v / GAIN;
     yv[0] = yv[1]; yv[1] = yv[2]; yv[2] = yv[3];

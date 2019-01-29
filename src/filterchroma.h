@@ -20,13 +20,13 @@
 
 class FilterChroma {
     private:
-        float xv[4];
-        float yv[4];
+        double xv[4];
+        double yv[4];
 
     public:
         FilterChroma();
         ~FilterChroma();
-        float next(const float v);
+        double next(const double v);
 };
 
 #endif

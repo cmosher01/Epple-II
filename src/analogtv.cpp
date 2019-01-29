@@ -275,19 +275,9 @@ void AnalogTV::drawMonitorColor()
 	delete [] rgb;
 }
 
-void AnalogTV::drawMonitorWhite()
-{
-	drawMonitorMonochrome(colors.c()[A2ColorsObserved::WHITE]);
-}
-
 void AnalogTV::drawMonitorGreen()
 {
 	drawMonitorMonochrome(colors.c()[A2ColorsObserved::HIRES_GREEN]);
-}
-
-void AnalogTV::drawMonitorOrange()
-{
-	drawMonitorMonochrome(colors.c()[A2ColorsObserved::HIRES_ORANGE]);
 }
 
 void AnalogTV::drawMonitorMonochrome(const unsigned int color)
@@ -315,15 +305,8 @@ void AnalogTV::drawTVOld()
 	for (int row = 0; row < 192; ++row)
 	{
 		IQ iq_factor;
-		if (this->type == TV_OLD_COLOR)
-		{
-			const CB cb = get_cb(row);
-			iq_factor = get_iq_factor(cb);
-		}
-		else
-		{
-			iq_factor = BLACK_AND_WHITE;
-		}
+        const CB cb = get_cb(row);
+        iq_factor = get_iq_factor(cb);
 		ntsc_to_yiq(row*AppleNTSC::H+350,AppleNTSC::H-350,iq_factor,yiq);
 		for (int col = 350; col < AppleNTSC::H-2; ++col)
 		{
@@ -338,31 +321,6 @@ void AnalogTV::drawTVOld()
 	delete [] yiq;
 }
 
-void AnalogTV::drawTVNew()
-{
-	unsigned int *rgb = new unsigned int[AppleNTSC::H];
-	int ip = 0;
-	for (int row = 0; row < 192; ++row)
-	{
-		const CB cb = get_cb(row);
-		const bool removeColor = false; //(this->type == TV_NEW_BW || !cb.isColor());
-		ntsc_to_rgb_newtv(row*AppleNTSC::H+350,AppleNTSC::H-350,rgb);
-		for (int col = 350; col < AppleNTSC::H-2; ++col)
-		{
-			int rgbv = rgb[col-350];
-			if (removeColor)
-			{
-				rgbv = color2bw(rgbv);
-			}
-			this->image.setElem(ip,rgbv);
-			if (bleed_down)
-				this->image.setElem(ip+D_IP,rgbv);
-			++ip;
-		}
-		ip += D_IP;
-	}
-	delete [] rgb;
-}
 
 void AnalogTV::drawBlank()
 {
@@ -418,64 +376,6 @@ void AnalogTV::ntsc_to_rgb_monitor(const int isignal, const int siglen, unsigned
 	}
 }
 
-void AnalogTV::ntsc_to_rgb_newtv(const int isignal, const int siglen, unsigned int rgb[])
-{
-	int sp, s0, s1, se;
-	sp = s0 = s1 = isignal;
-	se = isignal+siglen;
-	unsigned int c = 0;
-	while (s1 < se)
-	{
-		// no signal; black...
-		sp = s0;
-		while (this->signal[s0] < 50 && s0<se) { rgb[s0-isignal] = 0; ++s0; }
-		// unless it's too short, then color it (but not white)
-		if (c != 0xFFFFFF)
-		{
-			if (s0-sp < 4)
-			{
-				for (int i = sp; i < s0; ++i)
-					rgb[i-isignal] = c;
-			}
-			else
-			{
-				rgb[sp-isignal] = c;
-			}
-		}
-
-		// signal (white, grey, or color)
-		s1 = s0;
-		while (this->signal[s1] > 50 && s1<se) { ++s1; }
-		const int slen = s1-s0;
-		if (slen >= 4)
-		{
-			c = 0xFFFFFF;
-		}
-		else if (slen == 1)
-		{
-			if (this->signal[s0-2] > 50 && this->signal[s0+2] > 50)
-				c = 0x808080;
-			else
-				c = loresdarkcolor[s0 % 4];
-		}
-		else if (slen == 2)
-		{
-			c = hirescolor[s0 % 4];
-		}
-		else if (slen == 3)
-		{
-			c = loreslightcolor[s0 % 4];
-		}
-		else
-		{
-			++s1;
-		}
-
-		for (int i = s0; i < s1; ++i)
-			rgb[i-isignal] = c;
-		s0 = s1;
-	}
-}
 
 
 
