@@ -40,7 +40,7 @@ void RAMInitializer::init()
 	putBytesUntilFull(b++,2);
 	putBytesUntilFull(b++,2);
 	putBytesUntilFull(b++,1);
-};
+}
 
 
 void RAMInitializer::putBytesUntilFull(int bit, int pat)

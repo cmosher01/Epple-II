@@ -11,6 +11,14 @@
 
 
 
+# standard 48K RAM
+motherboard ram E 16K
+motherboard ram D 16K
+motherboard ram C 16K
+motherboard strap E 16K 8000
+motherboard strap D 16K 4000
+motherboard strap C 16K 0000
+
 # Demo system ROM for the emulator. This is only to allow the
 # emulator to do something useful when there are no real Apple ROM
 # images provided.
@@ -40,11 +48,11 @@ import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
 
 #slot 5 disk13
 #import slot 5 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
-#load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.nib
+#load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
 
 #slot 6 disk
 #import slot 6 rom 0 $(PREFIX)lib/apple2/dos/16sector/disk2.a65
-#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.nib
+#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.dsk.woz
 
 #slot 7 firmware
 #import slot 7 rombank 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65

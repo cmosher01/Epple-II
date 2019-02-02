@@ -18,6 +18,7 @@
 #include "configep2.h"
 
 #include "memory.h"
+#include "memoryrandomaccess.h"
 #include "slots.h"
 #include "diskcontroller.h"
 #include "languagecard.h"
@@ -35,6 +36,34 @@
 #include <sstream>
 #include <string>
 #include <stdexcept>
+
+
+#define K 1024u
+
+static std::uint16_t chip_size(const std::string &chip_model) {
+    if (chip_model == "4K") {
+        return 4u*K;
+    }
+    if (chip_model == "16K") {
+        return 16u*K;
+    }
+    if (chip_model == "-") {
+        return 0u;
+    }
+    throw ConfigException("unrecognized RAM chip model");
+}
+
+static std::uint16_t memory_block_size(const std::string &block_size) {
+    if (block_size == "4K") {
+        return 4u*K;
+    }
+    if (block_size == "16K") {
+        return 16u*K;
+    }
+    throw ConfigException("invalid RAM strapping block size (must be 4K or 16K)");
+}
+
+
 
 unsigned char Config::disk_mask(0);
 
@@ -75,7 +104,7 @@ static void trim(std::string& str)
 	}
 }
 
-void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	std::ifstream* pConfig;
 
@@ -154,7 +183,7 @@ void Config::parse(Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenI
 
 	// TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
-void Config::parseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	try
 	{
@@ -166,7 +195,7 @@ void Config::parseLine(const std::string& line, Memory& ram, Memory& rom, Slots&
 	}
 }
 
-void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	std::istringstream tok(line);
 
@@ -180,7 +209,62 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
 
 		insertCard(sCardType,slot,slts,gui);
 	}
-	else if (cmd == "import")
+    else if (cmd == "motherboard") {
+        std::string op;
+        tok >> op;
+        if (op == "ram") {
+            /* ram ROW BIT0 [BIT1 [... [BIT7]]]
+             * ram e -
+             * ram d 4096 MK4096 4K
+             * ram c 16K 4116 MK4116 MM5290 16K 16K 16K 16K
+             */
+            std::string row;
+            tok >> row;
+            std::transform(row.begin(), row.end(), row.begin(), ::toupper);
+            if (row != "C" && row != "D" && row != "E") {
+                throw ConfigException("expected row to be C, D, or E");
+            }
+            std::string chip_model;
+            tok >> chip_model;
+            std::uint16_t siz = chip_size(chip_model);
+            for (std::uint_fast8_t bit = 0u; bit < 8u; ++bit) {
+                if (siz) {
+                    ram.insert_chip(row, MemoryChip(siz,chip_model), bit);
+                } else {
+                    ram.remove_chip(row, bit);
+                }
+                std::string chip_model_optional;
+                tok >> chip_model_optional;
+                if (chip_model_optional.length()) {
+                    chip_model = chip_model_optional;
+                }
+                siz = chip_size(chip_model);
+            }
+        } else if (op == "strap") {
+            /* strap ROM K start-addr
+             * strap c 4K 0000
+             * strap d 4K 1000
+             * strap e 4K 2000
+             */
+            std::string row;
+            tok >> row;
+            std::transform(row.begin(), row.end(), row.begin(), ::toupper);
+            if (row != "C" && row != "D" && row != "E") {
+                throw ConfigException("expected row to be C, D, or E");
+            }
+
+            std::string block_size;
+            tok >> block_size;
+            std::uint16_t siz = memory_block_size(block_size);
+            unsigned short base(0);
+            tok >> std::hex >> base;
+            // TODO validate siz/base combination
+            ram.strap_to(row, base, siz);
+        } else {
+            throw ConfigException("error at \"motherboard\"; expected \"ram\" or \"strap\"");
+        }
+    }
+    else if (cmd == "import")
 	{
 		std::string sm;
 		tok >> sm;
@@ -215,10 +299,6 @@ void Config::tryParseLine(const std::string& line, Memory& ram, Memory& rom, Slo
 			if (romtype == "rom")
 			{
 				rom.load(base,memfile);
-			}
-			else if (romtype == "ram")
-			{
-				ram.load(base,memfile);
 			}
 			else
 			{

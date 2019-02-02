@@ -9,6 +9,17 @@
 # indicator on the language card line turning on or off.
 
 
+
+# 48K RAM
+motherboard ram E 16K
+motherboard ram D 16K
+motherboard ram C 16K
+motherboard strap E 16K 8000
+motherboard strap D 16K 4000
+motherboard strap C 16K 0000
+
+
+
 # Integer BASIC and old Monitor ROMs
 import motherboard rom 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
 import motherboard rom 2425 $(PREFIX)lib/apple2/system/a2/other.a65
@@ -26,4 +37,4 @@ slot 6 disk
 import slot 6 rom 0 $(PREFIX)lib/apple2/dos/16sector/disk2.a65
 
 # Insert DOS 3.3 System Master disk (original version) in drive 1
-load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.nib
+#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.dsk.woz

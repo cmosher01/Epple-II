@@ -20,34 +20,27 @@
 
 #include <vector>
 #include <istream>
+#include <cstdint>
 
-class Memory
-{
-private:
-	std::vector<unsigned char> bytes;
-	static const int CLEAR_VALUE;
+class Memory {
+    private:
+        std::vector<std::uint8_t> bytes;
+        const std::uint8_t clear_value;
+        const std::uint8_t missing_bits;
 
-public:
-	Memory(const size_t n);
-	size_t size() const
-	{
-		return this->bytes.size();
-	}
-	
-	unsigned char read(const unsigned short address) const
-	{
-		return this->bytes[address];
-	}
-	
-	void write(const unsigned short address, const unsigned char data)
-	{
-		this->bytes[address] = data;
-	}
-	
-	void clear();
-	void powerOn();
-	void powerOff();
-	void load(const unsigned short base, std::istream& in);
+    public:
+        Memory(const size_t n);
+        virtual ~Memory() { }
+
+        size_t size() const;
+        std::uint8_t read(const std::uint16_t address) const;
+        void write(const std::uint16_t address, const std::uint8_t data);
+        void powerOn();
+        void powerOff();
+
+        void clear();
+        void init();
+        void load(const std::uint16_t base, std::istream& in);
 };
 
 #endif

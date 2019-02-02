@@ -42,7 +42,7 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
 	slts(gui),
 	kbd(keypresses,fhyper,buffered),
 	rom(AddressBus::MOTHERBOARD_ROM_SIZ),
-	ram(AddressBus::MOTHERBOARD_RAM_SIZ),
+    ram(revision),
     cassetteIn(gui),
     cassetteOut(gui),
     addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),

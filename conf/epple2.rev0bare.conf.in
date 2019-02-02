@@ -10,6 +10,11 @@
 
 
 
+# Use an original, revision zero, motherboard
+revision 0
+
+
+
 # Load Integer BASIC and old Monitor ROMs
 import motherboard rom 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
 import motherboard rom 2425 $(PREFIX)lib/apple2/system/a2/other.a65
@@ -17,5 +22,6 @@ import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
 
 
 
-# Use an original, revision zero, motherboard
-revision 0
+# 4K RAM
+motherboard ram C 4K 4K 4K 4K 4K 4K 4K 4K
+motherboard strap C 4K 0000

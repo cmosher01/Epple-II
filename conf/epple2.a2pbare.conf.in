@@ -8,3 +8,9 @@
 
 import motherboard rom 0000 $(PREFIX)lib/apple2/system/a2p/applesoft.a65
 import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2p/monitor.a65
+
+
+
+# 4K RAM
+motherboard ram C 4K 4K 4K 4K 4K 4K 4K 4K
+motherboard strap C 4K 0000

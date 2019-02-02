@@ -9,6 +9,16 @@
 
 
 
+# 48K RAM
+motherboard ram E 16K
+motherboard ram D 16K
+motherboard ram C 16K
+motherboard strap E 16K 8000
+motherboard strap D 16K 4000
+motherboard strap C 16K 0000
+
+
+
 # Applesoft BASIC and Autostart Monitor ROMs
 import motherboard rom 0000 $(PREFIX)lib/apple2/system/a2p/applesoft.a65
 import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2p/monitor.a65
@@ -47,7 +57,7 @@ import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
 slot 5 disk13
 import slot 5 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
 # Insert the DOS 3.1 System Master disk into drive 1 of slot 5
-load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.nib
+#load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
 
 
 
@@ -56,7 +66,7 @@ load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_
 slot 6 disk
 import slot 6 rom 0 $(PREFIX)lib/apple2/dos/16sector/disk2.a65
 # Insert the DOS 3.3 System Master disk (original version) into slot 6
-load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.nib
+#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.dsk.woz
 
 
 

@@ -24,6 +24,7 @@
 #include "keyboard.h"
 #include "addressbus.h"
 #include "memory.h"
+#include "memoryrandomaccess.h"
 #include "picturegenerator.h"
 #include "textcharacters.h"
 #include "video.h"
@@ -51,7 +52,7 @@ class Apple2 : public Timable
 	Paddles paddles;
 	SpeakerClicker speaker;
 	Memory rom;
-	Memory ram;
+        MemoryRandomAccess ram;
         CassetteIn cassetteIn;
         CassetteOut cassetteOut;
         AddressBus addressBus;

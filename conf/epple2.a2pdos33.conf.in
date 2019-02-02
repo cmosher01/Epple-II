@@ -9,6 +9,16 @@
 # indicator on the language card line turning on or off.
 
 
+# 48K RAM
+motherboard ram E 16K
+motherboard ram D 16K
+motherboard ram C 16K
+motherboard strap E 16K 8000
+motherboard strap D 16K 4000
+motherboard strap C 16K 0000
+
+
+
 # Applesoft BASIC and Autostart Monitor ROMs
 import motherboard rom 0000 $(PREFIX)lib/apple2/system/a2p/applesoft.a65
 import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2p/monitor.a65
@@ -25,4 +35,4 @@ slot 6 disk
 import slot 6 rom 0 $(PREFIX)lib/apple2/dos/16sector/disk2.a65
 
 # Insert DOS 3.3 System Master disk (original version) in drive 1
-load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/disks/dos330/clean330sysmas.nib
+#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/disks/dos330/clean330sysmas.dsk.woz

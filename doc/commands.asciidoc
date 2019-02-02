@@ -2,7 +2,7 @@ anchor:commands[]
 
 === Commands
 
-+<<slot>> <<import>> <<load>> <<unload>> <<save>> <<cassette>> <<revision>>+
++<<slot>> <<motherboard>> <<import>> <<load>> <<unload>> <<save>> <<cassette>> <<revision>>+
 
 
 
@@ -45,6 +45,58 @@ The emulated Apple should be _powered off_ before inserting or removing cards.
 
 
 
+anchor:motherboard[]
+
+==== motherboard
+
+The +motherboard+ command configures the emulated Apple's motherboard RAM chips and strapping block.
+
+--------
+motherboard ram   {C|D|E} { 4K | 4096 | 16K | 4116 | - } [...up to 8]
+motherboard strap {C|D|E} { 4K | 16K } <base>
+--------
+
+The RAM configuration lines represent the rows of chips on the motherboard. The motherboard labels the
+rows as C, D, and E. Each row has 8 chips, one per bit in a byte. The Apple ][ accepts 4K or 16K chips.
+You use the +ram+ command to insert (or remove) chips from the sockets.
+You configure each row's address range by using a "strapping block" on the original Apple. In the
+emulator, use the +strap+ command to perform this function. You should strap 4K rows to a 4K range
+of RAM. You should always assign some RAM to the zero address.
+
+For more information about RAM configuration, see
+https://archive.org/details/Apple_II_Reference_Manual_1979_Apple/page/n79[Christopher Espinosa, Apple II Reference Manual
+(Cupertino, Calif.: Apple Computer, 1978), pp. 70-72].
+
+Example of normal 48K RAM configuration:
+--------
+ram e 16K
+strap e 16K 8000
+ram d 16K
+strap d 16K 4000
+ram c 16K
+strap c 16K 0000
+--------
+
+Example of 4K, showing how you could specify each chip:
+--------
+ram e - - - - - - - -
+ram d - - - - - - - -
+ram c 4K 4K 4K 4K 4K 4K 4K 4K
+strap c 4K 0000
+--------
+
+Example of 4K at zero address, and 8K at HI-RES page one:
+--------
+ram e 4K
+strap e 4K 3000
+ram d 4K
+strap d 4K 2000
+ram c 4K
+strap c 4K 0000
+--------
+
+
+
 anchor:import[]
 
 ==== import
@@ -53,7 +105,7 @@ The +import+ command imports a binary image file into the emulated Apple's memor
 
 --------
 import slot <slot> { rom | rom7 | rombank } <base> <file-path>
-import motherboard { rom | ram } <base> <file-path>
+import motherboard rom <base> <file-path>
 --------
 
 +<slot>+ Slot number, 0 through 7, of peripheral card to import the binary image into.
@@ -63,17 +115,16 @@ import motherboard { rom | ram } <base> <file-path>
 +<file-path>+ Path of the binary image to import.
 
 The +import+ command reads the binary image byte-for-byte from the given file-path
-into an area of memory in the emulated Apple. You can load into either the motherboard or
-a card in one of the slots. For the motherboard, you choose the RAM or ROM area. For a card
-in a slot, you can choose either the normal ROM, the bank-switched ROM, or the so-called
-``seventh ROM'' area.
+into an area of ROM in the emulated Apple. You can load into either the motherboard or
+a card in one of the slots. For a card in a slot, you can choose either the normal ROM,
+the bank-switched ROM, or the so-called ``seventh ROM'' area.
 
 You also have to specify the base address within the specific memory
 area at which the image file will be loaded. Note that the base address is specified as the offset
 within the specific memory area, and not necessarily as the actual memory address as seen
 by the Apple. So for motherboard ROM, for example, specifying a base as 2DED will cause the
-image to be loaded at offset 2DED in the ROM, which will be addressed by the Apple at
-memory address $FDED (because motherboard ROM ``starts'' at address $D000).
+image to be loaded at offset $2DED in the ROM, which will be addressed by the Apple at
+memory address $FDED, because motherboard ROM ``starts'' at address $D000, and $D000 + $2DED = $FDED.
 
 For peripheral cards, the ROM will be seen at locations $Cs00-$CsFF, where s is the slot
 number (1 through 7). The ``seventh ROM'' can be seen as locations $C800-$CFFF; Jim Sather
