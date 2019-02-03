@@ -15,7 +15,7 @@ class MemoryRow {
         bool power = false;
 
         /* 8 sockets for memory chips (empty socket represented by MemoryChipEmptySocket) */
-        std::array<MemoryChip,8> chips = {MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket()};
+        std::array<MemoryChip,8> chips = {{MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket()}};
 
         /* bit mask of empty chip sockets */
         std::uint8_t missing_bits = 0xFFu;
