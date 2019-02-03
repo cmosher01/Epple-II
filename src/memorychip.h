@@ -2,6 +2,7 @@
 #define MEMORYCHIP_H
 
 #include <cstdint>
+#include <vector>
 #include <string>
 
 class MemoryChip {
