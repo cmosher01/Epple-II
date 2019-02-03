@@ -36,6 +36,8 @@
 #include <sstream>
 #include <string>
 #include <stdexcept>
+#include <cctype>
+
 
 
 #define K 1024u
@@ -195,6 +197,13 @@ void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory&
 	}
 }
 
+static std::string filter_row(const std::string &row) {
+    if (row.length() != 1) {
+        return "";
+    }
+    return std::string(1, static_cast<char>(std::toupper(row[0])));
+}
+
 void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
 	std::istringstream tok(line);
@@ -220,7 +229,7 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
              */
             std::string row;
             tok >> row;
-            std::transform(row.begin(), row.end(), row.begin(), ::toupper);
+            row = filter_row(row);
             if (row != "C" && row != "D" && row != "E") {
                 throw ConfigException("expected row to be C, D, or E");
             }
@@ -248,7 +257,7 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
              */
             std::string row;
             tok >> row;
-            std::transform(row.begin(), row.end(), row.begin(), ::toupper);
+            row = filter_row(row);
             if (row != "C" && row != "D" && row != "E") {
                 throw ConfigException("expected row to be C, D, or E");
             }
