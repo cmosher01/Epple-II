@@ -1,5 +1,5 @@
 [program:Xvfb]
-command=Xvfb -screen 0 640x480x24 -ac
+command=Xvfb -screen 0 640x572x24 -ac
 stdout_logfile=/dev/stdout
 redirect_stderr=true
 stdout_logfile_maxbytes=0
