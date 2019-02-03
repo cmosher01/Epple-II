@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <istream>
 #include <cstdlib>
+#include <cstddef>
 #include "raminitializer.h"
 
 
