@@ -5,14 +5,14 @@
 /*
  * If any RAM IC sockets are empty, set the corresponding bits to 1 most of the time.
  * For some addresses it seems they are always 1, but for other addresses they can return
- * 0 sometimes, empirically I've seen anywhere from 8% to 15% of the time.
+ * 0 sometimes, empirically about 4% of the time.
  */
 static std::uint8_t randomize_missing_bits(std::uint8_t v, const std::uint8_t bits) {
     std::uint8_t bit = 1u;
     for (std::uint_fast8_t i = 0; i < 8; ++i) {
         if (bits & bit) {
             double r = static_cast<double>(std::rand())/RAND_MAX;
-            if (r < 0.11) {
+            if (r < 0.04) {
                 v &= ~bit;
             } else {
                 v |= bit;
@@ -27,15 +27,16 @@ static std::uint8_t randomize_missing_bits(std::uint8_t v, const std::uint8_t bi
 
 MemoryRow::MemoryRow(const char label):
     label(label) {
+    this->chips.fill(MemoryChip::instance("-"));
 }
 
 MemoryRow::~MemoryRow() {
 }
 
-void MemoryRow::insert_chip(MemoryChip chip, const std::uint_fast8_t socket) {
+void MemoryRow::insert_chip(MemoryChip *chip, const std::uint_fast8_t socket) {
     if (socket < 8u) {
         remove_chip(socket);
-        if (chip.exists()) {
+        if (chip->exists()) {
             this->chips[socket] = chip;
             this->missing_bits &= ~(1u << socket);
             this->values_stored.resize(calculate_size());
@@ -47,7 +48,7 @@ void MemoryRow::insert_chip(MemoryChip chip, const std::uint_fast8_t socket) {
 
 void MemoryRow::remove_chip(const std::uint_fast8_t socket) {
     if (socket < 8u) {
-        this->chips[socket] = MemoryChipEmptySocket();
+        this->chips[socket] = MemoryChip::instance("-");
         this->missing_bits |= (1u << socket);
         this->values_stored.resize(calculate_size());
     } else {
@@ -63,9 +64,9 @@ std::uint16_t MemoryRow::calculate_size() const {
     std::uint16_t size_new = 0u;
 
     for (std::uint_fast8_t i_chip = 0; i_chip < 8; ++i_chip) {
-        const MemoryChip &chip = this->chips[i_chip];
-        if (chip.exists()) {
-            const std::uint16_t s = chip.size();
+        const MemoryChip *chip = this->chips[i_chip];
+        if (chip->exists()) {
+            const std::uint16_t s = chip->size();
             if (size_new == 0u || s < size_new) {
                 size_new = s;
             }
@@ -88,9 +89,9 @@ void MemoryRow::powerOn() {
 
         std::uint8_t mask_bit = 1u;
         for (std::uint_fast8_t i_bit = 0; i_bit < 8; ++i_bit) {
-            const MemoryChip &chip = this->chips[i_bit];
-            if (chip.exists()) {
-                chip.init(mask_bit, this->values_stored, size());
+            const MemoryChip *chip = this->chips[i_bit];
+            if (chip->exists()) {
+                chip->init(mask_bit, this->values_stored, size());
             }
             mask_bit <<= 1;
         }
@@ -128,4 +129,8 @@ void MemoryRow::write(const std::uint16_t address, const std::uint8_t data) {
     } else {
         throw std::logic_error("cannot write memory when power is off");
     }
+}
+
+std::string MemoryRow::chip_id(std::uint_fast8_t socket) const {
+    return this->chips[socket]->id();
 }

@@ -217,6 +217,7 @@ LSS::LSS(bool use13SectorDos32LSS):
     setseq(lss13rom,0x23u,0x30u);
     setseq(lss13rom,0x33u,0xD0u);
 
+    printf("Disk ][ Controller Logic State Sequencer ROM:\n");
     if (use13Sector) {
         for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
             showua2seq(lss13rom,seq);

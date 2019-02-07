@@ -15,6 +15,7 @@ class MemoryStrapping {
         bool contains(std::uint16_t address) const;
         std::uint8_t read(const std::uint16_t address) const;
         void write(const std::uint16_t address, const std::uint8_t data);
+        std::uint16_t size() const;
 };
 
 #endif

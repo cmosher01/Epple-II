@@ -15,7 +15,7 @@ class MemoryRow {
         bool power = false;
 
         /* 8 sockets for memory chips (empty socket represented by MemoryChipEmptySocket) */
-        std::array<MemoryChip,8> chips = {{MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket(),MemoryChipEmptySocket()}};
+        std::array<MemoryChip*,8> chips;
 
         /* bit mask of empty chip sockets */
         std::uint8_t missing_bits = 0xFFu;
@@ -32,7 +32,7 @@ class MemoryRow {
         MemoryRow(const char label);
         virtual ~MemoryRow();
 
-        void insert_chip(MemoryChip chip, const std::uint_fast8_t socket);
+        void insert_chip(MemoryChip *chip, const std::uint_fast8_t socket);
         void remove_chip(const std::uint_fast8_t socket);
         void powerOff();
         void powerOn();
@@ -44,6 +44,8 @@ class MemoryRow {
         void write(const std::uint16_t address, const std::uint8_t data);
 
         static std::uint8_t missing_memory_byte_value();
+
+        std::string chip_id(std::uint_fast8_t socket) const;
 };
 
 #endif // MEMORYROW_H

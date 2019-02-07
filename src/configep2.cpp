@@ -42,18 +42,7 @@
 
 #define K 1024u
 
-static std::uint16_t chip_size(const std::string &chip_model) {
-    if (chip_model == "4K") {
-        return 4u*K;
-    }
-    if (chip_model == "16K") {
-        return 16u*K;
-    }
-    if (chip_model == "-") {
-        return 0u;
-    }
-    throw ConfigException("unrecognized RAM chip model");
-}
+
 
 static std::uint16_t memory_block_size(const std::string &block_size) {
     if (block_size == "4K") {
@@ -233,27 +222,23 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             if (row != "C" && row != "D" && row != "E") {
                 throw ConfigException("expected row to be C, D, or E");
             }
+
             std::string chip_model;
             tok >> chip_model;
-            std::uint16_t siz = chip_size(chip_model);
             for (std::uint_fast8_t bit = 0u; bit < 8u; ++bit) {
-                if (siz) {
-                    ram.insert_chip(row, MemoryChip(siz,chip_model), bit);
-                } else {
-                    ram.remove_chip(row, bit);
-                }
+                ram.insert_chip(row, MemoryChip::instance(chip_model), bit);
+
                 std::string chip_model_optional;
                 tok >> chip_model_optional;
                 if (chip_model_optional.length()) {
                     chip_model = chip_model_optional;
                 }
-                siz = chip_size(chip_model);
             }
         } else if (op == "strap") {
             /* strap ROM K start-addr
-             * strap c 4K 0000
-             * strap d 4K 1000
-             * strap e 4K 2000
+             * strap e 4K 5000
+             * strap d 4K 4000
+             * strap c 16K 0000
              */
             std::string row;
             tok >> row;

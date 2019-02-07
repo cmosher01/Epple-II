@@ -1,5 +1,6 @@
 #include "memoryrandomaccess.h"
 #include <cstdint>
+#include <cstdio>
 #include <exception>
 
 #define K 1024u
@@ -40,7 +41,7 @@ MemoryStrapping &MemoryRandomAccess::strapping_of(const std::string &row) {
     throw std::logic_error("expected C/D/E");
 }
 
-void MemoryRandomAccess::insert_chip(const std::string &row, MemoryChip chip, const std::uint_fast8_t socket) {
+void MemoryRandomAccess::insert_chip(const std::string &row, MemoryChip *chip, const std::uint_fast8_t socket) {
     row_of(row).insert_chip(chip, socket);
 }
 
@@ -146,4 +147,36 @@ void MemoryRandomAccess::powerOff() {
     this->rowE.powerOff();
     this->rowD.powerOff();
     this->rowC.powerOff();
+}
+
+static void dump_row(const std::string &name, const MemoryRow &row) {
+    std::printf("RAM %s ", name.c_str());
+    for (std::uint_fast8_t i = 0u; i < 8u; ++i) {
+        std::printf("%s ", row.chip_id(i).c_str());
+    }
+    std::printf("\n");
+}
+
+void MemoryRandomAccess::dump_config() const {
+    std::printf("motherboard RAM rows contain chips:\n");
+    std::printf("    "); dump_row("E", this->rowE);
+    std::printf("    "); dump_row("D", this->rowD);
+    std::printf("    "); dump_row("C", this->rowC);
+    std::printf("address $1000 blocks strapped to RAM row:\n");
+    std::uint_fast8_t i = 0xCu;
+    while (i--) {
+        std::string r;
+        const uint16_t addr = i*0x1000u;
+        if (this->strapE.contains(addr)) {
+            r = "E";
+        } else if (this->strapD.contains(addr)) {
+            r = "D";
+        } else if (this->strapC.contains(addr)) {
+            r = "C";
+        } else {
+            r = "[not strapped]";
+        }
+        std::printf("    $%X %s\n", i, r.c_str());
+    }
+    std::printf("total RAM: %dK\n", (this->strapE.size()+this->strapD.size()+this->strapC.size())/1024u);
 }

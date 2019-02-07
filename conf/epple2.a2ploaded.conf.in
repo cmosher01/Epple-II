@@ -10,9 +10,9 @@
 
 
 # 48K RAM
-motherboard ram E 16K
-motherboard ram D 16K
-motherboard ram C 16K
+motherboard ram E MM5290 MM5290 MM5290 MK4116 MM5290 MM5290 MM5290 MK4116
+motherboard ram D MM5290 MM5290 MK4116 MK4116 MM5290 MK4116 MM5290 MCM4116
+motherboard ram C MK4116 MK4116 MM5290 MM5290 MM5290 MM5290 MM5290 MM5290
 motherboard strap E 16K 8000
 motherboard strap D 16K 4000
 motherboard strap C 16K 0000

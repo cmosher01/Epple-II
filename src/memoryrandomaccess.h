@@ -25,7 +25,9 @@ class MemoryRandomAccess {
 public:
         MemoryRandomAccess(int &revision);
 
-        void insert_chip(const std::string &row, MemoryChip chip, const std::uint_fast8_t socket);
+        void dump_config() const;
+
+        void insert_chip(const std::string &row, MemoryChip *chip, const std::uint_fast8_t socket);
         void remove_chip(const std::string &row, const std::uint_fast8_t socket);
         void strap_to(const std::string &row, std::uint16_t addr_base, std::uint16_t addr_size);
 

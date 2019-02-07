@@ -73,6 +73,7 @@ void Emulator::powerOffComputer() {
 
 void Emulator::config(Config& cfg) {
     cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut);
+    this->apple2.ram.dump_config();
 }
 
 void Emulator::init() {
