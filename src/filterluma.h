@@ -20,7 +20,7 @@
 
 class FilterLuma {
     private:
-        double xv[6];
+        double xv[4];
         double yv[4];
 
     public:

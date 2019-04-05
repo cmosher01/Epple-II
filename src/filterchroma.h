@@ -18,14 +18,25 @@
 #ifndef FILTERCHROMA
 #define FILTERCHROMA
 
-class FilterChroma {
+class FilterChromaI {
     private:
-        double xv[4];
-        double yv[4];
+        double xv[5];
+        double yv[5];
 
     public:
-        FilterChroma();
-        ~FilterChroma();
+        FilterChromaI();
+        ~FilterChromaI();
+        double next(const double v);
+};
+
+class FilterChromaQ {
+    private:
+        double xv[5];
+        double yv[5];
+
+    public:
+        FilterChromaQ();
+        ~FilterChromaQ();
         double next(const double v);
 };
 
