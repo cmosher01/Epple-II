@@ -11,12 +11,12 @@
 
 
 
-# standard 48K RAM
+# standard 48K RAM with mixed chip brands
 motherboard ram E MM5290 MM5290 MM5290 MK4116 MM5290 MM5290 MM5290 MK4116
-motherboard ram D MM5290 MM5290 MK4116 MK4116 MM5290 MK4116 MM5290 MCM4116
-motherboard ram C MK4116 MK4116 MM5290 MM5290 MM5290 MM5290 MM5290 MM5290
 motherboard strap E 16K 8000
+motherboard ram D MM5290 MM5290 MK4116 MK4116 MM5290 MK4116 MM5290 MCM4116
 motherboard strap D 16K 4000
+motherboard ram C MK4116 MK4116 MM5290 MM5290 MM5290 MM5290 MM5290 MM5290
 motherboard strap C 16K 0000
 
 # Demo system ROM for the emulator. This is only to allow the
@@ -61,3 +61,79 @@ import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
 
 #revision 0
 revision 1
+
+
+
+
+
+# Alternate motherboard RAM configurations.
+# See Apple II Reference Manual, "RAM Configuration Blocks," pp. 70-71.
+
+# 4K
+#motherboard ram c 4096
+#motherboard strap c 4K 0000
+
+# 8K
+#motherboard ram d 4096
+#motherboard strap d 4K 1000
+#motherboard ram c 4096
+#motherboard strap e 4K 2000
+
+# 12K
+#motherboard ram e 4096
+#motherboard strap e 4K 2000
+#motherboard ram d 4096
+#motherboard strap d 4K 1000
+#motherboard ram c 4096
+#motherboard strap c 4K 0000
+
+# 16K
+#motherboard ram c 16K
+#motherboard strap c 16K 0000
+
+# 20K
+#motherboard ram d 4096
+#motherboard strap d 4K 4000
+#motherboard ram c 4116
+#motherboard strap c 16K 0000
+
+# 24K
+#motherboard ram e 4096
+#motherboard strap e 4K 5000
+#motherboard ram d 4096
+#motherboard strap d 4K 4000
+#motherboard ram c 4116
+#motherboard strap c 16K 0000
+
+# 32K
+#motherboard ram d 4116
+#motherboard strap d 16K 4000
+#motherboard ram c 4116
+#motherboard strap c 16K 0000
+
+# 36K
+#motherboard ram e 4096
+#motherboard strap e 4K 8000
+#motherboard ram d 4116
+#motherboard strap d 16K 4000
+#motherboard ram c 4116
+#motherboard strap c 16K 0000
+
+# 48K
+#motherboard ram e 4116
+#motherboard strap e 16K 8000
+#motherboard ram d 4116
+#motherboard strap d 16K 4000
+#motherboard ram c 4116
+#motherboard strap c 16K 0000
+
+
+
+
+# 12K (with hi-res graphics)
+#motherboard ram e 4096
+#motherboard strap e 4K 3000
+#motherboard ram d 4096
+#motherboard strap d 4K 2000
+#motherboard ram c 4096
+#motherboard strap c 4K 0000

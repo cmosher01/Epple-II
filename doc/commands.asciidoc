@@ -52,7 +52,7 @@ anchor:motherboard[]
 The +motherboard+ command configures the emulated Apple's motherboard RAM chips and strapping block.
 
 --------
-motherboard ram   {C|D|E} { 4K | 4096 | 16K | 4116 | - } [...up to 8]
+motherboard ram   {C|D|E} { 4K | 4096 | 16K | 4116 | - | (other-models) } [...up to 8]
 motherboard strap {C|D|E} { 4K | 16K } <base>
 --------
 
@@ -66,6 +66,15 @@ of RAM. You should always assign some RAM to the zero address.
 For more information about RAM configuration, see
 https://archive.org/details/Apple_II_Reference_Manual_1979_Apple/page/n79[Christopher Espinosa, Apple II Reference Manual
 (Cupertino, Calif.: Apple Computer, 1978), pp. 70-72].
+
+In the +motherboard ram+ configuration line `(other-models)` of chips are supported, and will produce different bit patterns at power-on time:
+--------
+MM5290
+MK4116
+MCM4116
+--------
+
+
 
 Example of normal 48K RAM configuration:
 --------
