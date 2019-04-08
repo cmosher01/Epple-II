@@ -74,7 +74,7 @@ RUN make install 2>&1 | tee -a $BUILD_LOG
 # supervisor
 RUN rm -R /etc/supervisor/*
 ENTRYPOINT ["supervisord"]
-CMD ["-c", "both"]
+CMD ["-c", "app"]
 COPY supervisor/includes /etc/supervisor/
 COPY supervisor/commands ./
 
