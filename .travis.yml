@@ -1,13 +1,28 @@
-dist: xenial
-sudo: required
 language: cpp
-compiler:
-  - gcc
-before_install:
-  - sudo apt-get -qq update
-install:
-  - sudo apt-get install -y xa65 libsdl2-gfx-dev
-before_script:
-  - ./bootstrap
-script:
-  - ./configure && make
+
+env:
+  global:
+    - NAME=$(grep bin_PROGRAMS src/Makefile.am | cut -d= -f2)
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      sudo: required
+      before_install:
+        - sudo apt-get -qq update
+      install:
+        - sudo apt-get install -y build-essential xa65 libsdl2-gfx-dev
+      before_script:
+        - ./bootstrap
+      script:
+        - ./configure && make
+        - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+    - os: osx
+      install:
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install xa sdl2_gfx
+      before_script:
+        - ./bootstrap
+      script:
+        - ./configure && make
+        - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
