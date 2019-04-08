@@ -5,6 +5,7 @@ Copyright © 2008–2019, Christopher Alan Mosher, Shelton, Connecticut, USA, <c
 [![License](https://img.shields.io/github/license/cmosher01/Epple-II.svg)](https://www.gnu.org/licenses/gpl.html)
 [![Latest Release](https://img.shields.io/github/release-pre/cmosher01/Epple-II.svg)](https://github.com/cmosher01/Epple-II/releases/latest)
 [![Build Status](https://travis-ci.com/cmosher01/Epple-II.svg?branch=master)](https://travis-ci.com/cmosher01/Epple-II)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor Covenant-v1.4 adopted-ff69b4.svg)](./code-of-conduct.md)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 
 Home page: <https://mosher.mine.nu/epple2>
@@ -47,3 +48,7 @@ on Linux, Mac, or Windows (mingw).
 [SDL](http://www.libsdl.org/) is the only dependency.
 
 See files `COPYING.*` for other copyright notices.
+
+Please note that this project is released with a Contributor
+Code of Conduct. By participating in this project you agree
+to abide by its terms.
