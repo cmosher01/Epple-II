@@ -37,10 +37,9 @@ matrix:
         - 7z x xa-2.3.9.tar.gz
         - 7z x xa-2.3.9.tar
         - echo $PATH
-        - ls -l '/c/Program Files'
-        - ls -l '/c/Program Files (x86)'
-        - mkdir mingw-get && cd mingw-get && 7z x ../mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
-        - mingw-get/bin/mingw-get install autotools
+        - ls -l '/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin'
+        # - mkdir mingw-get && cd mingw-get && 7z x ../mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
+        # - mingw-get/bin/mingw-get install autotools
       before_script:
         - ./bootstrap
       script:

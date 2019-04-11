@@ -1,8 +1,7 @@
 # epple2, The Emulated Apple ][
 
-Copyright © 2008–2019, Christopher Alan Mosher, Shelton, Connecticut, USA, <cmosher01@gmail.com>.
+Copyright © 2008–2019, Christopher Alan Mosher, Shelton, Connecticut, USA, <cmosher01@gmail.com>. GPLv3.
 
-[![License](https://img.shields.io/github/license/cmosher01/Epple-II.svg)](https://www.gnu.org/licenses/gpl.html)
 [![Latest Release](https://img.shields.io/github/release-pre/cmosher01/Epple-II.svg)](https://github.com/cmosher01/Epple-II/releases/latest)
 [![Build Status](https://travis-ci.com/cmosher01/Epple-II.svg?branch=master)](https://travis-ci.com/cmosher01/Epple-II)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](./code-of-conduct.md)
