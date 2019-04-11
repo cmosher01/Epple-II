@@ -36,6 +36,7 @@ matrix:
         - 7z x xa-2.3.9.tar.gz
         - 7z x xa-2.3.9.tar
         - choco install make
+        - mingw-get install autotools
       before_script:
         - ./bootstrap
       script:
