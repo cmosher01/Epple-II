@@ -31,11 +31,11 @@ matrix:
         - curl -LO https://www.libsdl.org/release/SDL2-devel-2.0.9-VC.zip
         - curl -LO https://www.floodgap.com/retrotech/xa/dists/xa-2.3.9.tar.gz
       install:
-        - choco install 7zip
         - 7z x SDL2-devel-2.0.9-VC.zip
         - 7z x xa-2.3.9.tar.gz
         - 7z x xa-2.3.9.tar
         - choco install make
+        - choco install mingw-get
         - mingw-get install autotools
       before_script:
         - ./bootstrap
