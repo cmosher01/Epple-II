@@ -32,13 +32,13 @@ matrix:
       before_install:
         - sudo apt-get -qq update
       install:
-        - sudo apt-get install -y build-essential mingw-w64 xa65
-        - curl -L https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz >SDL2.tar.gz
-        - tar xzf SDL2.tar.gz
+        - sudo apt-get install -y mingw-w64 xa65
+        - curl -L https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz >SDL2.tar.gz && tar xzf SDL2.tar.gz
         - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
       script:
-        - cd src && make -f Makefile.mingw
-        - mkdir $NAME && cp $NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll $NAME
+        - make -f Makefile.mingw
+        - mkdir $NAME && cp src/$NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll rom/*.a65 $NAME
+        - cp $NAME.mingw $NAME/$NAME.conf
         - zip -r $NAME-windows $NAME
         - unzip -l $NAME-windows
 

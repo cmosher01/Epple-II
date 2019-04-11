@@ -1,0 +1,4 @@
+MAKEFILE=Makefile.mingw
+all:
+	$(MAKE) -C rom -f $(MAKEFILE)
+	$(MAKE) -C src -f $(MAKEFILE)
