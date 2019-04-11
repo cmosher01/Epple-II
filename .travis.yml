@@ -37,9 +37,10 @@ matrix:
         - tar xzf SDL2.tar.gz
         - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
       script:
-        - cd src && make -f Makefile.wingw
+        - cd src && make -f Makefile.mingw
         - mkdir epple2 && cp ../epple2.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll ./epple2
-        - zip -j $NAME-windows epple2
+        - zip -r $NAME-windows epple2
+        - unzip -l $NAME-windows
 
 deploy:
   provider: releases
