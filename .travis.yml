@@ -30,13 +30,16 @@ matrix:
       before_install:
         - curl -LO https://www.libsdl.org/release/SDL2-devel-2.0.9-VC.zip
         - curl -LO https://www.floodgap.com/retrotech/xa/dists/xa-2.3.9.tar.gz
+        - curl -LO https://osdn.net/dl/mingw/mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip
       install:
+        - choco install make
         - 7z x SDL2-devel-2.0.9-VC.zip
         - 7z x xa-2.3.9.tar.gz
         - 7z x xa-2.3.9.tar
-        - choco install make
-        - choco install mingw-get
-        - mingw-get install autotools
+        - echo $PATH
+        - ls -l /c
+        - ls -l /c/MinGW/
+        - mkdir mingw-get && cd mingw-get && 7z x mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
       before_script:
         - ./bootstrap
       script:
