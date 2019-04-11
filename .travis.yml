@@ -12,7 +12,7 @@ matrix:
       before_install:
         - sudo apt-get -qq update
       install:
-        - sudo apt-get install -y build-essential xa65 libsdl2-gfx-dev
+        - sudo apt-get install -y build-essential xa65 libsdl2-dev
       before_script:
         - ./bootstrap
       script:
@@ -20,9 +20,31 @@ matrix:
         - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
     - os: osx
       install:
-        - HOMEBREW_NO_AUTO_UPDATE=1 brew install xa sdl2_gfx
+        - HOMEBREW_NO_AUTO_UPDATE=1 brew install xa sdl2
       before_script:
         - ./bootstrap
       script:
         - ./configure && make
         - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+    - os: windows
+      before_install:
+        - curl -LO https://www.libsdl.org/release/SDL2-devel-2.0.9-VC.zip
+        - curl -LO https://www.floodgap.com/retrotech/xa/dists/xa-2.3.9.tar.gz
+      install:
+        - choco install 7zip
+        - 7z e SDL2-devel-2.0.9-VC.zip
+        - 7z e xa-2.3.9.tar.gz
+        - choco install make
+      before_script:
+        - ./bootstrap
+      script:
+        - ./configure && make
+        - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+
+deploy:
+  provider: releases
+  file_glob: true
+  file: "*.zip"
+  skip_cleanup: true
+  on:
+    tags: true
