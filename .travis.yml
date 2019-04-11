@@ -37,9 +37,10 @@ matrix:
         - 7z x xa-2.3.9.tar.gz
         - 7z x xa-2.3.9.tar
         - echo $PATH
-        - ls -l /c
-        - ls -l /c/MinGW/
-        - mkdir mingw-get && cd mingw-get && 7z x mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
+        - ls -l /c/tools
+        - ls -l /c/tools/MinGW/
+        - mkdir mingw-get && cd mingw-get && 7z x ../mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
+        - mingw-get/bin/mingw-get install autotools
       before_script:
         - ./bootstrap
       script:
