@@ -4,11 +4,11 @@ SDL_ROOT_DIR=/usr/x86_64-w64-mingw32/bin
 
 CXX=/usr/bin/x86_64-w64-mingw32-g++
 SDL2_CFLAGS=`$(SDL_ROOT_DIR)/sdl2-config --cflags`
-CXXFLAGS=-std=c++11 -static-libgcc -static-libstdc++ $(SDL2_CFLAGS) -DETCDIR=\"./\"
+CXXFLAGS=-O3 -std=c++11 $(SDL2_CFLAGS) -DETCDIR=\"..\"
 
 LD=/usr/bin/x86_64-w64-mingw32-g++
-SDL2_LDFLAGS=`$(SDL_ROOT_DIR)/sdl2-config --libs`
-LDFLAGS=$(SDL2_LDFLAGS) -lole32 -static-libgcc -static-libstdc++
+SDL2_LDFLAGS=`$(SDL_ROOT_DIR)/sdl2-config --static-libs | sed 's/-mwindows//'` -lcomdlg32 -static-libstdc++
+LDFLAGS=$(SDL2_LDFLAGS)
 
 SRCS=$(notdir $(wildcard *.cpp))
 INCS=$(notdir $(wildcard *.h))
