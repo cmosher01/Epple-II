@@ -38,12 +38,14 @@ matrix:
         - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
       script:
         - cd src && make -f Makefile.mingw
-        - mkdir epple2 && cp ../epple2.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll ./epple2
-        - zip -r $NAME-windows epple2
+        - mkdir $NAME && cp $NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll $NAME
+        - zip -r $NAME-windows $NAME
         - unzip -l $NAME-windows
 
 deploy:
   provider: releases
+  api_key:
+    secure: ShY9Zi+DTe2QdHa5aY0zzqyukP8+DVEOHG56LqiBCDQGrP6Mg8MNftlnFGA62Yc+C0RAD1smekKf5OKsQXJqVIbsq7SD0lw7TKw+0XED8i5TIUaQqM9IcQrua6ESNET2mqJRJkyddjcZMGkLKjHx0UbWyUxmnS4Myw2sbLRd414=
   file_glob: true
   file: "*.zip"
   skip_cleanup: true
