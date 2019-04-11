@@ -32,8 +32,9 @@ matrix:
         - curl -LO https://www.floodgap.com/retrotech/xa/dists/xa-2.3.9.tar.gz
       install:
         - choco install 7zip
-        - 7z e SDL2-devel-2.0.9-VC.zip
-        - 7z e xa-2.3.9.tar.gz
+        - 7z x SDL2-devel-2.0.9-VC.zip
+        - 7z x xa-2.3.9.tar.gz
+        - 7z x xa-2.3.9.tar
         - choco install make
       before_script:
         - ./bootstrap
