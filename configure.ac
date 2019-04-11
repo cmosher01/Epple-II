@@ -52,7 +52,7 @@ AC_ARG_VAR([MD5SUM],[path to md5sum])
 
 
 # Checks for libraries.
-AC_CHECK_LIB([SDL2],[SDL_Init],,[AC_MSG_ERROR([cannot find libsdl])])
+AC_CHECK_LIB([SDL2],[SDL_Init],,[AC_MSG_ERROR([cannot find libSDL2])])
 
 
 

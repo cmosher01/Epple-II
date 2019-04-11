@@ -26,25 +26,20 @@ matrix:
       script:
         - ./configure && make
         - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
-    - os: windows
+    - os: linux # cross compile to windows
+      dist: xenial
+      sudo: required
       before_install:
-        - curl -LO https://www.libsdl.org/release/SDL2-devel-2.0.9-VC.zip
-        - curl -LO https://www.floodgap.com/retrotech/xa/dists/xa-2.3.9.tar.gz
-        - curl -LO https://osdn.net/dl/mingw/mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip
+        - sudo apt-get -qq update
       install:
-        - choco install make
-        - 7z x SDL2-devel-2.0.9-VC.zip
-        - 7z x xa-2.3.9.tar.gz
-        - 7z x xa-2.3.9.tar
-        - echo $PATH
-        - ls -l '/c/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin'
-        # - mkdir mingw-get && cd mingw-get && 7z x ../mingw-get-0.6.3-mingw32-pre-20170905-1-bin.zip && cd ..
-        # - mingw-get/bin/mingw-get install autotools
-      before_script:
-        - ./bootstrap
+        - sudo apt-get install -y build-essential mingw-w64 xa65
+        - curl -L https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz >SDL2.tar.gz
+        - tar xzf SDL2.tar.gz
+        - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
       script:
-        - ./configure && make
-        - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+        - cd src && make -f Makefile.wingw
+        - mkdir epple2 && cp ../epple2.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll ./epple2
+        - zip -j $NAME-windows epple2
 
 deploy:
   provider: releases
