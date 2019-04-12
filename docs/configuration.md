@@ -1,0 +1,59 @@
+# Configuration
+
+The Epple \]\[ Emulator is most useful when properly configured.
+After downloading and installing the Epple \]\[ Program, some System ROM (demo or real), and
+optionally the peripheral card ROMs you want to use, you will need to configure the program.
+Configuring is concerned primarily with telling the program what peripheral cards to use,
+and where the ROM files are located (and what memory addresses to load them at).
+
+## epple2.conf
+
+The default configuration file for
+the Epple \]\[ emulator is:
+
+    /etc/epple2/epple2.conf
+
+For Windows, the file will be:
+
+    C:\Program Files\Epple2\etc\epple2\epple2.conf
+
+The configuration file could be in a different location depending upon how
+the distribution package is built.
+
+You can specify a different configuration file for the emulator to use by
+specifying its name as the argument when running the epple2 program.
+
+The format of the configuration file is just lines of [commands](commands,.md).
+Comments begin with a hash `#` character, and continue to the end of the line.
+
+## Firmware
+
+Firmware, commonly called ROM images or ROMs, will need to be loaded
+into the emulated ROM areas of the emulated Apple
+in order for it to be able to boot the emulated Apple machine.
+The firmware available is described in this documentation.
+Once the firmware image files are installed on your computer, you can use the `import`
+command in the configuration file to load the image files into the emulator.
+
+## Peripheral Cards
+
+Another primary concern for configuring the Epple \]\[ is the insertion of
+peripheral cards into the Apple's slots. The most useful card is probably the
+Disk \]\[ Controller card; you will need to insert one of these cards if you want
+to be able to load floppy disk images into the emulated Apple. The various
+types of cards available are described in the cards section.
+You can use the `slot` command in the configuration file to insert
+them into the Apple's slots.
+
+## Sample Configuration Files
+
+There are a number of configuration files provided with the distribution for
+your convenience. They provide various common configurations of machines.
+You can use one of these files directly, by specifying its path as the argument
+to the program, or as a starting point for you own configuration file. These sample
+files are in the same location as the default +epple2.conf+ file.
+
+The Epple \]\[ Emulator can actually be run without a configuration file at all.
+In this case, you will be able to power on the Apple and see the low-resolution
+graphics display showing random RAM data. The system will not run, because
+there is no firmware loaded, but the emulator will otherwise be functional.
