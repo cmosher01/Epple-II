@@ -139,9 +139,9 @@ the bank-switched ROM, or the so-called *seventh ROM* area.
 You also have to specify the base address within the specific memory
 area at which the image file will be loaded. Note that the base address is specified as the offset
 within the specific memory area, and not necessarily as the actual memory address as seen
-by the Apple. So for motherboard ROM, for example, specifying a base as 2DED will cause the
-image to be loaded at offset $2DED in the ROM, which will be addressed by the Apple at
-memory address $FDED, because motherboard ROM *starts* at address $D000, and $D000 + $2DED = $FDED.
+by the Apple. So for motherboard ROM, for example, specifying a base as `2DED` will cause the
+image to be loaded at offset `$2DED` in the ROM, which will be addressed by the Apple at
+memory address `$FDED`, because motherboard ROM *starts* at address `$D000`, and `$D000` + `$2DED` = `$FDED`.
 
 For peripheral cards, the ROM will be seen at locations `$Cs00`-`$CsFF`, where s is the slot
 number (1 through 7). The *seventh ROM* can be seen as locations `$C800`-`$CFFF`; Jim Sather
@@ -150,7 +150,7 @@ describes this functionality in
 on page 6-4, section *The Seventh ROM Chip*. The EPPLE \]\[ emulator handles this processing correctly. A card can
 also have bank-switched ROM, which will show up at addresses `$D000`-`$FFFF` when switched in
 (stealing that address range from motherboard ROM... see
-[*Understanding the Apple II*]https://archive.org/details/understanding_the_apple_ii/page/n117,
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n117),
 p. 5-26 *The 16K RAM Card*).
 
 
@@ -448,17 +448,17 @@ slot 0 language
 
 Note that DOS and ProDOS will make use of a language card only if it is in slot _zero_.
 
-The language card has RAM at addresses $E000 through $FFFF, as well as two banks of RAM
-at addresses $D000 through $DFFF. A program switches between these RAMs and/or the
-motherboard ROM by using the I/O switches at $C080 through $C08F.
+The language card has RAM at addresses `$E000`-`$FFFF`, as well as two banks of RAM
+at addresses `$D000`-`$DFFF`. A program switches between these RAMs and/or the
+motherboard ROM by using the I/O switches at `$C080`-`$C08F`.
 
 The information area of the Epple \]\[ will show the current state of the
 language card as follows:
 
 *  `R`   Read from card RAM (vs. motherboard ROM)
 *  `W`   Write to card RAM (vs. write-disabled)
-*  `B1`  Use $D000 bank 1
-*  `B2`  Use $D000 bank 2
+*  `B1`  Use `$D000` bank 1
+*  `B2`  Use `$D000` bank 2
 
 An overview of the I/O switches that control the language card
 is provided by Jim Sather in
@@ -489,12 +489,12 @@ p. 5-30, Table 5.4, as follows:
 
 The firmware card emulates a (modified) Apple Firmware card.
 The firmware card is simply an alternate ROM, at addresses
-$D000 through $FFFF, that is switched using the I/O switches
-at addresses $C080 through $C08F. In order to make use of the
+`$D000`-`$FFFF`, that is switched using the I/O switches
+at addresses `$C080`-`$C08F`. In order to make use of the
 firmware card, you will need to load the ROM with a binary image
 from a file on disk. For example, to insert an Integer BASIC
 firmware card into the emulator, add these lines to your
-+epple2.conf+ file:
+`epple2.conf` file:
 
 ``` conf
 # Firmware card with Integer BASIC and old Monitor
@@ -515,8 +515,8 @@ import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.ex6
 
 Note that the addresses specified in the `epple2.conf` file for the
 rombank are based on the beginning of the bank ROM itself. For example, specifying
-`1000` (which is 1000 hex) represents the final memory address of $E000, because
-the bank ROM is always based at address $D000.
+`1000` (which is 1000 hex) represents the final memory address of `$E000`, because
+the bank ROM is always based at address `$D000`.
 
 The idea is that you would load your motherboard with, for
 example, Applesoft BASIC and the Autostart Monitor ROM (to emulate
@@ -529,7 +529,7 @@ Note that DOS and ProDOS will make use of a firmware card only if it is in slot 
 Jim Sather, in
 [*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n151),
 on pages 6-18 through 6-21, explains
-how to modify a firmware card to allow independent switching of the $F800-$FFFF
+how to modify a firmware card to allow independent switching of the `$F800`-`$FFFF`
 ROM memory. This area is occupied by the Monitor, so it is primarily
 intended to allow the user to switch between the old Monitor and the Autostart
 Monitor, independent of switching between Integer and Applesoft BASIC. The EPPLE \]\[
@@ -538,8 +538,8 @@ firmware card emulates this behavior.
 The information area of the EPPLE \]\[ will show the current state of the
 firmware card as follows:
 
-* `D`   Read from firmware card $D000-$F7FF (vs. motherboard BASIC ROM)
-* `F8`  Read from firmware card $F800-$FFFF (vs. motherboard Monitor ROM)
+* `D`   Read from firmware card `$D000`-`$F7FF` (vs. motherboard BASIC ROM)
+* `F8`  Read from firmware card `$F800`-`$FFFF` (vs. motherboard Monitor ROM)
 
 
 
@@ -579,7 +579,7 @@ RUN
 ```
 
 
-The card returns data (into the GETLN input buffer at $200) in
+The card returns data (into the `GETLN` input buffer at `$0200`) in
 the following format:
 
 `mm,ww,dd,hh,nn,ss,000,yyyy,Time Zone,v`
@@ -705,7 +705,7 @@ The tape is automatically positioned at the first header tone.
 
 This command rewinds the tape currently on the CASSETTE IN port. After rewinding
 the tape, you will typically need to fast-forward to the head tone using
-the +cassette tone+ command.
+the `cassette tone` command.
 
 `cassette tone`
 
@@ -718,7 +718,7 @@ do just that.
 This creates a new empty file (on the host computer) that represents a cassette tape image,
 and loads it onto the CASSETTE OUT port,
 in preparation for saving a program to it.
-The file must not already exist. The file type should be +.wav+ to indicate a WAVE format file.
+The file must not already exist. The file type should be `.wav` to indicate a WAVE format file.
 
 `cassette save`
 
@@ -836,6 +836,7 @@ the program. When it is finished, the program will be loaded.
 ]RUN
 HELLO
 ```
+
 ### Paddles
 
 The Epple \]\[ provides two paddles to the Apple \]\[ machine.
@@ -848,6 +849,7 @@ In
 on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
 to create two real-time clock references. This is emulated by the Epple \]\[. Paddle timers 2 and 3
 are 100-microsecond and 1-millisecond references, respectively.
+
 ### Speaker
 
 The Apple \]\[ could generate sound via a speaker that generated square wave
