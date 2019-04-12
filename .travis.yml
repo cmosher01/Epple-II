@@ -42,8 +42,8 @@ matrix:
         - mkdir $NAME
         - cp src/$NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll rom/*.a65 $NAME
         - cp conf/$NAME.mingw $NAME/$NAME.conf
-        - unzip -d $NAME apple2sys
-        - unzip -d $NAME apple2sysmas
+        - unzip -d $NAME apple2sys && rm apple2sys.zip
+        - unzip -d $NAME apple2sysmas && rm apple2sysmas.zip
         - zip -r $NAME-windows $NAME
         - unzip -l $NAME-windows
 
