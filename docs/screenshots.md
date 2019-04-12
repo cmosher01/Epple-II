@@ -101,8 +101,8 @@ RUN
 image::pinkmystery.png[]
 
 Jim Sather's book
-[Understanding the Apple \]\[](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
-which was the primary
+[*Understanding the Apple \]\[*](https://archive.org/details/understanding_the_apple_ii/),
+which is the primary
 reference for the internal design of the EPPLE \]\[ emulator, describes the video
 generation process of the Apple \]\[, in great detail, in Chapter 8.
 On page 8-21 he shows a simple Applesoft BASIC program (shown below)

@@ -9,7 +9,7 @@ reference
 ### Overview
 
 Epple \]\[ (the Emulated Apple \]\[ is a free (as in GPLv3), cross-platform
-(Windows, Linux) emulator of the Apple \]\[ and Apple \]\[ plus computers
+(Windows, Linux, Mac) emulator of the Apple \]\[ and Apple \]\[ plus computers
 from Apple, Inc. It strives for accurate emulation of the original machines,
 with a few extra features added.
 
@@ -143,14 +143,14 @@ by the Apple. So for motherboard ROM, for example, specifying a base as 2DED wil
 image to be loaded at offset $2DED in the ROM, which will be addressed by the Apple at
 memory address $FDED, because motherboard ROM *starts* at address $D000, and $D000 + $2DED = $FDED.
 
-For peripheral cards, the ROM will be seen at locations `$Cs00-$CsFF`, where s is the slot
-number (1 through 7). The *seventh ROM* can be seen as locations `$C800-$CFFF`; Jim Sather
+For peripheral cards, the ROM will be seen at locations `$Cs00`-`$CsFF`, where s is the slot
+number (1 through 7). The *seventh ROM* can be seen as locations `$C800`-`$CFFF`; Jim Sather
 describes this functionality in
-http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
-on page 6-4, section *The Seventh ROM Chip.* The EPPLE \]\[ emulator handles this processing correctly. A card can
-also have bank-switched ROM, which will show up at addresses `$D000-$FFFF` when switched in
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n137),
+on page 6-4, section *The Seventh ROM Chip*. The EPPLE \]\[ emulator handles this processing correctly. A card can
+also have bank-switched ROM, which will show up at addresses `$D000`-`$FFFF` when switched in
 (stealing that address range from motherboard ROM... see
-http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+[*Understanding the Apple II*]https://archive.org/details/understanding_the_apple_ii/page/n117,
 p. 5-26 *The 16K RAM Card*).
 
 
@@ -348,7 +348,7 @@ keyboard into the EPPLE \]\[, it produces an at-sign, as you would normally expe
 
 The Apple \]\[ keyboard didn't produce lower-case letters; neither does the emulator.
 Also, the Apple couldn't produce an opening square bracket `[`, braces `{}`, vertical
-bar `|`, or backslash `\\`. There were no up- or down-arrow keys. You cannot type these into
+bar `|`, or backslash `\`. There were no up- or down-arrow keys. You cannot type these into
 the emulator, either. There are other, unusual, cases that are emulated correctly,
 as well, such as typing Control in conjunction with a number key simply produces
 that number. So typing a Control-3 is the same as just typing a 3. Also, typing
@@ -462,7 +462,7 @@ language card as follows:
 
 An overview of the I/O switches that control the language card
 is provided by Jim Sather in
-[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n121),
 p. 5-30, Table 5.4, as follows:
 
 	+==================================================================+
@@ -527,7 +527,7 @@ you to type `FP` to use Applesoft BASIC, or `INT` to switch to Integer BASIC.
 Note that DOS and ProDOS will make use of a firmware card only if it is in slot _zero_.
 
 Jim Sather, in
-[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n151),
 on pages 6-18 through 6-21, explains
 how to modify a firmware card to allow independent switching of the $F800-$FFFF
 ROM memory. This area is occupied by the Monitor, so it is primarily
@@ -844,7 +844,7 @@ paddle is controlled by moving the mouse up and down. The paddle buttons
 are emulated by the mouse buttons (left and right click).
 
 In
-[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n188),
 on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
 to create two real-time clock references. This is emulated by the Epple \]\[. Paddle timers 2 and 3
 are 100-microsecond and 1-millisecond references, respectively.
