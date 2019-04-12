@@ -1,6 +1,3 @@
- conf---
-title: User Manual
----
 ### Overview
 
 Epple \]\[ (the Emulated Apple \]\[ is a free (as in GPLv3), cross-platform
@@ -115,7 +112,7 @@ strap c 4K 0000
 
 The `import` command imports a binary image file into the emulated Apple's ROMs.
 
-``` conf conf
+``` conf
 import slot <slot> { rom | rom7 | rombank } <base> <file-path>
 import motherboard rom <base> <file-path>
 ```

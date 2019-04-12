@@ -1,6 +1,10 @@
+[home](index.md)
+screenshots
+[configuration](configuration.md)
+[reference](usermanual.md)
+
 ---
-title: Screenshots
----
+
 ### DOS 3.3 System Master boot
 
 image::dos330boot.png[]

@@ -1,6 +1,3 @@
----
-title: Configuration
----
 The Epple \]\[ Emulator is most useful when properly configured.
 After downloading and installing the Epple \]\[ Program, some System ROM (demo or real), and
 optionally the peripheral card ROMs you want to use, you will need to configure the program.
