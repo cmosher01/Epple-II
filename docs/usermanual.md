@@ -1,4 +1,4 @@
----
+ conf---
 title: User Manual
 ---
 ### Overview
@@ -15,7 +15,7 @@ with a few extra features added.
 
 The `slot` command inserts a card into a peripheral slot of the emulated Apple.
 
-```
+``` conf
 slot <slot> <card>
 ```
 
@@ -33,13 +33,13 @@ slot <slot> <card>
 
 The `slot` command inserts a card into a peripheral slot. For example:
 
-```
+``` conf
 slot 0 language
 ```
 
 inserts a language card into slot zero. Use `empty` to remove a card:
 
-```
+``` conf
 slot 0 empty
 ```
 
@@ -54,7 +54,7 @@ The emulated Apple should be _powered off_ before inserting or removing cards.
 
 The `motherboard` command configures the emulated Apple's motherboard RAM chips and strapping block.
 
-```
+``` conf
 motherboard ram   {C|D|E} { 4K | 4096 | 16K | 4116 | - | (other-models) } [...up to 8]
 motherboard strap {C|D|E} { 4K | 16K } <base>
 ```
@@ -67,11 +67,11 @@ emulator, use the `strap` command to perform this function. You should strap 4K 
 of RAM. You should always assign some RAM to the zero address.
 
 For more information about RAM configuration, see
-https://archive.org/details/Apple_II_Reference_Manual_1979_Apple/page/n79[Christopher Espinosa, Apple II Reference Manual
-(Cupertino, Calif.: Apple Computer, 1978), pp. 70-72].
+Christopher Espinosa, [*Apple II Reference Manual*](https://archive.org/details/Apple_II_Reference_Manual_1979_Apple/page/n79)
+(Cupertino, Calif.: Apple Computer, 1978), pp. 70-72.
 
-In the +motherboard ram+ configuration line `(other-models)` of chips are supported, and will produce different bit patterns at power-on time:
-```
+In the `motherboard ram` configuration line `(other-models)` of chips are supported, and will produce different bit patterns at power-on time:
+``` conf
 MM5290
 MK4116
 MCM4116
@@ -80,7 +80,7 @@ MCM4116
 
 
 Example of normal 48K RAM configuration:
-```
+``` conf
 ram e 16K
 strap e 16K 8000
 ram d 16K
@@ -90,7 +90,7 @@ strap c 16K 0000
 ```
 
 Example of 4K, showing how you could specify each chip:
-```
+``` conf
 ram e - - - - - - - -
 ram d - - - - - - - -
 ram c 4K 4K 4K 4K 4K 4K 4K 4K
@@ -98,7 +98,7 @@ strap c 4K 0000
 ```
 
 Example of 4K at zero address, and 8K at HI-RES page one:
-```
+``` conf
 ram e 4K
 strap e 4K 3000
 ram d 4K
@@ -113,9 +113,9 @@ strap c 4K 0000
 
 #### import
 
-The `import` command imports a binary image file into the emulated Apple's memory.
+The `import` command imports a binary image file into the emulated Apple's ROMs.
 
-```
+``` conf conf
 import slot <slot> { rom | rom7 | rombank } <base> <file-path>
 import motherboard rom <base> <file-path>
 ```
@@ -126,7 +126,7 @@ import motherboard rom <base> <file-path>
 
 `file-path` Path of the binary image to import.
 
-The `import` command reads the binary image byte-for-byte from the given file-path
+The `import` command reads the binary image byte-for-byte from the given `file-path`
 into an area of ROM in the emulated Apple. You can load into either the motherboard or
 a card in one of the slots. For a card in a slot, you can choose either the normal ROM,
 the bank-switched ROM, or the so-called *seventh ROM* area.
@@ -154,10 +154,10 @@ p. 5-26 *The 16K RAM Card*).
 
 #### load
 
-The `load` command loads a https://applesaucefdc.com/woz/[WOZ 2.0 format] floppy disk image into one of the emulated disk drives.
+The `load` command loads a [WOZ 2.0 format](https://applesaucefdc.com/woz/) floppy disk image into one of the emulated disk drives.
 
 
-```
+``` conf
 load slot <slot> drive <drive> [ <file-path> ]
 ```
 
@@ -171,12 +171,13 @@ load slot <slot> drive <drive> [ <file-path> ]
 The `load` command will load a WOZ 2.0 image into a disk drive. Specify the slot that
 contains a Disk \]\[ controller peripheral card, and specify which drive number (1 or 2).
 
-[NOTE]
-The floppy disk image MUST be a WOZ 2.0 DISK IMAGE.
-Other formats (for example, nibble, +.nib+, DOS order, +.do+, PRODOS order,
-+.po+, +.dsk+, or anything else) must first be converted to WOZ 2.0 format.
+> #### note
+> The floppy disk image **MUST** be a [**WOZ 2.0 DISK IMAGE**](https://applesaucefdc.com/woz/).
+> Other formats (for example, nibble, `.nib`, DOS order, `.do`, PRODOS order,
+> `.po`, `.dsk`, or anything else) must first be converted to WOZ 2.0 format.
 
-You can use https://applesaucefdc.com/[Applesauce] to generate such files from original floppy disks. Or you can convert +.dsk+ or +.d13+ images using +to_woz2+ (source: https://github.com/cmosher01/Apple-II-Disk-Tools ).
+You can use [Applesauce](https://applesaucefdc.com) to generate such files from original floppy disks.
+Or you can convert `.dsk` or `.d13` images using [DskToWoz2](https://github.com/cmosher01/DskToWoz2).
 
 
 
@@ -186,7 +187,7 @@ You can use https://applesaucefdc.com/[Applesauce] to generate such files from o
 
 The `unload` command removes a floppy disk image from one of the emulated disk drives.
 
-```
+``` conf
 unload slot <slot> drive <drive>
 ```
 
@@ -207,7 +208,7 @@ If the disk has been modified but not saved, the modifications will be DISCARDED
 
 The `save` command saves changes made on an emulated floppy disk back to the original image file.
 
-```
+``` conf
 save slot <slot> drive <drive>
 ```
 
@@ -230,7 +231,7 @@ next to the file-name of a disk image if it has any unsaved changes.
 The `cassette` command performs various operations of the emulated cassette tape.
 
 
-```
+``` conf
 cassette load [ <file-path> ]
 cassette rewind
 cassette tone
@@ -251,7 +252,7 @@ See below for more information about operating the emulated cassette tape interf
 
 The `revision` command specifies which revision of Apple \]\[ motherboard to use.
 
-```
+``` conf
 revision <rev>
 ```
 
@@ -281,7 +282,7 @@ not merge together; both will be distinctly visible, with blackness between them
 type in the following Applesoft command, then cycle through the display types. The monitors
 will show thin, vertical, green lines; TVs will show continuous horizontal lines.
 
-```
+``` visualbasic
 GR : COLOR=4 : HLIN 10,20 AT 10
 ```
 
@@ -334,15 +335,15 @@ the emulator.
 
 The EPPLE \]\[ emulates the original Apple \]\[ keyboard. The original Apple \]\[
 keyboard had symbols in different places than current common PC keyboards. For
-example, Shift-2 on the Apple \]\[ produces a double quote, but on a PC keyboard
-it produces an at-sign. For ease of typing, the EPPLE \]\[ emulator does not
+example, Shift-2 on the Apple \]\[ produces a double quote `"`, but on a PC keyboard
+it produces an at-sign `@`. For ease of typing, the EPPLE \]\[ emulator does not
 mimic the positions of the original keys, but rather mimics the symbols on
 the current PC keyboard. So, for example, if you type Shift-2 on the PC
 keyboard into the EPPLE \]\[, it produces an at-sign, as you would normally expect.
 
 The Apple \]\[ keyboard didn't produce lower-case letters; neither does the emulator.
-Also, the Apple couldn't produce an opening square bracket ([), braces, vertical
-bar, backslash. There were no up- or down-arrow keys. You cannot type these into
+Also, the Apple couldn't produce an opening square bracket `[`, braces `{}`, vertical
+bar `|`, or backslash `\\`. There were no up- or down-arrow keys. You cannot type these into
 the emulator, either. There are other, unusual, cases that are emulated correctly,
 as well, such as typing Control in conjunction with a number key simply produces
 that number. So typing a Control-3 is the same as just typing a 3. Also, typing
@@ -351,7 +352,7 @@ Shift-Control-2 produces the NUL character (ASCII $80).
 The Apple \]\[ keyboards didn't automatically repeat typing characters when a
 key was held down. Instead, the user would hold down the REPT (*repeat*) key
 while holding down the key that was to be repeated. On the EPPLE \]\[, this
-behavior is emulated, and the F10 key is used as the REPT key.
+behavior is emulated, and the `F10` key is used as the REPT key.
 
 The Apple \]\[ had no keyboard buffer (actually, it had a buffer of one character).
 So if you typed several characters on the keyboard before the currently running
@@ -362,7 +363,7 @@ characters you type and deliver them to the emulated machine when it asks for
 them. However, the Apple program must be written properly to allow this to work.
 Some Apple \]\[ programs (like maybe some games) may not work correctly in this
 respect, so you may want to turn off buffering in these cases. With buffering
-turned off, the EPPLE \]\[ accurately emulates the original Apple \]\[. Use the F12
+turned off, the EPPLE \]\[ accurately emulates the original Apple \]\[. Use the `F12`
 key to toggle the keyboard buffering. Note that pasting from the clipboard (with
 the Insert key) will most definitely cause keys to be lost if the keyboard
 buffer is turned off. So if you have a big Applesoft program in the clipboard
@@ -381,7 +382,7 @@ each scan line to the following line, to fill-in the otherwise black line.
 * `F7` Pastes characters from the clipboard into the emulated Apple
 (as if they had been typed on the keyboard).
 * `F8` Save a bitmap file of the current EPPLE \]\[ screen.
-The file will be in the default directory, named +ep2_YYYYMMDDHHMMSS.bmp+.
+The file will be in the default directory, named `ep2_YYYYMMDDHHMMSS.bmp`.
 * `F9` Quit the EPPLE \]\[ program, immediately!
 * `F10` Emulates the REPT key.
 * `F11` Toggles between running the emulator at authentic speed
@@ -401,7 +402,7 @@ the firmware ROM code.
 
 To use a disk card and drives, add these lines to your epple2.conf file, for example:
 
-```
+``` conf
 slot 6 disk
 import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.ex65
 ```
@@ -417,14 +418,14 @@ firmware. This firmware is known as the *bootstrap* or *P5* ROM code.
 It is seen by the Apple \]\[ at memory addresses `$Cs00-$CsFF`, where s is the
 slot number (so in the common case of the card being in slot 6, the ROM is
 at `$C600-$C6FF`). The firmware is copyright by Apple, and is available from
-the http://mosher.mine.nu/apple2/[Apple II Library].
+the [Apple II Library](https://mosher.mine.nu/apple2/).
 
 You can also load a floppy disk image (nibble format) into the drive, either by putting
 the `load` command into the `epple2.conf` file, or by using the command prompt
 in the emulator (`F5` key). For example, you could load the DOS 3.3 system master into
 slot 6, drive 1, with this command
 
-```
+``` conf
 load slot 6 drive 1 /usr/lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.nib
 ```
 
@@ -436,7 +437,7 @@ load slot 6 drive 1 /usr/lib/apple2/dos3x/16sector/disks/dos330/clean330sysmas.n
 The language card emulates an Apple 16K RAM card, commonly called a Language Card.
 To use a language card, add this line to your epple2.conf file:
 
-```
+``` conf
 slot 0 language
 ```
 
@@ -456,25 +457,24 @@ language card as follows:
 
 An overview of the I/O switches that control the language card
 is provided by Jim Sather in
-http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
 p. 5-30, Table 5.4, as follows:
 
-	|==================================================================
-	| BANK2   BANK1                 ACTION                  READ?
-	|==================================================================
-	|  C080    C088      WRTCOUNT = 0*, WRITE DISABLE      ENABLE
-	|  C084    C08C____________________________________________________
-	| RC081   RC089      WRTCOUNT = WRTCOUNT + 1*          DISABLE
-	| RC085   RC08D____________________________________________________
-	| WC081   WC089      WRTCOUNT = 0*                     DISABLE
-	| WC085   WC08D____________________________________________________
-	|  C082    C08A      WRTCOUNT = 0*, WRITE DISABLE      DISABLE
-	|  C086    C08E____________________________________________________
-	| RC083   RC08B      WRTCOUNT = WRTCOUNT + 1*          ENABLE
-	| RC087   RC08F____________________________________________________
-	| WC083   WC08B      WRTCOUNT = 0*                     ENABLE
-	| WC087   WC08F
-	|==================================================================
+	+==================================================================+
+	| BANK2   BANK1                 ACTION                  READ?      |
+	+==================================================================+
+	|  C080    C088      WRTCOUNT = 0*, WRITE DISABLE      ENABLE      |
+	|_ C084 _  C08C ___________________________________________________|
+	| RC081   RC089      WRTCOUNT = WRTCOUNT + 1*          DISABLE     |
+	|_RC085 _ RC08D ___________________________________________________|
+	| WC081   WC089      WRTCOUNT = 0*                     DISABLE     |
+	|_WC085 _ WC08D ___________________________________________________|
+	|  C082    C08A      WRTCOUNT = 0*, WRITE DISABLE      DISABLE     |
+	|_ C086 _  C08E ___________________________________________________|
+	| RC083   RC08B      WRTCOUNT = WRTCOUNT + 1*          ENABLE      |
+	|_RC087 _ RC08F ___________________________________________________|
+	| WC083   WC08B      WRTCOUNT = 0*                     ENABLE      |
+	|_WC087 _ WC08F ___________________________________________________|
 
        * Writing to expansion RAM is enabled when WRTCOUNT reaches 2.
 
@@ -491,7 +491,7 @@ from a file on disk. For example, to insert an Integer BASIC
 firmware card into the emulator, add these lines to your
 +epple2.conf+ file:
 
-```
+``` conf
 # Firmware card with Integer BASIC and old Monitor
 slot 0 firmware
 import slot 0 rombank 1000 /usr/lib/apple2/system/intbasic/intbasic.ex65
@@ -501,14 +501,14 @@ import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2/monitor.ex65
 
 For an Applesoft BASIC firmware card, use these:
 
-```
+``` conf
 # Firmware card with Applesoft BASIC and Autostart Monitor
 slot 0 firmware
 import slot 0 rombank 0000 /usr/lib/apple2/system/applesoft/applesoft.ex65
 import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.ex65
 ```
 
-Note that the addresses specified in the +epple2.conf+ file for the
+Note that the addresses specified in the `epple2.conf` file for the
 rombank are based on the beginning of the bank ROM itself. For example, specifying
 `1000` (which is 1000 hex) represents the final memory address of $E000, because
 the bank ROM is always based at address $D000.
@@ -522,7 +522,7 @@ you to type `FP` to use Applesoft BASIC, or `INT` to switch to Integer BASIC.
 Note that DOS and ProDOS will make use of a firmware card only if it is in slot _zero_.
 
 Jim Sather, in
-http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
 on pages 6-18 through 6-21, explains
 how to modify a firmware card to allow independent switching of the $F800-$FFFF
 ROM memory. This area is occupied by the Monitor, so it is primarily
@@ -546,7 +546,7 @@ a slot, typically slot 4. You will also need to load the card with its ROM code,
 which is provided with the emulator in the clock.ex65 file.
 For example, add this to your epple2.conf file:
 
-```
+``` conf
 slot 4 clock
 import slot 4 rom 0 /usr/lib/epple2/cards/clock.ex65
 ```
@@ -587,8 +587,7 @@ the following format:
 * `ss`    Second, 00-61
 * `000`   Milliseconds; always zero
 * `yyyy`  Year, e.g., 2008
-* `Time Zone`  time zone string (could contain lower-case characters,
-           which won't display correctly)
+* `Time Zone`  time zone string (could contain lower-case characters, which won't display correctly)
 * `v`     Daylight Saving Time in effect, 0=no, 1=yes
 
 Note that only `mm,ww,dd,hh,nn` fields are used by ProDOS. The other
@@ -606,7 +605,7 @@ reads characters from standard input (stdin) (of the EPPLE \]\[ emulator).
 
 To use a standard input card, add these lines to your `epple2.conf` file:
 
-```
+``` conf
 # IN#2 reads from standard input
 slot 2 stdin
 import slot 2 rom 0 /usr/lib/epple2/cards/stdin.ex65
@@ -632,7 +631,7 @@ them to standard output (stdout) (of the EPPLE \]\[ emulator).
 
 To use a standard output card, add these lines to your `epple2.conf` file:
 
-```
+``` conf
 # PR#1 prints to standard output
 slot 1 stdout
 import slot 1 rom 0 /usr/lib/epple2/cards/stdout.ex65
@@ -693,7 +692,7 @@ The emulator will not overwrite existing data in a tape image file.
 
 This loads an existing WAVE file (from the host computer) containing a cassette tape image
 onto the CASSETTE IN port,
-in preparation for loading the program from it. If +file-path+
+in preparation for loading the program from it. If `file-path`
 is omitted, a dialog box will be presented to select the file to load.
 The tape is automatically positioned at the first header tone.
 
@@ -752,7 +751,7 @@ We first need to load a tape image file into the cassette machine.
 Enter command mode by pressing `F5`, then make a new tape
 image file.
 
-```
+``` conf
 command: cassette blank hello.wav
 ```
 
@@ -776,7 +775,7 @@ the program. When it is finished, you need to save the changes
 to the file. Press `F5` and enter the emulator command to save
 the tape image file.
 
-```
+``` conf
 command: cassette save
 ```
 
@@ -800,7 +799,7 @@ To load the saved program (from the previous section) into the Apple again,
 we will need to first load the tape image file back into the cassette machine.
 Press `F5` to enter command mode and load the image file.
 
-```
+``` conf
 command: cassette load
 ```
 
@@ -840,7 +839,7 @@ paddle is controlled by moving the mouse up and down. The paddle buttons
 are emulated by the mouse buttons (left and right click).
 
 In
-http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software[Understanding the Apple II],
+[*Understanding the Apple II*](http://www.scribd.com/doc/201423/Understanding-the-Apple-II-by-Jim-Sather-1983Quality-Software),
 on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
 to create two real-time clock references. This is emulated by the Epple \]\[. Paddle timers 2 and 3
 are 100-microsecond and 1-millisecond references, respectively.
