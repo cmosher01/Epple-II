@@ -48,8 +48,7 @@ inserts a language card into slot zero. Use `empty` to remove a card:
 slot 0 empty
 ```
 
-[NOTE]
-The emulated Apple should be _powered off_ before inserting or removing cards.
+Note that the emulated Apple should be *powered off* before inserting or removing cards.
 
 
 
@@ -76,6 +75,7 @@ Christopher Espinosa, [*Apple II Reference Manual*](https://archive.org/details/
 (Cupertino, Calif.: Apple Computer, 1978), pp. 70-72.
 
 In the `motherboard ram` configuration line `(other-models)` of chips are supported, and will produce different bit patterns at power-on time:
+
 ``` conf
 MM5290
 MK4116
@@ -161,11 +161,9 @@ p. 5-26 *The 16K RAM Card*).
 
 The `load` command loads a [WOZ 2.0 format](https://applesaucefdc.com/woz/) floppy disk image into one of the emulated disk drives.
 
-
 ``` conf
 load slot <slot> drive <drive> [ <file-path> ]
 ```
-
 
 `slot` Slot number, 0 through 7, of Disk \]\[ controller card to load the disk image into.
 
@@ -202,8 +200,8 @@ unload slot <slot> drive <drive>
 
 The `unload` command removes the disk from the specified slot and drive.
 
-[WARNING]
-If the disk has been modified but not saved, the modifications will be DISCARDED.
+> #### Warning
+> If the disk has been modified but not saved, the modifications will be **DISCARDED**.
 
 
 
@@ -261,8 +259,7 @@ The `revision` command specifies which revision of Apple \]\[ motherboard to use
 revision <rev>
 ```
 
-
-`rev` Revision number of the motherboard. Currently, only two values make any difference in behavior: 0 or 1.
+`rev` Revision number of the motherboard. Currently, only two values make any difference in behavior: `0` or `1`.
 
 The `revision` command chooses which revision of the Apple \]\[ motherboard to
 use. The only revisions that make any difference (for now, at least) are 0 or 1. Zero
@@ -297,7 +294,7 @@ Televisions react more slowly to
 changes in the incoming video signal than monitors do, and as a result, horizontal pixels will
 merge together, forming a more uniform appearance. EPPLE \]\['s television mode emulates the
 signal decoding circuitry of a real television. This includes separating out the *chroma* portion
-of the incoming NTSC video signal using a filter algorithm, and _calculating_ the color to display.
+of the incoming NTSC video signal using a filter algorithm, and *calculating* the color to display.
 
 #### Scan Lines
 
@@ -305,7 +302,7 @@ NTSC displays (TVs or monitors) usually receive signals that are interlaced. How
 Apple \]\[ doesn't generate interlaced screens. This causes blank rows between each displayed
 row of pixels. The EPPLE \]\[ emulates this behavior, but also allows you to *fill in* these
 black rows with a copy of the row above it, for a more continuous display (vertically). Use
-the F4 key to toggle between these two modes.
+the `F4` key to toggle between these two modes.
 
 #### Resolution
 
@@ -388,7 +385,7 @@ each scan line to the following line, to fill-in the otherwise black line.
 (as if they had been typed on the keyboard).
 * `F8` Save a bitmap file of the current EPPLE \]\[ screen.
 The file will be in the default directory, named `ep2_YYYYMMDDHHMMSS.bmp`.
-* `F9` Quit the EPPLE \]\[ program, immediately!
+* `F9` Quit the EPPLE \]\[ program, *immediately*!
 * `F10` Emulates the REPT key.
 * `F11` Toggles between running the emulator at authentic speed
 (1.02 MHz CPU), or as fast as possible.
@@ -446,7 +443,7 @@ To use a language card, add this line to your epple2.conf file:
 slot 0 language
 ```
 
-Note that DOS and ProDOS will make use of a language card only if it is in slot _zero_.
+Note that DOS and ProDOS will make use of a language card only if it is in slot *zero*.
 
 The language card has RAM at addresses `$E000`-`$FFFF`, as well as two banks of RAM
 at addresses `$D000`-`$DFFF`. A program switches between these RAMs and/or the
@@ -524,7 +521,7 @@ an Apple \]\[ plus), and then install a firmware card with Integer
 BASIC and the old Monitor. Booting with DOS 3.3, then, would allow
 you to type `FP` to use Applesoft BASIC, or `INT` to switch to Integer BASIC.
 
-Note that DOS and ProDOS will make use of a firmware card only if it is in slot _zero_.
+Note that DOS and ProDOS will make use of a firmware card only if it is in slot *zero*.
 
 Jim Sather, in
 [*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/page/n151),
@@ -562,7 +559,6 @@ To verify that the clock card is working correctly, you can run the following Ap
 program to retrieve the current time from the clock card and print it.
 This program assumes the card is in slot 4.
 
-
 ``` visualbasic
 NEW
 
@@ -577,7 +573,6 @@ NEW
 
 RUN
 ```
-
 
 The card returns data (into the `GETLN` input buffer at `$0200`) in
 the following format:
@@ -649,6 +644,7 @@ The stdout ROM is provided with the EPPLE \]\[ distribution.
 For example, if you have a stdout card installed, at the Applesoft
 prompt, type `PR#1`. Whatever you type next will be
 echoed to standard output. Type `PR#0` to stop echoing.
+
 
 
 ### Cassette Tape Interface
@@ -723,7 +719,7 @@ The file must not already exist. The file type should be `.wav` to indicate a WA
 `cassette save`
 
 This command saves the changed tape to the file. Note that the display will show
-an asterisk `\*` next to the file name if there are unsaved changes that need to
+an asterisk `*` next to the file name if there are unsaved changes that need to
 be saved.
 
 `cassette eject { in | out }`
@@ -760,7 +756,7 @@ image file.
 command: cassette blank hello.wav
 ```
 
-This will create a new, empty tape file image named +hello.wav+
+This will create a new, empty tape file image named `hello.wav`
 in the current default directory. (We could have specified a full path
 name for the file if we wanted to place it in a different directory.)
 Notice that the emulator now displays the name of the tape image file.

@@ -6,6 +6,8 @@ screenshots
 
 ---
 
+
+
 ### DOS 3.3 System Master boot
 
 image::dos330boot.png[]
@@ -29,7 +31,7 @@ with a Revision Zero motherboard, and a disk
 controller (with 13-sector ROMs) in slot 6. With a
 revision 0 motherboard, when the machine is powered-on,
 the CPU doesn't start actually running until you
-manually press the RESET button. Also, the old Monitor
+manually press the **RESET** `F6` button. Also, the old Monitor
 ROMs do not boot from the disk drives automatically;
 you need to type `C600G` to boot.
 We've booted the DOS 3.1 System Master disk and done a
@@ -101,7 +103,7 @@ RUN
 image::pinkmystery.png[]
 
 Jim Sather's book
-[*Understanding the Apple \]\[*](https://archive.org/details/understanding_the_apple_ii/),
+[*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/),
 which is the primary
 reference for the internal design of the EPPLE \]\[ emulator, describes the video
 generation process of the Apple \]\[, in great detail, in Chapter 8.
