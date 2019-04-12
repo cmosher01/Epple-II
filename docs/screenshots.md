@@ -1,4 +1,5 @@
 [home](index.md)
+[download](https://github.com/cmosher01/Epple-II/releases/latest)
 screenshots
 [configuration](configuration.md)
 [reference](usermanual.md)

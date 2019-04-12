@@ -1,3 +1,11 @@
+[home](index.md)
+[download](https://github.com/cmosher01/Epple-II/releases/latest)
+[screenshots](screenshots.md)
+[configuration](configuration.md)
+reference
+
+---
+
 ### Overview
 
 Epple \]\[ (the Emulated Apple \]\[ is a free (as in GPLv3), cross-platform
@@ -18,7 +26,7 @@ slot <slot> <card>
 
 `slot` Slot number, 0 through 7, to insert the card into.
 
-`card` The type of card to insert into the slot (see <<cards>>):
+`card` The type of card to insert into the slot (see `cards` below):
 
 * `language`
 * `firmware`
