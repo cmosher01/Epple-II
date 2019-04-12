@@ -64,7 +64,7 @@ EPPLE \]\[ accurately emulates the video scanning and timing of the original App
 The rest of the behavior described in the article (the floating data bus) is also emulated
 faithfully by the EPPLE \]\[.
 
-``` basic
+``` visualbasic
 CALL -151
 
 300:8D 52 C0 A9 E0 A2 04 CD 51 C0 D0 F9 CA D0 F8 A9
@@ -108,7 +108,7 @@ video cutoff and extension of half-dot shifted pixels, instead the right
 line is brown, and there is a *mysterious pink line* (actually magenta)
 on the far left of the screen. The EPPLE \]\[ faithfully emulates this behavior.
 
-``` basic
+``` visualbasic
 NEW
 
 10 HGR : HCOLOR = 5 : HPLOT 5,159 TO 5,0 TO 279,0 TO 279,159
@@ -129,7 +129,7 @@ The EPPLE \]\[ emulates the correct aspect ratio.
 For example, the following Applesoft BASIC program draws a
 rectangle, and a proper square:
 
-``` basic
+``` visualbasic
 NEW
 
 10 HGR
@@ -171,7 +171,7 @@ purple while in mixed text/graphics mode. This is because the *color
 burst killer* circuit is not active while displaying graphics on the
 Apple \]\[ machines.
 
-``` basic
+``` visualbasic
 CALL -151
 1F00:AC 54 C0 A0 27 20 27 1F
 1F08:AC 10 C0 AC 00 C0 30 F3

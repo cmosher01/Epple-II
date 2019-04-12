@@ -1,18 +1,12 @@
-# Epple \]\[
-
-The Emulated APPLE \]\[
-(by Chris Mosher).
-
----
-
 [screenshots](screenshots.md)
 [configuration](configuration.md)
 
 ---
 
-Epple \]\[ is an emulator of the original APPLE \]\[ and APPLE \]\[ PLUS
-computers from [Apple, Inc.](https://www.apple.com/) It
-runs on Windows, Mac, and Linux platforms.
+**`epple2`** (by Chris Mosher) is an emulator of the original
+APPLE \]\[ and APPLE \]\[ PLUS computers from
+[Apple, Inc.](https://www.apple.com/).
+It runs on Windows, Mac, and Linux platforms.
 
 [![GPLv3](https://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 Epple \]\[ is released under the
