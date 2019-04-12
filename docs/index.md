@@ -1,5 +1,6 @@
 [screenshots](screenshots.md)
 [configuration](configuration.md)
+[reference](usermanual.md)
 
 ---
 

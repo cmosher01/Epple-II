@@ -1,8 +1,7 @@
-# Screenshots
-
-
-
-## DOS 3.3 System Master boot
+---
+title: Screenshots
+---
+### DOS 3.3 System Master boot
 
 image::dos330boot.png[]
 
@@ -16,7 +15,7 @@ between Applesoft and Integer BASIC by using the `FP` and
 
 
 
-## DOS 3.1 System Master on Revision 0 motherboard
+### DOS 3.1 System Master on Revision 0 motherboard
 
 image::dos310rev0.png[]
 
@@ -39,7 +38,7 @@ later revisions.
 
 
 
-## PRODOS 1.1.1 boot
+### PRODOS 1.1.1 boot
 
 image::prodos.png[]
 
@@ -48,7 +47,7 @@ and disk drive. We're booting a PRODOS 1.1.1 disk.
 
 
 
-## Bishop's Apple Split
+### Bishop's Apple Split
 
 image::applesplit.png[]
 
@@ -92,7 +91,7 @@ RUN
 
 
 
-## Mysterious Pink Line
+### Mysterious Pink Line
 
 image::pinkmystery.png[]
 
@@ -118,7 +117,7 @@ RUN
 
 
 
-## Display Aspect Ratio
+### Display Aspect Ratio
 
 image::aspectratio.png[]
 
@@ -150,7 +149,7 @@ HOME
 
 
 
-## Split Screen HIRES/LORES colors
+### Split Screen HIRES/LORES colors
 
 image::splitcolorstv.png[]
 image::splitcolorsmon.png[]
@@ -202,7 +201,7 @@ RUN
 
 
 
-## Miscellaneous
+### Miscellaneous
 
 image::gplrom.png[]
 
