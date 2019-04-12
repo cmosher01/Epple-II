@@ -35,10 +35,15 @@ matrix:
         - sudo apt-get install -y mingw-w64 xa65
         - curl -L https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz >SDL2.tar.gz && tar xzf SDL2.tar.gz
         - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
+        - curl -LO https://github.com/cmosher01/Apple-II-System-Masters/releases/download/v1.1.0/apple2sysmas.zip
+        - curl -LO https://github.com/cmosher01/Apple-II-Source/releases/download/v1.1.2/apple2sys.zip
       script:
         - make -f Makefile.mingw
-        - mkdir $NAME && cp src/$NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll rom/*.a65 $NAME
+        - mkdir $NAME
+        - cp src/$NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll rom/*.a65 $NAME
         - cp conf/$NAME.mingw $NAME/$NAME.conf
+        - unzip -d $NAME apple2sys
+        - unzip -d $NAME apple2sysmas
         - zip -r $NAME-windows $NAME
         - unzip -l $NAME-windows
 
