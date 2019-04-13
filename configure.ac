@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-AC_INIT(epple2, 1.2-SNAPSHOT)
+AC_INIT(epple2, v1.0.3)
 AC_PREREQ(2.68)
 
 AC_CONFIG_SRCDIR([src/apple2.cpp])
@@ -72,9 +72,5 @@ AC_CHECK_FUNCS([memset sqrt])
 
 
 
-# Checks for typedefs, structures, and compiler characteristics.
-
-
-
-AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile rom/Makefile installer/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile conf/Makefile rom/Makefile])
 AC_OUTPUT

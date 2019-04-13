@@ -6,12 +6,17 @@ reference
 
 ---
 
+
+
 ### Overview
 
 Epple \]\[ (the Emulated Apple \]\[ is a free (as in GPLv3), cross-platform
 (Windows, Linux, Mac) emulator of the Apple \]\[ and Apple \]\[ plus computers
 from Apple, Inc. It strives for accurate emulation of the original machines,
 with a few extra features added.
+
+---
+
 
 
 ### Commands
@@ -266,6 +271,10 @@ use. The only revisions that make any difference (for now, at least) are 0 or 1.
 is the original (rare) version of the motherboard, that only had two hi-res
 colors (green and purple), and always displayed text with green and purple fringes.
 
+---
+
+
+
 ### Display
 
 The orignal Apple \]\[s didn't come with a display. The user needed to use either a standard
@@ -333,6 +342,10 @@ the emulator.
 * emulated CPU speed (MHz)
 * function-keys help
 
+---
+
+
+
 ### Keyboard
 
 The EPPLE \]\[ emulates the original Apple \]\[ keyboard. The original Apple \]\[
@@ -390,6 +403,10 @@ The file will be in the default directory, named `ep2_YYYYMMDDHHMMSS.bmp`.
 * `F11` Toggles between running the emulator at authentic speed
 (1.02 MHz CPU), or as fast as possible.
 * `F12` Toggles the keyboard buffer.
+
+---
+
+
 
 ### Peripheral Cards
 
@@ -645,6 +662,8 @@ For example, if you have a stdout card installed, at the Applesoft
 prompt, type `PR#1`. Whatever you type next will be
 echoed to standard output. Type `PR#0` to stop echoing.
 
+---
+
 
 
 ### Cassette Tape Interface
@@ -833,6 +852,10 @@ the program. When it is finished, the program will be loaded.
 HELLO
 ```
 
+---
+
+
+
 ### Paddles
 
 The Epple \]\[ provides two paddles to the Apple \]\[ machine.
@@ -845,6 +868,10 @@ In
 on page 7-33, Jim Sather describes soldering fixed resistors across a game connector
 to create two real-time clock references. This is emulated by the Epple \]\[. Paddle timers 2 and 3
 are 100-microsecond and 1-millisecond references, respectively.
+
+---
+
+
 
 ### Speaker
 

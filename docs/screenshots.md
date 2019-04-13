@@ -20,7 +20,7 @@ loads Integer BASIC into the language card. You can switch
 between Applesoft and Integer BASIC by using the `FP` and
 `INT` commands.
 
-
+---
 
 ### DOS 3.1 System Master on Revision 0 motherboard
 
@@ -43,7 +43,7 @@ active during text mode, so the text would be strictly white.
 Two more Hi-Res colors, blue and orange, were also added in
 later revisions.
 
-
+---
 
 ### PRODOS 1.1.1 boot
 
@@ -52,7 +52,7 @@ later revisions.
 Here we've configured an Apple \]\[ plus with language card
 and disk drive. We're booting a PRODOS 1.1.1 disk.
 
-
+---
 
 ### Bishop's Apple Split
 
@@ -96,7 +96,7 @@ E000G
 RUN
 ```
 
-
+---
 
 ### Mysterious Pink Line
 
@@ -122,7 +122,7 @@ NEW
 RUN
 ```
 
-
+---
 
 ### Display Aspect Ratio
 
@@ -154,7 +154,7 @@ RUN
 HOME
 ```
 
-
+---
 
 ### Split Screen HIRES/LORES colors
 
@@ -207,7 +207,7 @@ E000G
 RUN
 ```
 
-
+---
 
 ### Miscellaneous
 
@@ -215,9 +215,13 @@ RUN
 
 Example of the Demo System ROM provided with the EPPLE \]\[ emulator.
 
+---
+
 ![static](https://mosher.mine.nu/images/computers/apple2/static.ptif/full/full/0/default.jpg)
 
 Random TV "static" when no video signal is present.
+
+---
 
 ![apple2](https://mosher.mine.nu/images/computers/apple2/apple2.ptif/full/full/0/default.jpg)
 

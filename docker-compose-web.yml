@@ -1,6 +1,0 @@
----
-epple2:
-  build: .
-  command: -c web
-  ports:
-    - "8080:80"
