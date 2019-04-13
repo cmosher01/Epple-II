@@ -16,16 +16,20 @@ matrix:
       before_script:
         - ./bootstrap
       script:
-        - ./configure && make
+        - ./configure
+        - make
         - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+        - unzip -l $NAME-$TRAVIS_OS_NAME
     - os: osx
       install:
         - HOMEBREW_NO_AUTO_UPDATE=1 brew install xa sdl2
       before_script:
         - ./bootstrap
       script:
-        - ./configure && make
+        - ./configure
+        - make
         - zip -j $NAME-$TRAVIS_OS_NAME src/$NAME
+        - unzip -l $NAME-$TRAVIS_OS_NAME
     - os: linux # cross compile to windows
       dist: xenial
       sudo: required
