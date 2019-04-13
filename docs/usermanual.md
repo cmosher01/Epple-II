@@ -406,7 +406,7 @@ To use a disk card and drives, add these lines to your epple2.conf file, for exa
 
 ``` conf
 slot 6 disk
-import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.ex65
+import slot 6 rom 0 /usr/lib/apple2/dos3x/16sector/controller/disk2.a65
 ```
 
 The first line uses the `slot` command to
@@ -496,9 +496,9 @@ firmware card into the emulator, add these lines to your
 ``` conf
 # Firmware card with Integer BASIC and old Monitor
 slot 0 firmware
-import slot 0 rombank 1000 /usr/lib/apple2/system/intbasic/intbasic.ex65
-import slot 0 rombank 2425 /usr/lib/apple2/system/other/other.ex65
-import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2/monitor.ex65
+import slot 0 rombank 1000 /usr/lib/apple2/system/intbasic/intbasic.a65
+import slot 0 rombank 2425 /usr/lib/apple2/system/other/other.a65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2/monitor.a65
 ```
 
 For an Applesoft BASIC firmware card, use these:
@@ -506,8 +506,8 @@ For an Applesoft BASIC firmware card, use these:
 ``` conf
 # Firmware card with Applesoft BASIC and Autostart Monitor
 slot 0 firmware
-import slot 0 rombank 0000 /usr/lib/apple2/system/applesoft/applesoft.ex65
-import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.ex65
+import slot 0 rombank 0000 /usr/lib/apple2/system/applesoft/applesoft.a65
+import slot 0 rombank 2800 /usr/lib/apple2/system/monitor/apple2plus/monitor.a65
 ```
 
 Note that the addresses specified in the `epple2.conf` file for the
@@ -545,12 +545,12 @@ firmware card as follows:
 The clock card emulates a ProDOS-compatible real-time clock card for the Apple \]\[.
 To use a clock card, you will need to configure the EPPLE \]\[ to insert one into
 a slot, typically slot 4. You will also need to load the card with its ROM code,
-which is provided with the emulator in the clock.ex65 file.
+which is provided with the emulator in the clock.a65 file.
 For example, add this to your epple2.conf file:
 
 ``` conf
 slot 4 clock
-import slot 4 rom 0 /usr/lib/epple2/cards/clock.ex65
+import slot 4 rom 0 /usr/lib/epple2/cards/clock.a65
 ```
 
 Of course you may need to adjust the path for your particular system.
@@ -608,7 +608,7 @@ To use a standard input card, add these lines to your `epple2.conf` file:
 ``` conf
 # IN#2 reads from standard input
 slot 2 stdin
-import slot 2 rom 0 /usr/lib/epple2/cards/stdin.ex65
+import slot 2 rom 0 /usr/lib/epple2/cards/stdin.a65
 ```
 
 That will insert a stdin card into slot 2, and then load its
@@ -634,7 +634,7 @@ To use a standard output card, add these lines to your `epple2.conf` file:
 ``` conf
 # PR#1 prints to standard output
 slot 1 stdout
-import slot 1 rom 0 /usr/lib/epple2/cards/stdout.ex65
+import slot 1 rom 0 /usr/lib/epple2/cards/stdout.a65
 ```
 
 This will insert a stdout card into slot 1 (which is the typical
@@ -742,7 +742,7 @@ are going to save to a cassette tape image file.
 ]LIST
 
 10  PRINT "HELLO"
-20  END 
+20  END
 
 ]RUN
 HELLO
@@ -805,7 +805,7 @@ command: cassette load
 ```
 
 This will bring up the Open File dialog box. Choose
-hello.wav file you just saved. Notice the
+`hello.wav` file you just saved. Notice the
 emulator now displays the name of the tape image file, along with the
 position and length of the tape image. Notice the emulator automatically
 advances the tape to the first header section.
@@ -853,5 +853,5 @@ audio. A program could read memory location `$C030` to toggle the speaker and
 generate a *click* sound.
 
 The Epple \]\[ emulator will generate sounds from the emulated Apple and
-send them to the audio device. It generates 8-bit mono sound, with a 22,050 Hz
+send them to the audio device. It generates 8-bit mono sound, with a 20,410 Hz
 sampling rate.

@@ -10,7 +10,7 @@ screenshots
 
 ### DOS 3.3 System Master boot
 
-image::dos330boot.png[]
+![dos330boot](https://mosher.mine.nu/images/computers/apple2/dos330boot.ptif/full/full/0/default.jpg)
 
 Here we've configured an Apple \]\[ plus, with a disk
 controller in slot 6, and a language card in slot 0.
@@ -24,7 +24,7 @@ between Applesoft and Integer BASIC by using the `FP` and
 
 ### DOS 3.1 System Master on Revision 0 motherboard
 
-image::dos310rev0.png[]
+![dos310rev0](https://mosher.mine.nu/images/computers/apple2/dos310rev0.ptif/full/full/0/default.jpg)
 
 Here we've configured an Apple \]\[ (Integer BASIC ROMs),
 with a Revision Zero motherboard, and a disk
@@ -47,7 +47,7 @@ later revisions.
 
 ### PRODOS 1.1.1 boot
 
-image::prodos.png[]
+![prodos](https://mosher.mine.nu/images/computers/apple2/prodos.ptif/full/full/0/default.jpg)
 
 Here we've configured an Apple \]\[ plus with language card
 and disk drive. We're booting a PRODOS 1.1.1 disk.
@@ -56,7 +56,7 @@ and disk drive. We're booting a PRODOS 1.1.1 disk.
 
 ### Bishop's Apple Split
 
-image::applesplit.png[]
+![applesplit](https://mosher.mine.nu/images/computers/apple2/applesplit.ptif/full/full/0/default.jpg)
 
 The October 1982 issue of [Softalk](http://en.wikipedia.org/wiki/Softalk)
 featured an article by Bob Bishop entitled
@@ -100,7 +100,7 @@ RUN
 
 ### Mysterious Pink Line
 
-image::pinkmystery.png[]
+![pinkmystery](https://mosher.mine.nu/images/computers/apple2/pinkmystery.ptif/full/full/0/default.jpg)
 
 Jim Sather's book
 [*Understanding the Apple II*](https://archive.org/details/understanding_the_apple_ii/),
@@ -126,7 +126,7 @@ RUN
 
 ### Display Aspect Ratio
 
-image::aspectratio.png[]
+![aspectratio](https://mosher.mine.nu/images/computers/apple2/aspectratio.ptif/full/full/0/default.jpg)
 
 Jim Sather also describes the aspect ratio of the Apple \]\[ when
 displayed on a TV screen (p. 8-28). Software developers would need
@@ -158,8 +158,9 @@ HOME
 
 ### Split Screen HIRES/LORES colors
 
-image::splitcolorstv.png[]
-image::splitcolorsmon.png[]
+![splitcolorstv](https://mosher.mine.nu/images/computers/apple2/splitcolorstv.ptif/full/full/0/default.jpg)
+
+![splitcolorsmon](https://mosher.mine.nu/images/computers/apple2/splitcolorsmon.ptif/full/full/0/default.jpg)
 
 Jim Sather's book also shows an Applesoft BASIC
 program and assembly language subroutine on pages 3-16 and 3-17 (reproduced
@@ -210,14 +211,14 @@ RUN
 
 ### Miscellaneous
 
-image::gplrom.png[]
+![gplrom](https://mosher.mine.nu/images/computers/apple2/gplrom.ptif/full/full/0/default.jpg)
 
 Example of the Demo System ROM provided with the EPPLE \]\[ emulator.
 
-image::static.png[]
+![static](https://mosher.mine.nu/images/computers/apple2/static.ptif/full/full/0/default.jpg)
 
 Random TV "static" when no video signal is present.
 
-image::apple2.png[]
+![apple2](https://mosher.mine.nu/images/computers/apple2/apple2.ptif/full/full/0/default.jpg)
 
 Apple System ROM showing the APPLE \]\[ title.

@@ -12,7 +12,7 @@ optionally the peripheral card ROMs you want to use, you will need to configure 
 Configuring is concerned primarily with telling the program what peripheral cards to use,
 and where the ROM files are located (and what memory addresses to load them at).
 
-## `epple2.conf`
+## epple2.conf
 
 The default configuration file for
 the Epple \]\[ emulator is:
@@ -26,29 +26,24 @@ For Windows, the file will be:
 You can specify a different configuration file for the emulator to use by
 specifying its name as the argument when running the epple2 program.
 
-The format of the configuration file is just lines of [commands](commands.md).
+The format of the configuration file is just lines of [commands](usermanual.md).
 Comments begin with a hash `#` character, and continue to the end of the line.
 
 ## Firmware
 
 Firmware, commonly called ROM images or ROMs, will need to be loaded
-into the emulated ROM areas of the emulated Apple
-in order for it to be able to boot the emulated Apple machine.
-The firmware available is described in this documentation.
+into the ROM areas of the emulated Apple in order for it to boot.
 Once the firmware image files are installed on your computer, you can use the `import`
 command in the configuration file to load the image files into the emulator.
 
-Since the Epple \]\[ program emulates only the hardware, you will need to load some _system software_
-into in, in order for it to operate usefully.
-This software is commonly called *firmware* or *ROMs*, because it is stored in the
-read-only memory area of the emulated system. The original system software on the
+The original system software on the
 Apple \]\[ machines is copyright by Apple, and is proprietary. If you own an actual
 Apple \]\[ or Apple \]\[ plus machine, you can copy the firmware
 from it (`$D000`-`$FFFF`) (into a file on your PC) and use it. Alternatively, you can
 download the firmware images from the [Apple II Library](https://mosher.mine.nu/apple2/).
 
 If you do not want to download the proprietary firmware, you can still use the emulator (albeit
-in a rudimentary manner) with the free (GPLv3) _System ROM (Demo)_ package (included with EPPLE \]\[).
+in a rudimentary manner) with the free (GPLv3) *System ROM (Demo)* package (included with EPPLE \]\[).
 The source code is also available; you can
 assemble it using the [xa Assembler](http://www.floodgap.com/retrotech/xa/).
 The Demo System ROM only provides commands to dump or set memory bytes,
@@ -83,7 +78,8 @@ There are a number of configuration files provided with the distribution for
 your convenience. They provide various common configurations of machines.
 You can use one of these files directly, by specifying its path as the argument
 to the program, or as a starting point for you own configuration file. These sample
-files are in the same location as the default `epple2.conf` file.
+files are in the same location as the default `epple2.conf` file, or
+on [github](https://github.com/cmosher01/Epple-II/tree/master/conf).
 
 The Epple \]\[ Emulator can actually be run without a configuration file at all.
 In this case, you will be able to power on the Apple and see the low-resolution
