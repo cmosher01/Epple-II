@@ -25,6 +25,7 @@ portability in mind. It uses the [SDL2](https://www.libsdl.org) graphics library
 * **NTSC** video signal emulation: all video *quirks* emulated accurately
 * **Revision Zero** motherboard
 * **TV** and **monitor** emulation
+* **RAM chips** configurable: 4K to 48K
 * **Floating data bus**, and video scanner
 * **Cards**: Disk \]\[, language, firmware, clock
 * **Logic State Sequencer** emulation (16 and 13 sector disks)
