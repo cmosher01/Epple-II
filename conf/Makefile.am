@@ -1,10 +1,6 @@
 etcdir = $(sysconfdir)/epple2
 
-if HAVE_WINDOWS
-CONF_PREFIX =
-else
 CONF_PREFIX = $(prefix)/
-endif
 
 %.conf: %.conf.in
 	sed -e 's,$$(PREFIX),$(CONF_PREFIX),g' <$< >$@
