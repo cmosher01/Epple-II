@@ -58,7 +58,7 @@ fullscreen(false),
 hyper(false),
 buffer(true),
 fillLines(true),
-display(AnalogTV::MONITOR_COLOR),
+display(AnalogTV::TV_OLD_COLOR),
 slotnames(8),
 cassInName(32, ' '),
 cassOutName(32, ' ') {
@@ -155,9 +155,9 @@ void ScreenImage::drawCassette() {
 }
 
 static const char* displays[] = {
+    "TELEVISION    ",
     "COLOR MONITOR ",
     "GREEN MONITOR ",
-    "TELEVISION    ",
 };
 
 void ScreenImage::drawFnKeys() {

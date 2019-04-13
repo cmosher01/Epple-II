@@ -59,7 +59,7 @@ static std::uint16_t memory_block_size(const std::string &block_size) {
 unsigned char Config::disk_mask(0);
 
 Config::Config(const std::string& file_path):
-	file_path(file_path)
+    file_path(file_path)
 {
 }
 
@@ -70,120 +70,141 @@ Config::~Config()
 
 static void strip_comment(std::string& str)
 {
-	const size_t comment = str.find('#');
-	if (comment < std::string::npos)
-	{
-		str.erase(comment);
-	}
+    const size_t comment = str.find('#');
+    if (comment < std::string::npos)
+    {
+        str.erase(comment);
+    }
 }
 
 static void trim(std::string& str)
 {
-	{
-		const size_t p = str.find_first_not_of(" \t");
-		if (p < std::string::npos)
-		{
-			str.erase(0,p);
-		}
-	}
-	{
-		const size_t p = str.find_last_not_of(" \t");
-		if (p+1 < std::string::npos)
-		{
-			str.erase(p+1);
-		}
-	}
+    {
+        const size_t p = str.find_first_not_of(" \t");
+        if (p < std::string::npos)
+        {
+            str.erase(0,p);
+        }
+    }
+    {
+        const size_t p = str.find_last_not_of(" \t");
+        if (p+1 < std::string::npos)
+        {
+            str.erase(p+1);
+        }
+    }
 }
 
 void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
-	std::ifstream* pConfig;
+    std::ifstream* pConfig;
 
-	std::string path(this->file_path);
+    std::string path(this->file_path);
 
-	if (!path.empty())
-	{
-		pConfig = new std::ifstream(path.c_str());
-		if (!pConfig->is_open())
-		{
-			std::stringstream ss;
-			ss << "Cannot open config file " << this->file_path.c_str();
-			throw std::runtime_error(ss.str());
-		}
-	}
-	if (path.empty())
-	{
-		/*
-			On Windows, the default directory will be
-			C:\Program Files\Epple2 if they start the
-			program from the Start Menu; therefore
-			etc/epple2/epple2.conf would be
-			C:\Program Files\epple2\etc\epple2\epple2.conf
-			On Linux... the current directory could be
-			anything, so this probably won't find it (unless
-			the current directory is /).
-		*/
-		path = "etc/epple2/epple2.conf";
-		pConfig = new std::ifstream(path.c_str());
-		if (!pConfig->is_open())
-			path.clear();
-	}
-	if (path.empty())
-	{
-		/*
-			This is primarily for Linux. If configured for
-			a PREFIX of "/usr/local", then this would be
-			/usr/local/etc/epple2/epple2.conf
-		*/
-		path = ETCDIR "/epple2/epple2.conf";
-		pConfig = new std::ifstream(path.c_str());
-		if (!pConfig->is_open())
-			path.clear();
-	}
-	if (path.empty())
-	{
-		/*
-			Last effort to find it (most likely will
-			only work on Linux).
-		*/
-		path = "/etc/epple2/epple2.conf";
-		pConfig = new std::ifstream(path.c_str());
-		if (!pConfig->is_open())
-			path.clear();
-	}
-	if (path.empty())
-	{
-		std::cerr << "Cannot open config file /etc/epple2/epple2.conf" << std::endl;
-		return;
-	}
+    if (!path.empty())
+    {
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+        {
+            std::stringstream ss;
+            ss << "Cannot open config file " << this->file_path.c_str();
+            throw std::runtime_error(ss.str());
+        }
+    }
+    if (path.empty())
+    {
+        /*
+            On Windows, the default directory will be
+            C:\Program Files\Epple2 if they start the
+            program from the Start Menu; therefore
+            etc/epple2/epple2.conf would be
+            C:\Program Files\epple2\etc\epple2\epple2.conf
+            On Linux... the current directory could be
+            anything, so this probably won't find it (unless
+            the current directory is /).
+        */
+        path = "etc/epple2/epple2.conf";
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+            path.clear();
+    }
+    if (path.empty())
+    {
+        /*
+            This is primarily for Linux. If configured for
+            a PREFIX of "/usr/local", then this would be
+            /usr/local/etc/epple2/epple2.conf
+        */
+        path = ETCDIR "/epple2/epple2.conf";
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+            path.clear();
+    }
+    if (path.empty())
+    {
+        /*
+            Try a likely linux location
+        */
+        path = "/etc/epple2/epple2.conf";
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+            path.clear();
+    }
+    if (path.empty())
+    {
+        /*
+            Try another likely linux location
+        */
+        path = "/etc/epple2.conf";
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+            path.clear();
+    }
+    if (path.empty())
+    {
+        /*
+            Last effort to find it.
+        */
+        path = "epple2.conf";
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open())
+            path.clear();
+    }
+    if (path.empty())
+    {
+        std::cerr << "Cannot open config file /etc/epple2/epple2.conf" << std::endl;
+        return;
+    }
 
-	std::string line;
-	std::getline(*pConfig,line);
-	while (!pConfig->eof())
-	{
-		strip_comment(line);
-		trim(line);
-		if (!line.empty())
-		{
+    std::cout << "Reading configuration from file: " << path << std::endl;
+
+    std::string line;
+    std::getline(*pConfig,line);
+    while (!pConfig->eof())
+    {
+        strip_comment(line);
+        trim(line);
+        if (!line.empty())
+        {
             parseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
-		}
-		std::getline(*pConfig,line);
-	}
-	pConfig->close();
-	delete pConfig;
+        }
+        std::getline(*pConfig,line);
+    }
+    pConfig->close();
+    delete pConfig;
 
-	// TODO: make sure there is no more than ONE stdin and/or ONE stdout card
+    // TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
 void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
-	try
-	{
+    try
+    {
         tryParseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
-	}
-	catch (const ConfigException& err)
-	{
-		std::cerr << err.msg.c_str() << std::endl;
-	}
+    }
+    catch (const ConfigException& err)
+    {
+        std::cerr << err.msg.c_str() << std::endl;
+    }
 }
 
 static std::string filter_row(const std::string &row) {
@@ -195,18 +216,18 @@ static std::string filter_row(const std::string &row) {
 
 void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
-	std::istringstream tok(line);
+    std::istringstream tok(line);
 
-	std::string cmd;
-	tok >> cmd;
-	if (cmd == "slot")
-	{
-		int slot;
-		std::string sCardType;
-		tok >> slot >> sCardType;
+    std::string cmd;
+    tok >> cmd;
+    if (cmd == "slot")
+    {
+        int slot;
+        std::string sCardType;
+        tok >> slot >> sCardType;
 
-		insertCard(sCardType,slot,slts,gui);
-	}
+        insertCard(sCardType,slot,slts,gui);
+    }
     else if (cmd == "motherboard") {
         std::string op;
         tok >> op;
@@ -259,88 +280,88 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         }
     }
     else if (cmd == "import")
-	{
-		std::string sm;
-		tok >> sm;
+    {
+        std::string sm;
+        tok >> sm;
 
-		int slot(-1);
-		if (sm == "slot")
-		{
-			tok >> slot;
-		}
-		else if (sm != "motherboard")
-		{
-			throw ConfigException("error at \""+sm+"\"; expected \"slot #\" or \"motherboard\"");
-		}
+        int slot(-1);
+        if (sm == "slot")
+        {
+            tok >> slot;
+        }
+        else if (sm != "motherboard")
+        {
+            throw ConfigException("error at \""+sm+"\"; expected \"slot #\" or \"motherboard\"");
+        }
 
-		std::string romtype;
-		tok >> romtype;
+        std::string romtype;
+        tok >> romtype;
 
-		unsigned short base(0);
-		tok >> std::hex >> base;
+        unsigned short base(0);
+        tok >> std::hex >> base;
 
-		std::string file;
-		std::getline(tok,file);
-		trim(file);
-		std::ifstream memfile(file.c_str(),std::ios::binary);
-		if (!memfile.is_open())
-		{
-			throw ConfigException("cannot open file "+file);
-		}
+        std::string file;
+        std::getline(tok,file);
+        trim(file);
+        std::ifstream memfile(file.c_str(),std::ios::binary);
+        if (!memfile.is_open())
+        {
+            throw ConfigException("cannot open file "+file);
+        }
 
-		if (slot < 0) // motherboard
-		{
-			if (romtype == "rom")
-			{
-				rom.load(base,memfile);
-			}
-			else
-			{
-				throw ConfigException("error at \""+romtype+"\"; expected rom or ram");
-			}
-		}
-		else
-		{
-			if (8 <= slot)
-			{
-				throw ConfigException("invalid slot number");
-			}
-			Card* card = slts.get(slot);
-			if (romtype == "rom")
-				card->loadRom(base,memfile);
-			else if (romtype == "rom7")
-				card->loadSeventhRom(base,memfile);
-			else if (romtype == "rombank")
-				card->loadBankRom(base,memfile);
-			else
-				throw ConfigException("error at \""+romtype+"\"; expected rom, rom7, or rombank");
-		}
-		memfile.close();
-	}
-	else if (cmd == "load" || cmd == "save" || cmd == "unload")
-	{
-		std::string slotk;
-		tok >> slotk;
-		if (slotk != "slot")
-		{
-			throw ConfigException("error at \""+slotk+"\"; expected \"slot\"");
-		}
+        if (slot < 0) // motherboard
+        {
+            if (romtype == "rom")
+            {
+                rom.load(base,memfile);
+            }
+            else
+            {
+                throw ConfigException("error at \""+romtype+"\"; expected rom or ram");
+            }
+        }
+        else
+        {
+            if (8 <= slot)
+            {
+                throw ConfigException("invalid slot number");
+            }
+            Card* card = slts.get(slot);
+            if (romtype == "rom")
+                card->loadRom(base,memfile);
+            else if (romtype == "rom7")
+                card->loadSeventhRom(base,memfile);
+            else if (romtype == "rombank")
+                card->loadBankRom(base,memfile);
+            else
+                throw ConfigException("error at \""+romtype+"\"; expected rom, rom7, or rombank");
+        }
+        memfile.close();
+    }
+    else if (cmd == "load" || cmd == "save" || cmd == "unload")
+    {
+        std::string slotk;
+        tok >> slotk;
+        if (slotk != "slot")
+        {
+            throw ConfigException("error at \""+slotk+"\"; expected \"slot\"");
+        }
 
-		int slot(-1);
-		tok >> slot;
+        int slot(-1);
+        tok >> slot;
 
-		std::string drivek;
-		tok >> drivek;
-		if (drivek != "drive")
-		{
-			throw ConfigException("error at \""+drivek+"\"; expected \"drive\"");
-		}
+        std::string drivek;
+        tok >> drivek;
+        if (drivek != "drive")
+        {
+            throw ConfigException("error at \""+drivek+"\"; expected \"drive\"");
+        }
 
-		int drive(-1);
-		tok >> drive;
+        int drive(-1);
+        tok >> drive;
 
-		if (cmd == "load")
-		{
+        if (cmd == "load")
+        {
             std::string fn_optional;
             std::getline(tok,fn_optional);
             trim(fn_optional);
@@ -356,43 +377,43 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
                 loadDisk(slts,slot,drive,fn_optional);
             }
         }
-		else if (cmd == "unload")
-		{
-			unloadDisk(slts,slot,drive);
-		}
-		else if (cmd == "save")
-		{
-			saveDisk(slts,slot,drive);
-		}
-	}
-	else if (cmd == "revision")
-	{
-		tok >> std::hex >> revision;
-	}
-	else if (cmd == "cassette")
-	{
-		std::string cas;
-		tok >> cas;
+        else if (cmd == "unload")
+        {
+            unloadDisk(slts,slot,drive);
+        }
+        else if (cmd == "save")
+        {
+            saveDisk(slts,slot,drive);
+        }
+    }
+    else if (cmd == "revision")
+    {
+        tok >> std::hex >> revision;
+    }
+    else if (cmd == "cassette")
+    {
+        std::string cas;
+        tok >> cas;
 
-		if (cas == "rewind")
-		{
+        if (cas == "rewind")
+        {
             cassetteIn.rewind();
-		}
+        }
         else if (cas == "tone")
         {
             cassetteIn.tone();
         }
         else if (cas == "blank")
-		{
-			std::string fcas;
-			std::getline(tok,fcas);
-			trim(fcas);
+        {
+            std::string fcas;
+            std::getline(tok,fcas);
+            trim(fcas);
             if (!fcas.empty()) {
                 cassetteOut.blank(fcas);
             }
-		}
-		else if (cas == "load")
-		{
+        }
+        else if (cas == "load")
+        {
             std::string fn_optional;
             std::getline(tok,fn_optional);
             trim(fn_optional);
@@ -407,9 +428,9 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             if (fn_optional.length() > 0) {
                 cassetteIn.load(fn_optional);
             }
-		}
+        }
         else if (cas == "eject")
-		{
+        {
             std::string eject;
             tok >> eject;
             if (eject == "in") {
@@ -420,119 +441,119 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
                 throw ConfigException("error: unknown cassette to eject: "+eject);
             }
         }
-		else if (cas == "save")
-		{
+        else if (cas == "save")
+        {
             cassetteOut.save();
-		}
-		else
-		{
-			throw ConfigException("error: unknown cassette command: "+cas);
-		}
-	}
-	else
-	{
-		throw ConfigException("Invalid command: "+cmd);
-	}
+        }
+        else
+        {
+            throw ConfigException("error: unknown cassette command: "+cas);
+        }
+    }
+    else
+    {
+        throw ConfigException("Invalid command: "+cmd);
+    }
 }
 
 void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib)
 {
-	if (drive < 1 || 2 < drive)
-	{
-		throw ConfigException("Invalid drive; must be 1 or 2");
-	}
+    if (drive < 1 || 2 < drive)
+    {
+        throw ConfigException("Invalid drive; must be 1 or 2");
+    }
 
-	// TODO if file doesn't exist, name still gets displayed, and there's no error message
-	Card* card = slts.get(slot);
-	if (!(disk_mask & (1 << slot)))
-	{
-		std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
-		return;
-	}
+    // TODO if file doesn't exist, name still gets displayed, and there's no error message
+    Card* card = slts.get(slot);
+    if (!(disk_mask & (1 << slot)))
+    {
+        std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
+        return;
+    }
 
-	DiskController* controller = (DiskController*)card;
-	controller->loadDisk(drive-1,fnib);
+    DiskController* controller = (DiskController*)card;
+    controller->loadDisk(drive-1,fnib);
 }
 
 void Config::unloadDisk(Slots& slts, int slot, int drive)
 {
-	if (drive < 1 || 2 < drive)
-	{
-		throw ConfigException("Invalid drive; must be 1 or 2");
-	}
+    if (drive < 1 || 2 < drive)
+    {
+        throw ConfigException("Invalid drive; must be 1 or 2");
+    }
 
-	Card* card = slts.get(slot);
-	if (!(disk_mask & (1 << slot)))
-	{
-		std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
-		return;
-	}
+    Card* card = slts.get(slot);
+    if (!(disk_mask & (1 << slot)))
+    {
+        std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
+        return;
+    }
 
-	DiskController* controller = (DiskController*)card;
-	controller->unloadDisk(drive-1);
+    DiskController* controller = (DiskController*)card;
+    controller->unloadDisk(drive-1);
 }
 
 void Config::saveDisk(Slots& slts, int slot, int drive)
 {
-	if (drive < 1 || 2 < drive)
-	{
-		throw ConfigException("Invalid drive; must be 1 or 2");
-	}
+    if (drive < 1 || 2 < drive)
+    {
+        throw ConfigException("Invalid drive; must be 1 or 2");
+    }
     slts.get(slot)->save(drive-1);
 }
 
 void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui)
 {
-	if (slot < 0 || 8 <= slot)
-	{
-		throw ConfigException("Invalid slot number");
-	}
+    if (slot < 0 || 8 <= slot)
+    {
+        throw ConfigException("Invalid slot number");
+    }
 
-	Card* card;
+    Card* card;
 
-	disk_mask &= ~(1 << slot);
+    disk_mask &= ~(1 << slot);
 
-	if (cardType == "language")
-	{
-		card = new LanguageCard(gui,slot);
-	}
-	else if (cardType == "firmware")
-	{
-		card = new FirmwareCard(gui,slot);
-	}
+    if (cardType == "language")
+    {
+        card = new LanguageCard(gui,slot);
+    }
+    else if (cardType == "firmware")
+    {
+        card = new FirmwareCard(gui,slot);
+    }
     else if (cardType == "disk") // 16-sector LSS ROM
-	{
+    {
         card = new DiskController(gui,slot,false);
-		disk_mask |= (1 << slot);
-	}
+        disk_mask |= (1 << slot);
+    }
     else if (cardType == "disk13") // 13-sector LSS ROM
     {
         card = new DiskController(gui,slot,true);
         disk_mask |= (1 << slot);
     }
     else if (cardType == "clock")
-	{
-		card = new ClockCard();
-	}
-	else if (cardType == "stdout")
-	{
-		card = new StandardOut();
-	}
-	else if (cardType == "stdin")
-	{
-		card = new StandardIn();
-	}
-	else if (cardType == "empty")
-	{
-		card = 0;
-	}
-	else
-	{
-		throw ConfigException("Invalid card type: "+cardType);
-	}
+    {
+        card = new ClockCard();
+    }
+    else if (cardType == "stdout")
+    {
+        card = new StandardOut();
+    }
+    else if (cardType == "stdin")
+    {
+        card = new StandardIn();
+    }
+    else if (cardType == "empty")
+    {
+        card = 0;
+    }
+    else
+    {
+        throw ConfigException("Invalid card type: "+cardType);
+    }
 
-	if (card)
-		slts.set(slot,card);
-	else
-		slts.remove(slot);
+    if (card)
+        slts.set(slot,card);
+    else
+        slts.remove(slot);
 }

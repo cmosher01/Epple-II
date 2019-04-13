@@ -12,7 +12,7 @@ Makefile.in
 /install-sh
 /missing
 /config.h.in*
-
+/test-driver
 
 
 # need these for non-VPATH builds

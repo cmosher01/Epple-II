@@ -78,7 +78,6 @@ void Emulator::config(Config& cfg) {
 
 void Emulator::init() {
     powerOffComputer();
-    this->display.setType(AnalogTV::MONITOR_COLOR);
     this->display.powerOn(true);
 }
 

@@ -26,31 +26,29 @@ class ScreenImage;
 class CassetteIn;
 class CassetteOut;
 
-class ConfigException
-{
+class ConfigException {
 public:
-	const std::string msg;
-	ConfigException(const std::string& msg) : msg(msg) {}
+    const std::string msg;
+    ConfigException(const std::string& msg) : msg(msg) {}
 };
 
-class Config
-{
+class Config {
 private:
-	const std::string& file_path;
-	static unsigned char disk_mask;
+    const std::string& file_path;
+    static unsigned char disk_mask;
 
-	static void loadDisk(Slots& slts, int slot, int drive, const std::string& fnib);
-	static void unloadDisk(Slots& slts, int slot, int drive);
-	static void saveDisk(Slots& slts, int slot, int drive);
-	static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui);
-        static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+    static void loadDisk(Slots& slts, int slot, int drive, const std::string& fnib);
+    static void unloadDisk(Slots& slts, int slot, int drive);
+    static void saveDisk(Slots& slts, int slot, int drive);
+    static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui);
+    static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
 
 public:
-	Config(const std::string& file_path);
-	~Config();
+    Config(const std::string& file_path);
+    ~Config();
 
-        void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
-        static void parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+    void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+    static void parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
 };
 
 #endif

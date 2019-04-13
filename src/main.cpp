@@ -35,16 +35,16 @@
 
 
 static int run(const std::string& config_file) {
-	GUI gui;
+    GUI gui;
 
     std::unique_ptr<Emulator> emu(new Emulator());
 
-	Config cfg(config_file);
-	emu->config(cfg);
+    Config cfg(config_file);
+    emu->config(cfg);
 
-	emu->init();
+    emu->init();
 
-	return emu->run();
+    return emu->run();
 }
 
 #ifdef __cplusplus
@@ -54,19 +54,19 @@ int main(int argc, char* argv[]) {
     setbuf(stdout, NULL);
 
     if (argc > 2) {
-		throw std::runtime_error("usage: epple2 [config-file]" );
-	}
+        throw std::runtime_error("usage: epple2 [config-file]" );
+    }
 
-	int x = E2Const::test();
+    int x = E2Const::test();
     if (x != -1) {
-		std::cerr << x << std::endl;
-		throw std::runtime_error("bad constant in e2const.h" );
-	}
+        std::cerr << x << std::endl;
+        throw std::runtime_error("bad constant in e2const.h" );
+    }
 
-	std::string config_file;
+    std::string config_file;
     if (argc > 1) {
-		config_file = argv[1];
-	}
+        config_file = argv[1];
+    }
 
-	return run(config_file);
+    return run(config_file);
 }

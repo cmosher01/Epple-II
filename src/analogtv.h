@@ -34,9 +34,9 @@ class AnalogTV
 public:
 	enum DisplayType
 	{
+		TV_OLD_COLOR,
 		MONITOR_COLOR,
 		MONITOR_GREEN,
-		TV_OLD_COLOR,
 
 		NUM_DISPLAY_TYPES
 	};
@@ -89,7 +89,7 @@ public:
 
 	AnalogTV(ScreenImage& image);
 	~AnalogTV();
-	
+
 	bool isOn() const
 	{
 		return this->on;
