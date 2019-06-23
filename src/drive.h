@@ -53,6 +53,7 @@ public:
     void saveDisk();
     bool isWriteProtected() const;
     bool isModified() const;
+    int optimal_timing() const;
     int position() const;
     void tick();
     void set_phase(int i_phase_0_to_3, bool on);

@@ -55,7 +55,7 @@ private:
     // On the real Apple the read pulse goes thru this LS174 too, but we don't emulate that here.
 
     std::uint8_t prev_seq; // remember previous seq, to determine if A7 changes (indicating write a 1 bit)
-    std::uint8_t t; // used to keep track of 4 MPU cycles
+    double t; // used to keep track of optimal bit timing interval
 
     // TODO for a rev. 0 motherboard, the disk controller will auto reset the CPU (see UA2, 9-13)
 

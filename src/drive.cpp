@@ -47,6 +47,10 @@ bool Disk2Drive::isModified() const {
     return this->disk.isModified();
 }
 
+int Disk2Drive::optimal_timing() const {
+    return this->disk.optimal_timing();
+}
+
 int Disk2Drive::position() const {
     return this->head.position();
 }

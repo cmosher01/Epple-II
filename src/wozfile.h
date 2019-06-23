@@ -134,6 +134,13 @@ public:
     bool getBit(std::uint8_t currentQuarterTrack);
     void setBit(std::uint8_t currentQuarterTrack, bool on);
     void rawSet();
+
+    int optimal_timing() const {
+        if (this->loaded) {
+            return this->timing;
+        }
+        return 32;
+    }
 };
 
 #endif // WOZFILE_H

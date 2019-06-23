@@ -85,8 +85,7 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
  * (When the motor is on, that is.)
  */
 void DiskController::tick() {
-    this->drive1.tick();
-    this->drive2.tick();
+    this->currentDrive->tick();
 
     if (this->ioStepped) { // if we already ran it, above in io(), skip here
         this->ioStepped = false;
@@ -105,21 +104,24 @@ void DiskController::tick() {
      * then inject the next bit and subtract the optimal bit timing from your bit timing clock.
      * That will give you 125ns resolution on your bits being fed to the sequencer.
      */
-    rotateCurrentDisk();
 
     // run two LSS cycles = 2MHz
+
+    rotateCurrentDisk();
     stepLss();
+
     // pulse lasts only 500 nanoseconds (1 LSS clock cycle), so clear it now:
     this->currentDrive->clearPulse();
 
+    rotateCurrentDisk();
     stepLss();
 }
 
 void DiskController::rotateCurrentDisk() {
-    ++this->t;
-    if (4 <= this->t) { // 4us interval between bits
+    this->t += 1.0f;
+    if (this->currentDrive->optimal_timing()/4.0f <= this->t) { // 4us interval between bits
         this->currentDrive->rotateDiskOneBit(); // (will also generate a read-pulse when it reads a 1-bit)
-        this->t = 0;
+        this->t -= this->currentDrive->optimal_timing()/4.0f;
     }
 }
 
