@@ -297,7 +297,7 @@ void Disk2StepperMotor::tick() {
 
 
 
-
+// everything below here is for unit testing only
 
 
 
@@ -327,7 +327,8 @@ static void set_phases_to(Disk2StepperMotor &d, int p) {
     advance(d);
 }
 
-static int test_move(SpyMovable &moved, int p_from, int p_to) {
+static int test_move(int p_from, int p_to) {
+    SpyMovable moved;
     Disk2StepperMotor d(moved);
 
     if (p_from == 0x4 || p_from == 0xE) {
@@ -371,20 +372,18 @@ bool Disk2StepperMotor::test() {
         /*B*/ {-1,-2,-2,-3, 0, 0,+3,+2,+2,+1, 0, 0, 0, 0, 0, 0},
     };
 
-    std::printf("    %s\n", "from_phase -> to_phase ? expected_move : rotor_before +/-actual_move = rotor_after [*=failed]");
-    std::printf("    %s\n", "       9                8                D                C                4                E                6                2                7                3                1                B                0                5                A                F");
-
-    SpyMovable moved;
+    std::printf("    %s\n", "from_phase -> to_phase ? +/-expected_move : +/-actual_move = result [.=pass; *=fail]");
+    std::printf("    %s\n", "   9            8            D            C            4            E            6            2            7            3            1            B            0            5            A            F");
 
     bool bad = false;
     for (int i_from = 0; i_from < 0x0C; ++i_from) {
         std::printf("%1X:  ", phase[i_from]);
         for (int i_to = 0; i_to < 0x10; ++i_to) {
             int expected = move[i_from][i_to];
-            int actual = test_move(moved,phase[i_from],phase[i_to]);
+            int actual = test_move(phase[i_from],phase[i_to]);
             std::printf(
                 "%1X->%1X?%+2d:%+2d=%s ",
-                phase[i_from],phase[i_to],expected,actual,expected==actual?" ":"*");
+                phase[i_from],phase[i_to],expected,actual,expected==actual?".":"*");
             if (actual != expected) {
                 bad = true;
             }
