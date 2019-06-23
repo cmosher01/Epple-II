@@ -112,21 +112,21 @@ public:
 
     bool load(const std::string& filePath);
 
-    std::string getFileName() {
+    std::string getFileName() const {
         return this->fileName;
     }
 
-    bool isLoaded() {
+    bool isLoaded() const {
         return this->loaded;
     }
 
     void save();
     void unload();
-    bool isWriteProtected() {
+    bool isWriteProtected() const {
         return !this->writable;
     }
 
-    bool isModified() {
+    bool isModified() const {
         return this->modified;
     }
 

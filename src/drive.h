@@ -23,13 +23,15 @@
 #include <string>
 #include <cstdint>
 #include <iostream>
+#include "disk2steppermotor.h"
+#include "disk2readwritehead.h"
 #include "wozfile.h"
-#include "steppermotor.h"
 
-class Drive {
+class Disk2Drive {
 private:
-    WozFile& disk;
-    StepperMotor& arm;
+    Disk2StepperMotor stepper;
+    Disk2ReadWriteHead head;
+    WozFile disk;
 
     bool pulse;
     std::uint8_t bitBufferRead;
@@ -44,74 +46,21 @@ private:
     }
 
 public:
-    Drive(WozFile& disk, StepperMotor& arm):
-        disk(disk),
-        arm(arm),
-        pulse(false),
-        bitBufferRead(0),
-        generator(std::chrono::system_clock::now().time_since_epoch().count()),
-        distribution(0,1) {
-    }
-
-    ~Drive() {
-    }
-
-    bool loadDisk(const std::string& fnib) {
-        return this->disk.load(fnib);
-    }
-
-    void unloadDisk() {
-        this->disk.unload();
-    }
-    bool isLoaded() const {
-        return this->disk.isLoaded();
-    }
-
-    void saveDisk() {
-        this->disk.save();
-    }
-
-    bool isWriteProtected() const {
-        return this->disk.isWriteProtected();
-    }
-
-    bool isModified() const {
-        return this->disk.isModified();
-    }
-
-
-
-    void setMagnet(unsigned char q, bool on) {
-        this->arm.setMagnet(q,on);
-    }
-
-    int getTrack() const {
-        return this->arm.getTrack();
-    }
-
-
-    void rotateDiskOneBit() {
-        this->disk.rotateOneBit(this->arm.getQuarterTrack());
-
-        bitBufferRead <<= 1;
-        bitBufferRead |= this->disk.getBit(this->arm.getQuarterTrack());
-        if (bitBufferRead & 0x0Fu) {
-            this->pulse = (bitBufferRead & 0x02u) >> 1;
-        } else {
-            this->pulse = randomBit();
-        }
-    }
-
-    bool readPulse() const {
-        return this->pulse;
-    }
-    void clearPulse() {
-        this->pulse = false;
-    }
-
-    void writeBit(bool on) {
-        this->disk.setBit(this->arm.getQuarterTrack(), on);
-    }
+    Disk2Drive();
+    bool loadDisk(const std::string& fnib);
+    void unloadDisk();
+    bool isLoaded() const;
+    void saveDisk();
+    bool isWriteProtected() const;
+    bool isModified() const;
+    int position() const;
+    void tick();
+    void set_phase(int i_phase_0_to_3, bool on);
+    int getTrack() const;
+    void rotateDiskOneBit();
+    bool readPulse() const;
+    void clearPulse();
+    void writeBit(bool on);
 };
 
 #endif

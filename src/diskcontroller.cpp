@@ -20,8 +20,6 @@
 DiskController::DiskController(ScreenImage& gui, int slot, bool lss13):
     gui(gui),
     slot(slot),
-    drive1(diskBytes1,arm1),
-    drive2(diskBytes2,arm2),
     currentDrive(&this->drive1),
     load(false),
     write(false),
@@ -47,7 +45,7 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
     case 1: // TODO if phase-1 is on, it also acts as write-protect (UA2, 9-8)
     case 2:
     case 3:
-        this->currentDrive->setMagnet(q,on);
+        this->currentDrive->set_phase(q,on);
         this->gui.setTrack(this->slot, getCurrentDriveNumber(), getTrack());
         break;
     case 4:
@@ -87,8 +85,8 @@ unsigned char DiskController::io(const unsigned short addr, const unsigned char 
  * (When the motor is on, that is.)
  */
 void DiskController::tick() {
-    this->arm1.tick();
-    this->arm2.tick();
+    this->drive1.tick();
+    this->drive2.tick();
 
     if (this->ioStepped) { // if we already ran it, above in io(), skip here
         this->ioStepped = false;
@@ -101,6 +99,12 @@ void DiskController::tick() {
     }
     this->motor.tick(); // only need to send tick when motor is powered on
 
+    /*
+     * TODO
+     * Every CPU clock, add 8 to your bit timing clock. If your bit timing clock is >= optimal bit timing,
+     * then inject the next bit and subtract the optimal bit timing from your bit timing clock.
+     * That will give you 125ns resolution on your bits being fed to the sequencer.
+     */
     rotateCurrentDisk();
 
     // run two LSS cycles = 2MHz
