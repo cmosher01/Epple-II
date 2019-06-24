@@ -40,10 +40,8 @@ class MemoryRow {
         /* 4K or 16K, size of each chip (or minimum in corner case of mixed sizes) */
         std::uint16_t size() const;
 
-        std::uint8_t read(const std::uint16_t address) const;
+        std::uint8_t read(const std::uint16_t address, const std::uint8_t data) const;
         void write(const std::uint16_t address, const std::uint8_t data);
-
-        static std::uint8_t missing_memory_byte_value();
 
         std::string chip_id(std::uint_fast8_t socket) const;
 };

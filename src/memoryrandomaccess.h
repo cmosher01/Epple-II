@@ -18,7 +18,7 @@ class MemoryRandomAccess {
 
         MemoryRow &row_of(const std::string &row);
         MemoryStrapping &strapping_of(const std::string &row);
-        std::uint8_t buggyRamRead(std::uint16_t address) const;
+        std::uint8_t buggyRamRead(std::uint16_t address, std::uint8_t data) const;
         void buggyRamWrite(std::uint16_t address, const std::uint8_t data);
         bool k20or24() const;
 
@@ -31,7 +31,7 @@ public:
         void remove_chip(const std::string &row, const std::uint_fast8_t socket);
         void strap_to(const std::string &row, std::uint16_t addr_base, std::uint16_t addr_size);
 
-        std::uint8_t read(std::uint16_t address) const;
+        std::uint8_t read(std::uint16_t address, const std::uint8_t data) const;
         void write(std::uint16_t address, const std::uint8_t data);
         void powerOn();
         void powerOff();

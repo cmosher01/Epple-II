@@ -45,7 +45,7 @@ void FirmwareCard::ioBankRom(const unsigned short addr, unsigned char* const pb,
 	{
 		if (this->inhibitBankRom)
 		{
-			*pb = this->bankRom.read(addr);
+            *pb = this->bankRom.read(addr, *pb);
 			this->inhibit = true;
 		}
 	}
@@ -53,7 +53,7 @@ void FirmwareCard::ioBankRom(const unsigned short addr, unsigned char* const pb,
 	{
 		if (this->inhibitF8Rom)
 		{
-			*pb = this->bankRom.read(addr);
+            *pb = this->bankRom.read(addr, *pb);
 			this->inhibit = true;
 		}
 	}

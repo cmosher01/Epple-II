@@ -30,10 +30,10 @@ class Memory {
 
     public:
         Memory(const size_t n);
-        virtual ~Memory() { }
+        virtual ~Memory() = default;
 
         size_t size() const;
-        std::uint8_t read(const std::uint16_t address) const;
+        std::uint8_t read(const std::uint16_t address, const std::uint8_t data) const;
         void write(const std::uint16_t address, const std::uint8_t data);
         void powerOn();
         void powerOff();

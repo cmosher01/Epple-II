@@ -73,11 +73,11 @@ void LanguageCard::ioBankRom(const unsigned short addr, unsigned char* const pb,
 	{
 		if (addr < 0x1000)
 		{
-			*pb = this->ramBank[this->bank]->read(addr);
+            *pb = this->ramBank[this->bank]->read(addr, *pb);
 		}
 		else
 		{
-			*pb = this->ramTop.read(addr-0x1000);
+            *pb = this->ramTop.read(addr-0x1000, *pb);
 		}
 		this->inhibit = true;
 	}

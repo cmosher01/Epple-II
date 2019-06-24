@@ -2,27 +2,6 @@
 #include <exception>
 #include <cstdlib>
 
-/*
- * If any RAM IC sockets are empty, set the corresponding bits to 1 most of the time.
- * For some addresses it seems they are always 1, but for other addresses they can return
- * 0 sometimes, empirically about 4% of the time.
- */
-static std::uint8_t randomize_missing_bits(std::uint8_t v, const std::uint8_t bits) {
-    std::uint8_t bit = 1u;
-    for (std::uint_fast8_t i = 0; i < 8; ++i) {
-        if (bits & bit) {
-            double r = static_cast<double>(std::rand())/RAND_MAX;
-            if (r < 0.04) {
-                v &= ~bit;
-            } else {
-                v |= bit;
-            }
-        }
-        bit <<= 1;
-    }
-    return v;
-}
-
 
 
 MemoryRow::MemoryRow(const char label):
@@ -102,22 +81,23 @@ std::uint16_t MemoryRow::size() const {
     return static_cast<std::uint16_t>(this->values_stored.size());
 }
 
-std::uint8_t MemoryRow::missing_memory_byte_value() {
-    return randomize_missing_bits(0xFFu, 0xFFu);
-}
-
-std::uint8_t MemoryRow::read(const std::uint16_t address_offset) const {
+std::uint8_t MemoryRow::read(const std::uint16_t address_offset, std::uint8_t data) const {
     if (this->power) {
-        std::uint8_t v;
         if (address_offset < this->values_stored.size()) {
-            v = this->values_stored[address_offset];
-            if (this->missing_bits) {
-                v = randomize_missing_bits(v, this->missing_bits);
-            }
-        } else {
-            v = missing_memory_byte_value();
+            /* We need to float the data bits corresponding to missing chips:
+             * 01010101 data bits (previously places on data bus from elsewhere)
+             * 00110011 mask of memory chips (1=missing, 0=present)
+             * 00001111 bits stored in chips
+             * --------
+             * 00010001 data & missing
+             * 11001100 ~missing
+             * 00001100 stored & ~missing
+             * --------
+             * 00011101 (stored & ~missing) | (data & missing)
+             */
+             data = (this->values_stored[address_offset] & ~this->missing_bits) | (data & this->missing_bits);
         }
-        return v;
+        return data;
     } else {
         throw std::logic_error("cannot read memory when power is off");
     }
@@ -125,6 +105,8 @@ std::uint8_t MemoryRow::read(const std::uint16_t address_offset) const {
 
 void MemoryRow::write(const std::uint16_t address, const std::uint8_t data) {
     if (this->power) {
+        // if there are missing bits, they do get stored, so we need to
+        // be careful to mask them out when giving them back (in read method)
         this->values_stored[address] = data;
     } else {
         throw std::logic_error("cannot write memory when power is off");

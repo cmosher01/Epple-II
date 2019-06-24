@@ -14,8 +14,8 @@ bool MemoryStrapping::contains(std::uint16_t address) const {
     return this->addr_base <= address && address < this->addr_base + size();
 }
 
-std::uint8_t MemoryStrapping::read(const std::uint16_t address) const {
-    return this->row.read(address - this->addr_base);
+std::uint8_t MemoryStrapping::read(const std::uint16_t address, const std::uint8_t data) const {
+    return this->row.read(address - this->addr_base, data);
 }
 
 void MemoryStrapping::write(const std::uint16_t address, const std::uint8_t data) {

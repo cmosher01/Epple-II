@@ -96,14 +96,12 @@ void DiskController::tick() {
         this->ioStepped = false;
         return;
     }
+
+
+
     this->motor.tick(); // only need to send tick when motor is powered on
 
-    /*
-     * TODO
-     * Every CPU clock, add 8 to your bit timing clock. If your bit timing clock is >= optimal bit timing,
-     * then inject the next bit and subtract the optimal bit timing from your bit timing clock.
-     * That will give you 125ns resolution on your bits being fed to the sequencer.
-     */
+
 
     // run two LSS cycles = 2MHz
 
@@ -118,10 +116,10 @@ void DiskController::tick() {
 }
 
 void DiskController::rotateCurrentDisk() {
-    this->t += 1.0f;
-    if (this->currentDrive->optimal_timing()/4.0f <= this->t) { // 4us interval between bits
+    this->t += 1.0;
+    if (this->currentDrive->optimal_timing()/4.0 <= this->t) { // wait for optimal interval between bits
         this->currentDrive->rotateDiskOneBit(); // (will also generate a read-pulse when it reads a 1-bit)
-        this->t -= this->currentDrive->optimal_timing()/4.0f;
+        this->t -= this->currentDrive->optimal_timing()/4.0;
     }
 }
 

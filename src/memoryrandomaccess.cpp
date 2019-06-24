@@ -59,44 +59,44 @@ bool MemoryRandomAccess::k20or24() const {
 }
 
 /* for 20K or 24K on rev. 0: pages 40-5F are dup w/ 60-7F */
-std::uint8_t MemoryRandomAccess::buggyRamRead(const std::uint16_t address) const {
+std::uint8_t MemoryRandomAccess::buggyRamRead(const std::uint16_t address, std::uint8_t data) const {
     std::uint16_t ax = address & ~0x2000u;
     if (this->strapE.contains(ax)) {
-        return this->strapE.read(ax);
+        return this->strapE.read(ax, data);
     }
     if (this->strapD.contains(ax)) {
-        return this->strapD.read(ax);
+        return this->strapD.read(ax, data);
     }
     if (this->strapC.contains(ax)) {
-        return this->strapC.read(ax);
+        return this->strapC.read(ax, data);
     }
     ax = address | 0x2000u;
     if (this->strapE.contains(ax)) {
-        return this->strapE.read(ax);
+        return this->strapE.read(ax, data);
     }
     if (this->strapD.contains(ax)) {
-        return this->strapD.read(ax);
+        return this->strapD.read(ax, data);
     }
     if (this->strapC.contains(ax)) {
-        return this->strapC.read(ax);
+        return this->strapC.read(ax, data);
     }
-    return MemoryRow::missing_memory_byte_value();
+    return data;
 }
 
-std::uint8_t MemoryRandomAccess::read(const std::uint16_t address) const {
+std::uint8_t MemoryRandomAccess::read(const std::uint16_t address, std::uint8_t data) const {
     if (this->revision == 0 && k20or24() && ((address & 0xC000u) == 0x4000u)) {
-        return buggyRamRead(address);
+        return buggyRamRead(address, data);
     }
     if (this->strapE.contains(address)) {
-        return this->strapE.read(address);
+        return this->strapE.read(address, data);
     }
     if (this->strapD.contains(address)) {
-        return this->strapD.read(address);
+        return this->strapD.read(address, data);
     }
     if (this->strapC.contains(address)) {
-        return this->strapC.read(address);
+        return this->strapC.read(address, data);
     }
-    return MemoryRow::missing_memory_byte_value();
+    return data;
 }
 
 void MemoryRandomAccess::buggyRamWrite(std::uint16_t address, const std::uint8_t data) {

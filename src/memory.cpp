@@ -22,29 +22,6 @@
 #include <istream>
 #include <cstdlib>
 #include <cstddef>
-#include "raminitializer.h"
-
-
-
-/*
- * If any RAM IC sockets are empty, set the corresponding bits to 1 most of the time.
- * But set to 0 instead, with probability 1 in 137 (a rough estimate obtained empirically)
- */
-static std::uint8_t randomize_missing_bits(std::uint8_t v, const std::uint8_t bits) {
-    std::uint8_t bit = 1u;
-    for (std::uint_fast8_t i = 0; i < 8; ++i) {
-        if (bits & bit) {
-            double r = static_cast<double>(std::rand())/RAND_MAX;
-            if (r < 1.0/137.0) {
-                v &= ~bit;
-            } else {
-                v |= bit;
-            }
-        }
-        bit <<= 1;
-    }
-    return v;
-}
 
 
 
@@ -54,25 +31,16 @@ Memory::Memory(const size_t n):
     missing_bits(0u) {
 }
 
-
-
 void Memory::clear() {
     std::fill(this->bytes.begin(), this->bytes.end(), this->clear_value);
-}
-
-void Memory::init() {
-    RAMInitializer initRam(*this);
-    initRam.init();
 }
 
 void Memory::load(const std::uint16_t base, std::istream& in) {
     in.read(reinterpret_cast<char*>(&this->bytes[base]), static_cast<ptrdiff_t>(this->bytes.size()-base));
 }
 
-
-
 void Memory::powerOn() {
-    init();
+    clear();
 }
 
 void Memory::powerOff() {
@@ -83,12 +51,8 @@ size_t Memory::size() const {
     return this->bytes.size();
 }
 
-std::uint8_t Memory::read(const std::uint16_t address) const {
-    std::uint8_t v = this->bytes[address];
-    if (this->missing_bits) {
-        v = randomize_missing_bits(v, this->missing_bits);
-    }
-    return v;
+std::uint8_t Memory::read(const std::uint16_t address, const std::uint8_t data) const {
+    return (this->bytes[address] & ~this->missing_bits) | (data & this->missing_bits);
 }
 
 void Memory::write(const std::uint16_t address, const std::uint8_t data) {

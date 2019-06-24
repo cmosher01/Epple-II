@@ -21,7 +21,7 @@ keyboard.cpp keyboardbuffermode.cpp languagecard.cpp filterchroma.cpp \
 filterluma.cpp lss.cpp main.cpp memory.cpp \
 memorychip.cpp memoryrow.cpp memorystrapping.cpp memoryrandomaccess.cpp \
 paddlebuttonstates.cpp \
-paddles.cpp picturegenerator.cpp powerupreset.cpp raminitializer.cpp \
+paddles.cpp picturegenerator.cpp powerupreset.cpp \
 screenimage.cpp slots.cpp speakerclicker.cpp standardin.cpp \
 standardinproducer.cpp standardout.cpp textcharacters.cpp \
 timable.cpp video.cpp videoaddressing.cpp videomode.cpp \
@@ -40,7 +40,7 @@ hypermode.h keyboardbuffermode.h keyboard.h languagecard.h filterchroma.h \
 filterluma.h lss.h memory.h \
 memorychip.h memoryrow.h memorystrapping.h memoryrandomaccess.h \
 paddlebuttonstates.h paddles.h picturegenerator.h \
-powerupreset.h raminitializer.h screenimage.h slots.h speakerclicker.h \
+powerupreset.h screenimage.h slots.h speakerclicker.h \
 standardin.h standardinproducer.h standardout.h \
 textcharacterimages.h textcharacters.h timable.h util.h \
 videoaddressing.h video.h videomode.h videostaticgenerator.h wozfile.h \

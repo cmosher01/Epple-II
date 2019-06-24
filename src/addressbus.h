@@ -33,9 +33,9 @@ class Slots;
 class AddressBus {
     private:
         ScreenImage& gui;
-        int& revision;
+        const int& revision;
         MemoryRandomAccess& ram;
-        Memory& rom;
+        Memory& rom; // TODO fix ROM so it doesn't use deprecated Memory class
         Keyboard& kbd;
         VideoMode& vid;
         Paddles& paddles;
@@ -47,21 +47,24 @@ class AddressBus {
 
         unsigned char data; // this emulates the (floating) data bus
 
-    public:
+        void setD7(const bool set);
+        void readSwitch(unsigned short address);
+        void writeSwitch(unsigned short address);
+
+public:
         AddressBus(ScreenImage& gui, int& revision, MemoryRandomAccess& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts);
         ~AddressBus();
 
         unsigned char read(const unsigned short address);
         void write(const unsigned short address, const unsigned char d);
-        unsigned char readSwitch(unsigned short address);
-        void setD7(const bool set);
-        void writeSwitch(unsigned short address);
-        enum { MOTHERBOARD_RAM_BAS = 0x00000 } ;
-        enum { MOTHERBOARD_RAM_LIM = 0x0C000 } ;
-        enum { MOTHERBOARD_RAM_SIZ = MOTHERBOARD_RAM_LIM-MOTHERBOARD_RAM_BAS };
-        enum { MOTHERBOARD_ROM_BAS = 0x0D000 } ;
-        enum { MOTHERBOARD_ROM_LIM = 0x10000 } ;
-        enum { MOTHERBOARD_ROM_SIZ = MOTHERBOARD_ROM_LIM-MOTHERBOARD_ROM_BAS } ;
+
+        static const int MOTHERBOARD_RAM_BAS = 0x00000;
+        static const int MOTHERBOARD_RAM_LIM = 0x0C000;
+        static const int MOTHERBOARD_RAM_SIZ = MOTHERBOARD_RAM_LIM-MOTHERBOARD_RAM_BAS;
+
+        static const int MOTHERBOARD_ROM_BAS = 0x0D000;
+        static const int MOTHERBOARD_ROM_LIM = 0x10000;
+        static const int MOTHERBOARD_ROM_SIZ = MOTHERBOARD_ROM_LIM-MOTHERBOARD_ROM_BAS;
 };
 
 #endif
