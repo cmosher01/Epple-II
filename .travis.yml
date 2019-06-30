@@ -8,11 +8,12 @@ matrix:
   include:
     - os: linux
       dist: xenial
-      sudo: required
-      before_install:
-        - sudo apt-get -qq update
-      install:
-        - sudo apt-get install -y build-essential xa65 libsdl2-dev
+      addons:
+        apt:
+          packages:
+            - build-essential
+            - xa65
+            - libsdl2-dev
       before_script:
         - ./bootstrap
       script:
@@ -32,11 +33,12 @@ matrix:
         - unzip -l $NAME-$TRAVIS_OS_NAME
     - os: linux # cross compile to windows
       dist: xenial
-      sudo: required
-      before_install:
-        - sudo apt-get -qq update
+      addons:
+        apt:
+          packages:
+            - mingw-w64
+            - xa65
       install:
-        - sudo apt-get install -y mingw-w64 xa65
         - curl -L https://www.libsdl.org/release/SDL2-devel-2.0.9-mingw.tar.gz >SDL2.tar.gz && tar xzf SDL2.tar.gz
         - cd SDL2-* && sudo make cross CROSS_PATH=/usr ARCHITECTURES=x86_64-w64-mingw32 && cd -
         - curl -LO https://github.com/cmosher01/Apple-II-System-Masters/releases/download/v1.1.0/apple2sysmas.zip
