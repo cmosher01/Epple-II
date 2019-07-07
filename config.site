@@ -1,1 +1,0 @@
-test -z "$CXXFLAGS" && CXXFLAGS=-fdiagnostics-color=always
