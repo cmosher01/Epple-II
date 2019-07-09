@@ -1441,7 +1441,7 @@ void CPU::addr_NMI()
 		case 4:
 			address = push();
 			p |= PMASK_I;
-			p &= ~PMASK_B; // ???
+            p &= ~PMASK_B;
 			data = p;
 			write();
 		break;
@@ -1523,7 +1523,7 @@ void CPU::addr_IRQ()
 		case 4:
 			address = push();
 			p |= PMASK_I;
-			p &= ~PMASK_B; // ???
+            p &= ~PMASK_B;
 			data = p;
 			write();
 		break;
@@ -1937,7 +1937,7 @@ void CPU::PHA()
 
 void CPU::PHP()
 {
-	this->data = p;
+    this->data = this->p | PMASK_B;
 }
 
 void CPU::PLA()
@@ -1950,6 +1950,7 @@ void CPU::PLP()
 {
 	this->p = this->data;
 	this->p |= PMASK_M;
+    this->p |= PMASK_B;
 }
 
 void CPU::BRK()
