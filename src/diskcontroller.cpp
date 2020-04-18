@@ -17,9 +17,11 @@
 */
 #include "diskcontroller.h"
 
-DiskController::DiskController(ScreenImage& gui, int slot, bool lss13):
+DiskController::DiskController(ScreenImage& gui, int slot, bool lss13, double random_ones_rate):
     gui(gui),
     slot(slot),
+    drive1(random_ones_rate),
+    drive2(random_ones_rate),
     currentDrive(&this->drive1),
     load(false),
     write(false),

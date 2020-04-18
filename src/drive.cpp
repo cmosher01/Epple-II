@@ -16,12 +16,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "drive.h"
-Disk2Drive::Disk2Drive():
+Disk2Drive::Disk2Drive(double p_random_ones_rate):
     stepper(head),
     pulse(false),
     bitBufferRead(0),
+    random_ones_rate(p_random_ones_rate),
     generator(std::chrono::system_clock::now().time_since_epoch().count()),
-    distribution(0,1) {
+    distribution(0.0,1.0) {
 }
 
 bool Disk2Drive::loadDisk(const std::string& fnib) {

@@ -38,15 +38,16 @@ private:
 
 
 
+    const double random_ones_rate;
     std::default_random_engine generator;
-    std::uniform_int_distribution<int> distribution;
+    std::uniform_real_distribution<double> distribution;
 
     bool randomBit() {
-        return !distribution(generator);
+        return distribution(generator) < random_ones_rate;
     }
 
 public:
-    Disk2Drive();
+    Disk2Drive(double p_random_ones_rate);
     bool loadDisk(const std::string& fnib);
     void unloadDisk();
     bool isLoaded() const;

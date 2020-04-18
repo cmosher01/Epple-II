@@ -40,7 +40,7 @@ private:
     static void loadDisk(Slots& slts, int slot, int drive, const std::string& fnib);
     static void unloadDisk(Slots& slts, int slot, int drive);
     static void saveDisk(Slots& slts, int slot, int drive);
-    static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui);
+    static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok);
     static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
 
 public:

@@ -226,7 +226,7 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         std::string sCardType;
         tok >> slot >> sCardType;
 
-        insertCard(sCardType,slot,slts,gui);
+        insertCard(sCardType,slot,slts,gui,tok);
     }
     else if (cmd == "motherboard") {
         std::string op;
@@ -502,7 +502,7 @@ void Config::saveDisk(Slots& slts, int slot, int drive)
     slts.get(slot)->save(drive-1);
 }
 
-void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui)
+void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok)
 {
     if (slot < 0 || 8 <= slot)
     {
@@ -523,12 +523,18 @@ void Config::insertCard(const std::string& cardType, int slot, Slots& slts, Scre
     }
     else if (cardType == "disk") // 16-sector LSS ROM
     {
-        card = new DiskController(gui,slot,false);
+        double random_ones_rate(0.3); // WOZ spec v2.0: 30%
+        tok >> random_ones_rate;
+        std::cerr << "MC3470: rate of 1 bits during random bit generation: " << random_ones_rate << std::endl;
+        card = new DiskController(gui,slot,false,random_ones_rate);
         disk_mask |= (1 << slot);
     }
     else if (cardType == "disk13") // 13-sector LSS ROM
     {
-        card = new DiskController(gui,slot,true);
+        double random_ones_rate(0.3); // WOZ spec v2.0: 30%
+        tok >> random_ones_rate;
+        std::cerr << "MC3470: rate of 1 bits during random bit generation: " << random_ones_rate << std::endl;
+        card = new DiskController(gui,slot,true,random_ones_rate);
         disk_mask |= (1 << slot);
     }
     else if (cardType == "clock")

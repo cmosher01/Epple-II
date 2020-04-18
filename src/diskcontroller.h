@@ -78,7 +78,7 @@ private:
     void stepLss();
 
 public:
-    DiskController(ScreenImage& gui, int slot, bool lss13);
+    DiskController(ScreenImage& gui, int slot, bool lss13, double random_ones_rate);
     ~DiskController();
 
     void tick();
