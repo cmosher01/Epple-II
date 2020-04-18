@@ -1,6 +1,6 @@
 # -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-AC_INIT(epple2, v1.0.4)
+AC_INIT(epple2, v1.0.5)
 AC_PREREQ(2.68)
 
 AC_CONFIG_SRCDIR([src/apple2.cpp])
