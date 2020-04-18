@@ -533,19 +533,11 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
     }
 }
 
-
+bool WozFile::exists(std::uint8_t currentQuarterTrack) {
+    return isLoaded() && (this->tmap[currentQuarterTrack] != 0xFFu);
+}
 
 bool WozFile::getBit(std::uint8_t currentQuarterTrack) {
-    if (!isLoaded()) {
-//        printf("No disk to read from; will generate random data.\n");
-        return false; // there's no disk, so no pulse
-    }
-
-    if (this->tmap[currentQuarterTrack] == 0xFFu) {
-//        printf("Reading from uninitialized track; will generate random data.\n");
-        return false; // empty track
-    }
-
     return this->trk[this->tmap[currentQuarterTrack]][this->byt] & this->bit;
 }
 

@@ -72,8 +72,13 @@ void Disk2Drive::rotateDiskOneBit() {
     this->disk.rotateOneBit(this->head.position());
 
     bitBufferRead <<= 1;
-    bitBufferRead |= this->disk.getBit(this->head.position());
-    if (bitBufferRead & 0x0Fu) {
+
+    const bool exists(this->disk.exists(this->head.position()));
+    if (exists) {
+        bitBufferRead |= this->disk.getBit(this->head.position());
+    }
+
+    if ((bitBufferRead & 0x0Fu) && exists) {
         this->pulse = (bitBufferRead & 0x02u) >> 1;
     } else {
         this->pulse = randomBit();

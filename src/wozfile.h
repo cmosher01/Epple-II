@@ -131,6 +131,7 @@ public:
     }
 
     void rotateOneBit(std::uint8_t currentQuarterTrack);
+    bool exists(std::uint8_t currentQuarterTrack);
     bool getBit(std::uint8_t currentQuarterTrack);
     void setBit(std::uint8_t currentQuarterTrack, bool on);
     void rawSet();
