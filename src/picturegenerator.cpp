@@ -22,265 +22,215 @@
 #include "e2const.h"
 
 PictureGenerator::PictureGenerator(AnalogTV& display, VideoMode& mode, const int& revision):
-	display(display), mode(mode), itestsig(testsig), itestsiglim(testsig+AppleNTSC::SIGNAL_LEN),
-	VISIBLE_X_OFFSET(E2Const::BYTES_PER_ROW-E2Const::VISIBLE_BYTES_PER_ROW),
-	revision(revision)
-{
+    display(display), mode(mode), itestsig(testsig), itestsiglim(testsig+AppleNTSC::SIGNAL_LEN),
+    VISIBLE_X_OFFSET(E2Const::BYTES_PER_ROW-E2Const::VISIBLE_BYTES_PER_ROW),
+    revision(revision) {
 }
 
 
-PictureGenerator::~PictureGenerator()
-{
+PictureGenerator::~PictureGenerator() {
 }
 
 
-void PictureGenerator::powerOn()
-{
-	this->hpos = 0;
-	this->line = 0;
-	this->display.signal = this->testsig;
-	this->itestsig = this->testsig;
+void PictureGenerator::powerOn() {
+    this->hpos = 0;
+    this->line = 0;
+    this->display.signal = this->testsig;
+    this->itestsig = this->testsig;
 }
 
-void inline PictureGenerator::shiftLoRes()
-{
-	/*
-	* For byte ABCDEFGH in register, perform
-	* the following 4-bit end-around shifts:
-	* 
-	* +---<----+   +---<----+
-	* |        |   |        |
-	* +->ABCD->+   +->EFGH->+
-	* 
-	* Therefore:
-	* 
-	* ABCDEFGH --> DABCHEFG
-	*/
+void inline PictureGenerator::shiftLoRes() {
+    /*
+    * For byte ABCDEFGH in register, perform
+    * the following 4-bit end-around shifts:
+    *
+    * +---<----+   +---<----+
+    * |        |   |        |
+    * +->ABCD->+   +->EFGH->+
+    *
+    * Therefore:
+    *
+    * ABCDEFGH --> DABCHEFG
+    */
 
-	unsigned char rot_bits = this->latchGraphics & 0x11;
-	// 000D000H
-	rot_bits <<= 3;
-	// D000H000
+    unsigned char rot_bits = this->latchGraphics & 0x11;
+    // 000D000H
+    rot_bits <<= 3;
+    // D000H000
 
-	this->latchGraphics &= 0xEE;
-	// ABC0EFG0
-	this->latchGraphics >>= 1;
-	// 0ABC0EFG
-	this->latchGraphics |= rot_bits;
-	// DABCHEFG
+    this->latchGraphics &= 0xEE;
+    // ABC0EFG0
+    this->latchGraphics >>= 1;
+    // 0ABC0EFG
+    this->latchGraphics |= rot_bits;
+    // DABCHEFG
 }
 
-void inline PictureGenerator::shiftHiRes()
-{
-	/*
-	* For byte ABCDEFGH in register, perform
-	* the following shift:
-	* 
-	* +---<----+
-	* |        |
-	* +->ABCD->+--->EFGH->
-	* 
-	* Therefore:
-	* 
-	* ABCDEFGH --> DABCDEFG
-	*/
+void inline PictureGenerator::shiftHiRes() {
+    /*
+    * For byte ABCDEFGH in register, perform
+    * the following shift:
+    *
+    * +---<----+
+    * |        |
+    * +->ABCD->+--->EFGH->
+    *
+    * Therefore:
+    *
+    * ABCDEFGH --> DABCDEFG
+    */
 
-	unsigned char rot_bits = this->latchGraphics & 0x10;
-	// 000D0000
-	rot_bits <<= 3;
-	// D0000000
+    unsigned char rot_bits = this->latchGraphics & 0x10;
+    // 000D0000
+    rot_bits <<= 3;
+    // D0000000
 
-	this->latchGraphics >>= 1;
-	// 0ABCDEFG
-	this->latchGraphics |= rot_bits;
-	// DABCDEFG
+    this->latchGraphics >>= 1;
+    // 0ABCDEFG
+    this->latchGraphics |= rot_bits;
+    // DABCDEFG
 }
 
-void inline PictureGenerator::shiftText()
-{
-	this->latchText >>= 1;
+void inline PictureGenerator::shiftText() {
+    this->latchText >>= 1;
 }
 
-bool inline PictureGenerator::getTextBit()
-{
-	return this->latchText & 1;
+bool inline PictureGenerator::getTextBit() {
+    return this->latchText & 1;
 }
 
-bool inline PictureGenerator::getHiResBit()
-{
-	return this->latchGraphics & 1;
+bool inline PictureGenerator::getHiResBit() {
+    return this->latchGraphics & 1;
 }
 
-bool inline PictureGenerator::getLoResBit(const bool odd, const bool vc)
-{
-	const int nibble = (this->latchGraphics >> (vc ? 4 : 0)) & 0x0F;
-	return (nibble >> (odd ? 2 : 0)) & 1;
+bool inline PictureGenerator::getLoResBit(const bool odd, const bool vc) {
+    const int nibble = (this->latchGraphics >> (vc ? 4 : 0)) & 0x0F;
+    return (nibble >> (odd ? 2 : 0)) & 1;
 }
 
-void inline PictureGenerator::loadGraphics(const unsigned char value)
-{
-	this->latchGraphics = value;
-	this->d7 = this->latchGraphics & 0x80;
+void inline PictureGenerator::loadGraphics(const unsigned char value) {
+    this->latchGraphics = value;
+    this->d7 = this->latchGraphics & 0x80;
 }
 
-void inline PictureGenerator::loadText(const int value)
-{
-	this->latchText = value;
+void inline PictureGenerator::loadText(const unsigned char value) {
+    this->latchText = value;
 }
 
-// TODO can we hand-optimize the main picture generator algorithm any more?
-// Note that the innermost loop (which calls writeVideoSignal) has to execute
-// at 14MHz, in order to maintain authentic Apple ][ speed.
-void PictureGenerator::tick(const int t, const unsigned char rowToPlot)
-{
-	const bool isText(this->mode.isDisplayingText(t));
-	const bool isHiRes(this->mode.isHiRes());
+void PictureGenerator::tick(const int t, const unsigned char c) {
+    this->mode.tick();
 
-	signed char* is = this->itestsig;
+    const bool isText(this->mode.isDisplayingText(t));
+    const bool isHiRes(this->mode.isHiRes());
 
-	if (isText)
-		loadText(rowToPlot);
-	else
-		loadGraphics(rowToPlot);
+    signed char* is = this->itestsig;
 
-	if (t==0)
-	{
-		this->line = 0;
-	}
+    if (isText) {
+        loadText(c);
+    } else {
+        loadGraphics(c);
+    }
 
-	int cycles = E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE;
-	if (this->hpos == E2Const::HORIZ_CYCLES-1)
-	{
-		cycles += E2Const::EXTRA_CRYSTAL_CYCLES_PER_CPU_LONG_CYCLE;
-	}
+    if (t==0) {
+        this->line = 0;
+    }
 
-	//		 hi-res half-pixel shift:
-	const bool shift = !isText && isHiRes && this->d7 && this->line < E2Const::VISIBLE_ROWS_PER_FIELD && !(this->hpos < VISIBLE_X_OFFSET) && this->revision > 0;
-	const bool showLastHiRes = shift && this->lasthires;
+    int cycles = E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE;
+    if (this->hpos == E2Const::HORIZ_CYCLES-1) {
+        cycles += E2Const::EXTRA_CRYSTAL_CYCLES_PER_CPU_LONG_CYCLE;
+    }
 
-	int xtra(0);
-	if (shift)
-	{
-		--cycles;
-		++xtra;
-	}
-	const int firstBlankedCycle(E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE-xtra);
+    // hi-res half-pixel shift:
+    const bool shift = !isText && isHiRes && this->d7 && this->line < E2Const::VISIBLE_ROWS_PER_FIELD && !(this->hpos < VISIBLE_X_OFFSET) && this->revision > 0;
+    const bool showLastHiRes = shift && this->lasthires;
 
-	int hcycle(this->hpos*E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE);
-	const bool lineVis(this->line < E2Const::VISIBLE_ROWS_PER_FIELD);
-	const bool hVis(this->hpos >= VISIBLE_X_OFFSET);
-	for (int cycle(0); cycle < cycles-1; ++cycle)
-	{
-		const bool bit = shiftLatch(t,cycle,isText,isHiRes);
-		is = writeVideoSignal(shift,showLastHiRes,firstBlankedCycle,cycle,hcycle,bit,lineVis,hVis,is);
-		++hcycle;
-	}
-	// optimization: pull the last iteration of the loop out, so we don't getHiResBit every time
-	{
-		this->lasthires = getHiResBit(); // save it for the next plotted byte, just in case we need it
-		const int cycle = cycles-1;
-		const bool bit = shiftLatch(t,cycle,isText,isHiRes);
-		is = writeVideoSignal(shift,showLastHiRes,firstBlankedCycle,cycle,hcycle,bit,lineVis,hVis,is);
-	}
+    int xtra(0);
+    if (shift) {
+        --cycles;
+        ++xtra;
+    }
+    const int firstBlankedCycle(E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE-xtra);
 
-	this->itestsig = is;
+    unsigned int hcycle(this->hpos*E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE);
+    const bool lineVis(this->line < E2Const::VISIBLE_ROWS_PER_FIELD);
+    const bool hVis(this->hpos >= VISIBLE_X_OFFSET);
+    for (int cycle(0); cycle < cycles; ++cycle) {
+        this->lasthires = getHiResBit(); // save it for the next plotted byte, just in case we need it
+        const bool bit = shiftLatch(t,cycle,isText,isHiRes);
+        is = writeVideoSignal(shift,showLastHiRes,firstBlankedCycle,cycle,hcycle,bit,lineVis,hVis,is);
+        ++hcycle;
+    }
 
-	++this->hpos;
-	if (this->hpos >= E2Const::HORIZ_CYCLES)
-	{
-		this->hpos = 0;
-		++this->line;
-		if (this->itestsig >= this->itestsiglim)
-		{
-			this->itestsig = this->testsig;
-			this->display.drawCurrent();
-		}
-	}
+    this->itestsig = is;
+
+    ++this->hpos;
+    if (this->hpos >= E2Const::HORIZ_CYCLES) {
+        this->hpos = 0;
+        ++this->line;
+        if (this->itestsig >= this->itestsiglim) {
+            this->itestsig = this->testsig;
+            this->display.drawCurrent();
+        }
+    }
 }
 
-bool inline PictureGenerator::shiftLatch(const int t, const int cycle, const bool isText, const bool isHiRes)
-{
-	bool bit;
-	if (isText)
-	{
-		bit = getTextBit();
-		if (cycle & 1) // @ 7MHz
-		{
-			shiftText();
-		}
-	}
-	else if (isHiRes)
-	{
-		bit = getHiResBit();
-		if (cycle & 1) // @ 7MHz
-		{
-			shiftHiRes();
-		}
-	}
-	else // LO-RES
-	{
-		const int y = t / E2Const::BYTES_PER_ROW;
-		bit = getLoResBit((t & 1) == (this->line & 1), y & 4);
-		shiftLoRes();
-	}
-	return bit;
+bool inline PictureGenerator::shiftLatch(const int t, const int cycle, const bool isText, const bool isHiRes) {
+    bool bit;
+    if (isText) {
+        bit = getTextBit();
+        if (cycle & 1) { // @ 7MHz
+            shiftText();
+        }
+    } else if (isHiRes) {
+        bit = getHiResBit();
+        if (cycle & 1) { // @ 7MHz
+            shiftHiRes();
+        }
+    } else { // LO-RES
+        const int y = t / E2Const::BYTES_PER_ROW;
+        bit = getLoResBit((t & 1) == (this->line & 1), y & 4);
+        shiftLoRes();
+    }
+    return bit;
 }
 
-inline signed char* PictureGenerator::writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is)
-{
-	if (shift && !cycle)
-	{
-		*is++ = showLastHiRes ? AppleNTSC::WHITE_LEVEL : AppleNTSC::BLANK_LEVEL;
-	}
+inline signed char* PictureGenerator::writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const unsigned int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is) {
+    if (shift && !cycle) {
+        *is++ = showLastHiRes ? AppleNTSC::WHITE_LEVEL : AppleNTSC::BLANK_LEVEL;
+    }
 
-	signed char sig;
-	if (lineVis)
-	{
-		if (hVis)
-		{
-			if (bit && cycle < firstBlankedCycle)
-			{
-				sig = AppleNTSC::WHITE_LEVEL;
-			}
-			else
-			{
-				sig = AppleNTSC::BLANK_LEVEL;
-			}
-		}
-		else
-		{
-			sig = hbl(hcycle);
-		}
-	}
-	else
-	{
-		sig = vbl(hcycle);
-	}
-	*is++ = sig;
-	return is;
+    signed char sig;
+    if (lineVis) {
+        if (hVis) {
+            if (bit && cycle < firstBlankedCycle) {
+                sig = AppleNTSC::WHITE_LEVEL;
+            } else {
+                sig = AppleNTSC::BLANK_LEVEL;
+            }
+        } else {
+            sig = hbl(hcycle);
+        }
+    } else {
+        sig = vbl(hcycle);
+    }
+    *is++ = sig;
+    return is;
 }
 
 // TODO Just to be extremely accurate, fix picture signal values during HBL and VBL
 // (note that they vary by motherboard revision... there is a whole section in U.A.2)
-signed char inline PictureGenerator::vbl(const int hcycle)
-{
-	signed char sig;
-	if (224 <= this->line && this->line < 240) // VSYNC // TODO symbolize constants
-	{
-		sig = AppleNTSC::SYNC_LEVEL;
-	}
-	else
-	{
-		if (AppleNTSC::SYNC_START <= hcycle && hcycle < AppleNTSC::BP_START)
-		{
-			sig = AppleNTSC::SYNC_LEVEL;
-		}
-		else
-		{
-			sig = AppleNTSC::BLANK_LEVEL;
-		}
-	}
-	return sig;
+signed char inline PictureGenerator::vbl(const unsigned int hcycle) {
+    signed char sig;
+    if (224 <= this->line && this->line < 240) { // VSYNC // TODO symbolize constants
+        sig = AppleNTSC::SYNC_LEVEL;
+    } else {
+        if (AppleNTSC::SYNC_START <= hcycle && hcycle < AppleNTSC::BP_START) {
+            sig = AppleNTSC::SYNC_LEVEL;
+        } else {
+            sig = AppleNTSC::BLANK_LEVEL;
+        }
+    }
+    return sig;
 }
 
 
@@ -297,27 +247,18 @@ const signed char PictureGenerator::lutCB[] =
 { 0, -AppleNTSC::CB_LEVEL, 0, +AppleNTSC::CB_LEVEL };
 //{ +AppleNTSC::CB_LEVEL/2, -AppleNTSC::CB_LEVEL/2, -AppleNTSC::CB_LEVEL/2, +AppleNTSC::CB_LEVEL/2 };
 
-signed char inline PictureGenerator::hbl(const int hcycle)
-{
-	signed char cb;
-	if (AppleNTSC::CB_START <= hcycle && hcycle < AppleNTSC::CB_END)
-	{
-		if (this->mode.isText() && this->revision > 0)
-		{
-			cb = AppleNTSC::BLANK_LEVEL;
-		}
-		else
-		{
-			cb = lutCB[(hcycle-AppleNTSC::CB_START)%4];
-		}
-	}
-	else if (AppleNTSC::SYNC_START <= hcycle && hcycle < AppleNTSC::BP_START)
-	{
-		cb = AppleNTSC::SYNC_LEVEL;
-	}
-	else
-	{
-		cb = AppleNTSC::BLANK_LEVEL;
-	}
-	return cb;
+signed char inline PictureGenerator::hbl(const unsigned int hcycle) {
+    signed char cb;
+    if (AppleNTSC::CB_START <= hcycle && hcycle < AppleNTSC::CB_END) {
+        if (this->mode.isText() && this->revision > 0) {
+            cb = AppleNTSC::BLANK_LEVEL;
+        } else {
+            cb = lutCB[(hcycle-AppleNTSC::CB_START)%4];
+        }
+    } else if (AppleNTSC::SYNC_START <= hcycle && hcycle < AppleNTSC::BP_START) {
+        cb = AppleNTSC::SYNC_LEVEL;
+    } else {
+        cb = AppleNTSC::BLANK_LEVEL;
+    }
+    return cb;
 }

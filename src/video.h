@@ -39,8 +39,8 @@ private:
 		std::vector<unsigned short> lutTEXT[2]; // [0] is page 1, [1] is page 2
 	std::vector<unsigned short> lutHRES[2]; // [0] is page 1, [1] is page 2
 
-	VideoMode& mode;
-	AddressBus& addressBus;
+        VideoMode& mode;
+        AddressBus& addressBus;
 	PictureGenerator& picgen;
 
 	TextCharacters& textRows;

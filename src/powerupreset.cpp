@@ -18,35 +18,25 @@
 #include "powerupreset.h"
 #include "apple2.h"
 #include "e2const.h"
+#include <cmath>
 
 PowerUpReset::PowerUpReset(Apple2& apple):
-	apple(apple)
-{
+    apple(apple) {
 }
 
 
-PowerUpReset::~PowerUpReset()
-{
+PowerUpReset::~PowerUpReset() {
 }
 
-
-void PowerUpReset::tick()
-{
-	if (this->pendingTicks > 0)
-	{
-		--this->pendingTicks;
-		if (this->pendingTicks == 0)
-		{
-			this->apple.reset();
-		}
-	}
+void PowerUpReset::tick() {
+    if (this->pendingTicks > 0) {
+        --this->pendingTicks;
+        if (this->pendingTicks == 0) {
+            this->apple.reset();
+        }
+    }
 }
 
-void PowerUpReset::powerOn()
-{
-#ifdef USE_EMU
-	this->pendingTicks = 99; // TODO REMOVE THIS
-#else
-	this->pendingTicks = (int)(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
-#endif
+void PowerUpReset::powerOn() {
+    this->pendingTicks = std::lround(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
 }

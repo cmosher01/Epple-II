@@ -455,9 +455,20 @@ void AnalogTV::ntsc_to_yiq(const int isignal, const int siglen, const IQ& iq_fac
 
 int inline AnalogTV::yiq2rgb(const int yiq)
 {
-	double r = (((yiq)&0xFF)-IQINTOFF) + 0.956 * (((yiq>>8)&0xFF)-IQINTOFF) + 0.621 * (((yiq>>16)&0xFF)-IQINTOFF);
-	double g = (((yiq)&0xFF)-IQINTOFF) - 0.272 * (((yiq>>8)&0xFF)-IQINTOFF) - 0.647 * (((yiq>>16)&0xFF)-IQINTOFF);
-	double b = (((yiq)&0xFF)-IQINTOFF) - 1.105 * (((yiq>>8)&0xFF)-IQINTOFF) + 1.702 * (((yiq>>16)&0xFF)-IQINTOFF);
+    /*
+     * https://en.wikipedia.org/wiki/YIQ (2019-09-19):
+     * To convert from FCC YIQ to RGB:
+     * E_R = E_Y + 0.9469*E_I + 0.6236*E_Q
+     * E_G = E_Y - 0.2748*E_I - 0.6357*E_Q
+     * E_B = E_Y - 1.1   *E_I + 1.7   *E_Q
+     */
+    const double y = (yiq&0xFF)-IQINTOFF;
+    const double i = ((yiq>>8)&0xFF)-IQINTOFF;
+    const double q = ((yiq>>16)&0xFF)-IQINTOFF;
+
+    double r = y + 0.9469*i + 0.6236*q;
+    double g = y - 0.2748*i - 0.6357*q;
+    double b = y - 1.1000*i + 1.7000*q;
 
 	const int rgb =
 		(calc_color(r) << 16)| 

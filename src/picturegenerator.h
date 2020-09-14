@@ -46,11 +46,11 @@ private:
 	bool getHiResBit();
 	bool getLoResBit(const bool odd, const bool vc);
 	void loadGraphics(const unsigned char value);
-	void loadText(const int value);
+        void loadText(const unsigned char value);
 	bool shiftLatch(const int t, const int cycle, const bool isText, const bool isHiRes);
-	signed char* writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is);
-	signed char vbl(const int hcycle);
-	signed char hbl(const int hcycle);
+        signed char* writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const unsigned int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is);
+        signed char vbl(const unsigned int hcycle);
+        signed char hbl(const unsigned int hcycle);
 
 	const unsigned int VISIBLE_X_OFFSET;
 

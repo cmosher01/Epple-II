@@ -20,17 +20,16 @@
 
 class Apple2;
 
-class PowerUpReset
-{
+class PowerUpReset {
 private:
-	Apple2& apple;
-	int pendingTicks;
+    Apple2& apple;
+    long pendingTicks;
 
 public:
-	PowerUpReset(Apple2& apple);
-	~PowerUpReset();
-	void powerOn();
-	void tick();
+    PowerUpReset(Apple2& apple);
+    ~PowerUpReset();
+    void powerOn();
+    void tick();
 };
 
 #endif

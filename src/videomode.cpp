@@ -17,32 +17,74 @@
 */
 #include "videomode.h"
 
-VideoMode::VideoMode()
-{
+VideoMode::VideoMode():
+    pendText(0),
+    pendMixed(0),
+    pendHiRes(0) {
 }
 
-unsigned char VideoMode::io(const unsigned short addr, const unsigned char b)
-{
-	const int sw = (addr & 0xE) >> 1;
-	const bool on = addr & 0x1;
-	switch (sw)
-	{
-		case 0:
-			this->swText = on; break;
-		case 1:
-			this->swMixed = on; break;
-		case 2:
-			this->swPage2 = on ? 1 : 0; break;
-		case 3:
-			this->swHiRes = on; break;
-	}
-	return b;
+unsigned char VideoMode::io(const unsigned short addr, const unsigned char b) {
+    const int sw = (addr & 0x6) >> 1;
+    const bool on = addr & 0x1;
+
+    // TODO verify all soft-switch change timings
+    switch (sw) {
+    case 0:
+        if (this->swText != on) {
+            this->pendText = 1;
+        }
+        break;
+    case 1:
+        if (this->swMixed != on) {
+            this->pendMixed = 1;
+        }
+        break;
+    case 2:
+        this->pendPage2 = on;
+//        if (this->swPage2 != on) {
+//            this->pendPage2 = 1;
+//        }
+        break;
+    case 3:
+        this->swHiRes = on;
+//        if (this->swHiRes != on) {
+//            if (on) {
+//                this->pendHiRes = 1;
+//            } else {
+//                this->pendHiRes = 2;
+//            }
+//        }
+        break;
+    }
+    return b;
 }
 
-void VideoMode::powerOn()
-{
-	this->swText = false;
-	this->swMixed = false;
-	this->swPage2 = 0;
-	this->swHiRes = false;
+void VideoMode::tick() {
+    if (this->pendText) {
+        if (--this->pendText <= 0) {
+            this->swText = !this->swText;
+        }
+    }
+    if (this->pendMixed) {
+        if (--this->pendMixed <= 0) {
+            this->swMixed = !this->swMixed;
+        }
+    }
+    if (this->pendPage2) {
+        if (--this->pendPage2 <= 0) {
+            this->swPage2 = !this->swPage2;
+        }
+    }
+    if (this->pendHiRes) {
+        if (--this->pendHiRes <= 0) {
+            this->swHiRes = !this->swHiRes;
+        }
+    }
+}
+
+void VideoMode::powerOn() {
+    this->swText = false;
+    this->swMixed = false;
+    this->swPage2 = 0;
+    this->swHiRes = false;
 }
