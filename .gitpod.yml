@@ -10,3 +10,13 @@ ports:
 tasks:
   - init: echo 'init script' # runs during prebuild
     command: echo 'start script'
+tasks:
+  - init: npm install
+    command: npm run server 3000
+  - command: gp await-port 3000 && gp preview $(gp url 3000)
+
+vscode:
+  extensions:
+    - littlefoxteam.vscode-python-test-adapter@0.5.0:MOFjKFx34CxWS0nqmAG75g==
+    - haskell.haskell@1.1.0:Wt1BvkxTWaeCQD86YIN0fw==
+    - hashicorp.terraform@2.2.3:bBQoMVR7TCwCZWURotrh3w==

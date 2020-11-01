@@ -2,7 +2,7 @@
 
 Makefile.in
 
-# http://www.gnu.org/software/autoconf
+# http://www.gnu.org/software/autoconf0
 
 /autom4te.cache
 /aclocal.m4
