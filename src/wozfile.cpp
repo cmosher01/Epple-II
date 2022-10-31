@@ -527,7 +527,7 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
     // Check for hitting the end of our track,
     // and if so, move back to the beginning.
     // This is how we emulate a circular track on the floppy.
-    if (this->trk_bits[this->tmap[currentQuarterTrack]] <= this->byt*8+bc(this->bit)) {
+    if (this->trk_bits[this->tmap[currentQuarterTrack]] <= this->byt*8u+bc(this->bit)) {
         this->byt = 0;
         this->bit = 0x80u;
     }

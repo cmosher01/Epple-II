@@ -1,5 +1,5 @@
 #include "memoryrow.h"
-#include <exception>
+#include <stdexcept>
 #include <cstdlib>
 
 

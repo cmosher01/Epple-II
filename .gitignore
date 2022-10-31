@@ -8,6 +8,7 @@ Makefile.in
 /aclocal.m4
 /compile
 /configure
+/configure~
 /depcomp
 /install-sh
 /missing
@@ -29,3 +30,10 @@ Makefile
 # netbeans
 
 /nbproject/
+
+# eclipse
+
+/.autotools
+/.cproject
+/.project
+/.settings/

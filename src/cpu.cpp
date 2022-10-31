@@ -132,7 +132,7 @@ int CPU::getInterruptPseudoOpCode()
 	return 0; // can't happen
 }
 
-void (CPU::*(CPU::addr[]))() =
+void (CPU::*CPU::addr[])() =
 {
 &CPU::addr_MISC_BREAK,
 &CPU::addr_INTERNAL_INDIRECT_X,
@@ -395,7 +395,7 @@ void (CPU::*(CPU::addr[]))() =
 &CPU::addr_IRQ,
 };
 
-void (CPU::*(CPU::exec[]))() =
+void (CPU::*CPU::exec[])() =
 {
 &CPU::BRK,
 &CPU::ORA,
@@ -1826,14 +1826,14 @@ void CPU::ADC()
 	int Op2 = this->data;
 	if (this->p & PMASK_D)
 	{
-		setP(PMASK_Z,!(Op1 + Op2 + !!(this->p & PMASK_C) & 0xff));
+		setP(PMASK_Z,!((Op1 + Op2 + !!(this->p & PMASK_C)) & 0xff));
 		int tmp = (Op1 & 0xf) + (Op2 & 0xf) + !!(this->p & PMASK_C);
 		tmp = tmp >= 10 ? tmp + 6 : tmp;
 		this->a = tmp;
 		tmp = (Op1 & 0xf0) + (Op2 & 0xf0) + (tmp & 0xf0);
 		setP(PMASK_N,tmp < 0);
 		setP(PMASK_V,((Op1 ^ tmp) & ~(Op1 ^ Op2) & 0x80));
-		tmp = this->a & 0xf | (tmp >= 160 ? tmp + 96 : tmp);
+		tmp = (this->a & 0xf) | (tmp >= 160 ? tmp + 96 : tmp);
 		setP(PMASK_C,tmp >= 0x100);
 		this->a = tmp & 0xff;
 	}
@@ -1861,7 +1861,7 @@ void CPU::SBC()
 		tmp = (tmp & 0x10) != 0 ? tmp - 6 : tmp;
 		this->a = tmp;
 		tmp = (Op1 & 0xf0) - (Op2 & 0xf0) - (this->a & 0x10);
-		this->a = this->a & 0xf | ((tmp & 0x100) != 0 ? tmp - 96 : tmp);
+		this->a = (this->a & 0xf) | ((tmp & 0x100) != 0 ? tmp - 96 : tmp);
 		tmp = Op1 - Op2 - !(this->p & PMASK_C);
 		setP(PMASK_C,0 <= tmp && tmp < 0x100);
 		setStatusRegisterNZ(tmp);

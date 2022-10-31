@@ -236,6 +236,7 @@ void AnalogTV::drawCurrent()
 			case MONITOR_COLOR: drawMonitorColor(); break;
 			case MONITOR_GREEN: drawMonitorGreen(); break;
 			case TV_OLD_COLOR: drawTVOld(); break;
+			case NUM_DISPLAY_TYPES: break;
 		}
 	}
 	else
