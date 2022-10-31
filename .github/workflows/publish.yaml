@@ -20,6 +20,8 @@ jobs:
 
       - run: |
           set -x
+          sudo apt-get update -qqq
+          sudo apt-get upgrade -qqq
           sudo apt-get install -qqq xa65 libsdl2-dev
           ./bootstrap
           ./configure
