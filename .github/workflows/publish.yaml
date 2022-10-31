@@ -7,7 +7,7 @@ on:
 env:
   name: "epple2"
   desc: "Apple ][ emulator"
-  deb_depends: "libSDL2"
+  deb_depends: "libsdl2-2.0-0"
 
 permissions:
   contents: "write"
