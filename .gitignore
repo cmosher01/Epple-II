@@ -27,6 +27,10 @@ Makefile
 
 *.o
 
+# cmake
+
+/build/
+
 # netbeans
 
 /nbproject/

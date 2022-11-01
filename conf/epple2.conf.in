@@ -23,41 +23,41 @@ motherboard strap C 16K 0000
 # emulator to do something useful when there are no real Apple ROM
 # images provided.
 #
-import motherboard rom 2C00 $(PREFIX)lib/epple2/system/epple2sys.a65
+import motherboard rom 2C00 ${LIBDIR}/epple2/system/epple2sys.a65
 
 # These are how to load the real (proprietary) Apple ROMs.
 # There ROMs are not distributed with the Epple 2 emulator.
 # These two lines are for an Apple ][ plus:
-#import motherboard rom 0000 $(PREFIX)lib/apple2/system/a2p/applesoft.a65
-#import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2p/monitor.a65
+#import motherboard rom 0000 ${LIBDIR}/apple2/system/a2p/applesoft.a65
+#import motherboard rom 2800 ${LIBDIR}/apple2/system/a2p/monitor.a65
 # or instead, use these three lines are for an Apple ][:
-#import motherboard rom 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
-#import motherboard rom 2425 $(PREFIX)lib/apple2/system/a2/other.a65
-#import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
+#import motherboard rom 1000 ${LIBDIR}/apple2/system/a2/intbasic.a65
+#import motherboard rom 2425 ${LIBDIR}/apple2/system/a2/other.a65
+#import motherboard rom 2800 ${LIBDIR}/apple2/system/a2/monitor.a65
 
 slot 0 language
 
 slot 1 stdout
-import slot 1 rom 0 $(PREFIX)lib/epple2/cards/stdout.a65
+import slot 1 rom 0 ${LIBDIR}/epple2/cards/stdout.a65
 
 slot 2 stdin
-import slot 2 rom 0 $(PREFIX)lib/epple2/cards/stdin.a65
+import slot 2 rom 0 ${LIBDIR}/epple2/cards/stdin.a65
 
 slot 4 clock
-import slot 4 rom 0 $(PREFIX)lib/epple2/cards/clock.a65
+import slot 4 rom 0 ${LIBDIR}/epple2/cards/clock.a65
 
 #slot 5 disk13
-#import slot 5 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
-#load slot 5 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
+#import slot 5 rom 0 ${LIBDIR}/apple2/dos/13sector/disk2.a65
+#load slot 5 drive 1 ${LIBDIR}/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
 
 #slot 6 disk
-#import slot 6 rom 0 $(PREFIX)lib/apple2/dos/16sector/disk2.a65
-#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/16sector/dos330/clean330sysmas.dsk.woz
+#import slot 6 rom 0 ${LIBDIR}/apple2/dos/16sector/disk2.a65
+#load slot 6 drive 1 ${LIBDIR}/apple2/dos/16sector/dos330/clean330sysmas.dsk.woz
 
 #slot 7 firmware
-#import slot 7 rombank 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
-#import slot 7 rombank 2425 $(PREFIX)lib/apple2/system/a2/other.a65
-#import slot 7 rombank 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
+#import slot 7 rombank 1000 ${LIBDIR}/apple2/system/a2/intbasic.a65
+#import slot 7 rombank 2425 ${LIBDIR}/apple2/system/a2/other.a65
+#import slot 7 rombank 2800 ${LIBDIR}/apple2/system/a2/monitor.a65
 
 #revision 0
 revision 1

@@ -20,15 +20,15 @@ motherboard strap C 16K 0000
 
 
 # Integer BASIC and old Monitor ROMs
-import motherboard rom 1000 $(PREFIX)lib/apple2/system/a2/intbasic.a65
-import motherboard rom 2425 $(PREFIX)lib/apple2/system/a2/other.a65
-import motherboard rom 2800 $(PREFIX)lib/apple2/system/a2/monitor.a65
+import motherboard rom 1000 ${LIBDIR}/apple2/system/a2/intbasic.a65
+import motherboard rom 2425 ${LIBDIR}/apple2/system/a2/other.a65
+import motherboard rom 2800 ${LIBDIR}/apple2/system/a2/monitor.a65
 
 
 
 # Disk ][ card with 13-sector ROMs
 slot 6 disk13
-import slot 6 rom 0 $(PREFIX)lib/apple2/dos/13sector/disk2.a65
+import slot 6 rom 0 ${LIBDIR}/apple2/dos/13sector/disk2.a65
 
 # Insert DOS 3.1 System Master disk into drive 1
-#load slot 6 drive 1 $(PREFIX)lib/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
+#load slot 6 drive 1 ${LIBDIR}/apple2/dos/13sector/dos310/clean31sysmas_stock_rawdos.dsk.woz
