@@ -42,8 +42,6 @@
 
 #define K 1024u
 
-
-
 static std::uint16_t memory_block_size(const std::string &block_size) {
     if (block_size == "4K") {
         return 4u*K;
@@ -113,6 +111,8 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
     }
     if (path.empty())
     {
+        std::cout << "standard config file location: " ETCDIR "/epple2/epple2.conf" << std::endl;
+
         /*
             On Windows, the default directory will be
             C:\Program Files\Epple2 if they start the
@@ -172,7 +172,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
     }
     if (path.empty())
     {
-        std::cerr << "Cannot open config file /etc/epple2/epple2.conf" << std::endl;
+        std::cerr << "Cannot find config file. Running without any RAM, ROM, or cards." << std::endl;
         return;
     }
 

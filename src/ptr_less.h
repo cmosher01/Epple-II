@@ -11,7 +11,7 @@
 template<typename T>
 struct ptr_less {
 
-    bool operator()(T* pa, T* pb) {
+    bool operator()(T* pa, T* pb) const {
         return *pa < *pb;
     }
 
