@@ -91,7 +91,14 @@ jobs:
         shell: "cmd"
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
-          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+
+      - name: "Set up vcpkg and install dependencies 2"
+        shell: "cmd"
+        run: "vcpkg\\bootstrap-vcpkg.bat -disableMetrics"
+
+      - name: "Set up vcpkg and install dependencies 3"
+        shell: "cmd"
+        run: |
           vcpkg install sdl2
 
       - name: "Build"
