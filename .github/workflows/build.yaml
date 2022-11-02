@@ -88,9 +88,9 @@ jobs:
 
       - name: "Download SDL2 package"
         run: >-
-          wget
-            "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip"
-            -outfile "C:/Program Files/SDL2-devel-VC.zip"
+          Invoke-WebRequest
+            -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip"
+            -OutFile "C:/Program Files/SDL2-devel-VC.zip"
 
       - name: "Install SDL2"
         run: >-
