@@ -8,17 +8,23 @@ jobs:
   "build-roms":
     runs-on: "ubuntu-latest"
     steps:
-      - name: "prepare runner"
+      - name: "Prepare runner"
         run: |
           set -x
-          sudo apt-get update -qqq
-          sudo apt-get upgrade -qqq
-          sudo apt-get install -qqq xa65
+          sudo apt-get update -qqqq
+          sudo apt-get upgrade -qqqq
+          sudo apt-get install -qqqq xa65
 
       - uses: "actions/checkout@v3"
 
-      - name: "make"
+      - name: "Build artifacts"
         run: |
           set -x
           cd rom
           make
+          ls -l *.a65
+
+      - uses: "actions/upload-artifact@v3"
+        with:
+          name: "epple2 roms"
+          path: "./roms/*.a65"
