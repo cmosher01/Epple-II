@@ -12,12 +12,7 @@ jobs:
         run: |
           set -x
           sudo apt-get update -qqqq
-          sudo apt-get upgrade -qqqq
           sudo apt-get install -qqqq xa65
-          m4 --version
-          xa --version
-          ldo65 --version
-          reloc65 --version
 
       - uses: "actions/checkout@v3"
 
@@ -26,7 +21,6 @@ jobs:
           set -x
           cd rom
           make
-          ls -l *.a65
 
       - uses: "actions/upload-artifact@v3"
         with:
@@ -42,7 +36,6 @@ jobs:
         run: |
           set -x
           sudo apt-get update -qqqq
-          sudo apt-get upgrade -qqqq
           sudo apt-get install -qqqq libsdl2-dev
 
       - uses: "actions/checkout@v3"
@@ -54,8 +47,6 @@ jobs:
           cd build
           cmake ..
           cmake --build .
-          ls -l src conf
-          cat conf/epple2.a2ploaded.conf
 
 
 
@@ -76,24 +67,19 @@ jobs:
           cd build
           cmake ..
           cmake --build .
-          ls -l src conf
-          cat conf/epple2.a2ploaded.conf
 
 
 
   "build-epple2-windows":
     runs-on: "windows-latest"
     steps:
+      - name: "Prepare runner"
+        run: |
+          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"
+          Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip" -DestinationPath "C:/Program Files/"
+          Get-ChildItem "C:/Program Files"
+
       - uses: "actions/checkout@v3"
-
-      - name: "Download SDL2 package"
-        run: 'Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"'
-
-      - name: "Install SDL2"
-        run: 'Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip" -DestinationPath "C:/Program Files/"'
-
-      - name: "ls of C:/Program Files"
-        run: 'Get-ChildItem "C:/Program Files"'
 
       - name: "Build"
         shell: "bash"
@@ -103,5 +89,3 @@ jobs:
           cd build
           cmake ..
           cmake --build .
-          ls -l src conf
-          cat conf/epple2.a2ploaded.conf
