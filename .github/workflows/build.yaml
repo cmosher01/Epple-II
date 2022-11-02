@@ -30,13 +30,14 @@ jobs:
 
 
   "build-epple2-ubuntu":
+    needs: "build-roms"
     runs-on: "ubuntu-latest"
     steps:
       - name: "Prepare runner"
         run: |
           set -x
           sudo apt-get update -qqqq
-          sudo apt-get install -qqqq libsdl2-dev
+          sudo apt-get install -qqqq libsdl2-dev tree
 
       - uses: "actions/checkout@v3"
 
@@ -48,9 +49,33 @@ jobs:
           cmake ..
           cmake --build .
 
+      - uses: "actions/download-artifact@v3"
+        id: "epple2-roms"
+        with:
+          name: "epple2-roms"
+
+      - name: "Stage"
+        run: |
+          set -x
+          pwd
+          cd build
+          mkdir -p stage/usr/local/bin
+          mkdir -p stage/usr/local/etc/epple2
+          mkdir -p stage/usr/local/lib/epple2/system
+          mkdir -p stage/usr/local/lib/epple2/cards
+          cp src/epple2* stage/usr/local/bin/
+          cp conf/*.conf stage/usr/local/etc/epple2/
+          cp ${{steps.epple2-roms.outputs.download-path}}/epple2sys.a65 stage/usr/local/lib/epple2/system/
+          cp ${{steps.epple2-roms.outputs.download-path}}/stdout.a65 stage/usr/local/lib/epple2/cards/
+          cp ${{steps.epple2-roms.outputs.download-path}}/stdin.a65 stage/usr/local/lib/epple2/cards/
+          cp ${{steps.epple2-roms.outputs.download-path}}/clock.a65 stage/usr/local/lib/epple2/cards/
+          cd -
+          tree
+
 
 
   "build-epple2-macos":
+    needs: "build-roms"
     runs-on: "macos-latest"
     steps:
       - name: "Prepare runner"
@@ -71,6 +96,7 @@ jobs:
 
 
   "build-epple2-windows":
+    needs: "build-roms"
     runs-on: "windows-latest"
     steps:
       - name: "Prepare runner"
