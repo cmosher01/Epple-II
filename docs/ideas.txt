@@ -1,0 +1,67 @@
+package "transistors" file??
+
+
+- curl -LO https://github.com/cmosher01/Apple-II-System-Masters/releases/download/v1.1.0/apple2sysmas.zip
+- curl -LO https://github.com/cmosher01/Apple-II-Source/releases/download/v1.1.2/apple2sys.zip
+- make -f Makefile.mingw
+- mkdir $NAME
+- cp src/$NAME.exe /usr/x86_64-w64-mingw32/bin/SDL2.dll rom/*.a65 $NAME
+- cp conf/$NAME.mingw $NAME/$NAME.conf
+- unzip -d $NAME apple2sys && rm apple2sys.zip
+- unzip -d $NAME apple2sysmas && rm apple2sysmas.zip
+- zip -r $NAME-windows $NAME
+
+
+
+
+
+
+
+env:
+  name: "epple2"
+  desc: "Apple ][ emulator"
+  deb_depends: "libsdl2-2.0-0"
+
+
+UBUNTU:
+
+- run: |
+    mkdir -p ./deb/usr/local/bin
+    cp ./src/epple2 ./deb/usr/local/bin/
+    mkdir -p ./deb/usr/local/etc/epple2
+    cp ./conf/epple2.conf ./deb/usr/local/etc/epple2/
+    mkdir -p ./deb/usr/local/lib/epple2/system
+    cp ./rom/epple2sys.a65 ./deb/usr/local/lib/epple2/system/
+    mkdir -p ./deb/usr/local/lib/epple2/cards
+    cp ./rom/stdout.a65 ./deb/usr/local/lib/epple2/cards/
+    cp ./rom/stdin.a65 ./deb/usr/local/lib/epple2/cards/
+    cp ./rom/clock.a65 ./deb/usr/local/lib/epple2/cards/
+
+- uses: "jiro4989/build-deb-action@v2"
+  with:
+    package: "${{ env.name }}"
+    desc: "${{ env.desc }}"
+    maintainer: "${{ github.repository_owner }}"
+    version: "${{ github.ref }}"
+    arch: "amd64"
+    package_root: "./deb/"
+    depends: "${{ env.deb_depends }}"
+
+- uses: "softprops/action-gh-release@v1"
+  with:
+    files: |
+      *.deb
+
+
+
+
+
+MAC:
+
+
+pkgbuild --identifier nu.mine.mosher.$name --root ./pkg/ --install-location /usr $name.pkg
+
+- uses: "softprops/action-gh-release@v1"
+  with:
+    files: |
+      *.pkg

@@ -1,43 +1,13 @@
-# http://www.gnu.org/software/automake
-
-Makefile.in
-
-# http://www.gnu.org/software/autoconf
-
-/autom4te.cache
-/aclocal.m4
-/compile
-/configure
-/configure~
-/depcomp
-/install-sh
-/missing
-/config.h.in*
-/test-driver
-
-
-# need these for non-VPATH builds
-/config.h
-/config.status
-/config.log
-/stamp-h1
-
-Makefile
-.deps/
-
-*.o
-
 # cmake
-
 /build/
 
 # netbeans
-
 /nbproject/
 
 # eclipse
-
-/.autotools
 /.cproject
 /.project
 /.settings/
+
+# intellij
+/.idea/

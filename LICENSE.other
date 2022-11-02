@@ -1,3 +1,8 @@
+Epple-II calls the Simple DirectMedia Layer (SDL) library,
+available here: https://www.libsdl.org/ .
+
+
+
 For the analogtv class, portions were inspired by Trevor Blackwell's analog
 TV module for xscreensaver. For those portions:
 /* analogtv, Copyright (c) 2003, 2004 Trevor Blackwell <tlb@tlb.org>
