@@ -90,7 +90,9 @@ jobs:
         run: 'Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"'
 
       - name: "Install SDL2"
-        run: 'Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip"'
+        run: |
+          Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip"
+          Get-ChildItem "C:/Program Files"
 
       - name: "Build"
         shell: "bash"
