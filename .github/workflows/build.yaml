@@ -55,6 +55,7 @@ jobs:
           cmake ..
           cmake --build .
           ls -l src conf
+          cat conf/epple2.a2ploaded.conf
 
 
 
@@ -76,3 +77,25 @@ jobs:
           cmake ..
           cmake --build .
           ls -l src conf
+          cat conf/epple2.a2ploaded.conf
+
+
+
+  "build-epple2-windows":
+    runs-on: "windows-latest"
+    steps:
+      # - name: "Prepare runner"
+      #   run: |
+      #     set -x
+
+      - uses: "actions/checkout@v3"
+
+      - name: "Build"
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
+          Get-ChildItem -Path "src"
+          Get-ChildItem -Path "conf"
+          cat conf/epple2.a2ploaded.conf
