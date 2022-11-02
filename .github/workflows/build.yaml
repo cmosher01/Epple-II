@@ -1,6 +1,7 @@
 ---
 on:
-  tags:
+  push:
+    tags:
 
 env:
   name: "epple2"
