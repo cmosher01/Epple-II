@@ -84,18 +84,20 @@ jobs:
   "build-epple2-windows":
     runs-on: "windows-latest"
     steps:
-      # - name: "Prepare runner"
-      #   run: |
-      #     set -x
-
       - uses: "actions/checkout@v3"
+
+      - name: "Set up vcpkg and install dependencies"
+        # TODO use https://github.com/lukka/CppCMakeVcpkgTemplate instead of this
+        run: |
+          git clone https://github.com/Microsoft/vcpkg.git
+          ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
+          ./vcpkg/vcpkg install sdl2[core,wayland]
 
       - name: "Build"
         run: |
           mkdir build
-          cd build
-          cmake ..
-          cmake --build .
-          Get-ChildItem -Path "src"
-          Get-ChildItem -Path "conf"
-          cat conf/epple2.a2ploaded.conf
+          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+          cmake --build build
+          dir build/src
+          dir -Path build/conf
+          cat build/conf/epple2.a2ploaded.conf
