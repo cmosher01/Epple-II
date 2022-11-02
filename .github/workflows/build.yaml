@@ -91,6 +91,7 @@ jobs:
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
           .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          Get-ChildItem -Recurse vcpkg
           vcpkg install sdl2
 
       - name: "Build"
