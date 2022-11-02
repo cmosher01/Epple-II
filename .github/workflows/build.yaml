@@ -4,6 +4,11 @@ on:
     branches:
       - "master"
 
+env:
+  name: "epple2"
+  desc: "Apple ][ emulator"
+  deb_depends: "libsdl2-2.0-0"
+
 jobs:
   "build-roms":
     runs-on: "ubuntu-latest"
@@ -69,8 +74,23 @@ jobs:
           cp epple2-roms/stdout.a65 stage/usr/local/lib/epple2/cards/
           cp epple2-roms/stdin.a65 stage/usr/local/lib/epple2/cards/
           cp epple2-roms/clock.a65 stage/usr/local/lib/epple2/cards/
-          cd -
-          tree
+          tree stage
+
+      - name: "Package"
+        uses: "jiro4989/build-deb-action@v2"
+        with:
+          package: "${{ env.name }}"
+          desc: "${{ env.desc }}"
+          maintainer: "${{ github.repository_owner }}"
+          version: "${{ github.ref }}"
+          arch: "amd64"
+          package_root: "build/stage"
+          depends: "${{ env.deb_depends }}"
+
+      - uses: "softprops/action-gh-release@v1"
+        with:
+          files: |
+            *.deb
 
 
 
@@ -113,8 +133,17 @@ jobs:
           cp epple2-roms/stdout.a65 stage/local/lib/epple2/cards/
           cp epple2-roms/stdin.a65 stage/local/lib/epple2/cards/
           cp epple2-roms/clock.a65 stage/local/lib/epple2/cards/
-          cd -
-          tree
+          tree stage
+
+      - name: "Package"
+        run: |
+          set -x
+          pkgbuild --identifier nu.mine.mosher.$name --root build/stage --install-location /usr $name.pkg
+
+      - uses: "softprops/action-gh-release@v1"
+        with:
+          files: |
+            *.pkg
 
 
 
@@ -126,7 +155,6 @@ jobs:
         run: |
           Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"
           Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip" -DestinationPath "C:/Program Files/"
-          Get-ChildItem "C:/Program Files"
 
       - uses: "actions/checkout@v3"
 
@@ -159,7 +187,14 @@ jobs:
           cp epple2-roms/stdout.a65 stage/epple2/lib/epple2/cards/
           cp epple2-roms/stdin.a65 stage/epple2/lib/epple2/cards/
           cp epple2-roms/clock.a65 stage/epple2/lib/epple2/cards/
-          cd -
 
-      - name: "ls"
-        run: "Get-ChildItem -Recurse"
+      - name: "Package"
+        uses: "thedoctor0/zip-release@main"
+        with:
+          path: "build/stage"
+          filename: "${{ env.name }}-windows.zip"
+
+      - uses: "softprops/action-gh-release@v1"
+        with:
+          files: |
+            *.zip
