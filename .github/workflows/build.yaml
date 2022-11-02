@@ -88,16 +88,17 @@ jobs:
 
       - name: "Set up vcpkg and install dependencies"
         # TODO use https://github.com/lukka/CppCMakeVcpkgTemplate instead of this
+        shell: "bash"
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
-          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          vcpkg/bootstrap-vcpkg -disableMetrics
           vcpkg install sdl2
 
       - name: "Build"
         shell: "bash"
         run: |
           mkdir build
-          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=vcpkg/installed/x64-windows
+          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
           cmake --build build
           dir build/src
           dir -Path build/conf

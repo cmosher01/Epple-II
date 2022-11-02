@@ -1,5 +1,5 @@
 set(CMAKE_FIND_DEBUG_MODE 1)
-find_package(SDL2 REQUIRED)
+find_package(SDL2 CONFIG REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
 
 set(sources
