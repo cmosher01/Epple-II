@@ -22,6 +22,7 @@ RELOC65=reloc65
 .r65.a65:
 	$(RELOC65) -xt -o $@ $(RELOC65FLAGS) $<
 
+.PHONY: all
 all: $(TARGETS)
 epple2sys.r65: CODE_SEG=64512
 epple2sys.s65: epple2sys.m4 asm.m4h

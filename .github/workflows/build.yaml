@@ -1,0 +1,24 @@
+---
+on:
+  push:
+    branches:
+      - "master"
+
+jobs:
+  "build-roms":
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "prepare runner"
+        run: |
+          set -x
+          sudo apt-get update -qqq
+          sudo apt-get upgrade -qqq
+          sudo apt-get install -qqq xa65
+
+      - uses: "actions/checkout@v3"
+
+      - name: "make"
+        run: |
+          set -x
+          cd rom
+          make
