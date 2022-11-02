@@ -101,6 +101,11 @@ jobs:
         run: |
           vcpkg install sdl2
 
+      - name: "Set up vcpkg and install dependencies 4"
+        run: |
+          cd vcpkg
+          Get-ChildItem -Recurse installed
+
       - name: "Build"
         shell: "bash"
         run: |
