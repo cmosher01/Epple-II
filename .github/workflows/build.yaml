@@ -97,7 +97,7 @@ jobs:
         shell: "bash"
         run: |
           mkdir build
-          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=vcpkg/installed/x64-linux
+          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_PREFIX_PATH=vcpkg/installed/x64-windows
           cmake --build build
           dir build/src
           dir -Path build/conf
