@@ -186,11 +186,13 @@ jobs:
           cp epple2-roms/stdout.a65 stage/epple2/lib/epple2/cards/
           cp epple2-roms/stdin.a65 stage/epple2/lib/epple2/cards/
           cp epple2-roms/clock.a65 stage/epple2/lib/epple2/cards/
+          cp "C:/Program Files/SDL2-2.24.2/lib/x64/SDL2.dll" stage/epple2/
 
       - name: "Package"
         uses: "thedoctor0/zip-release@main"
         with:
-          path: "build/stage"
+          directory: "build/stage"
+          path: "${{ env.name }}"
           filename: "${{ env.name }}-windows.zip"
 
       - uses: "softprops/action-gh-release@v1"
