@@ -88,10 +88,9 @@ jobs:
 
       - name: "Set up vcpkg and install dependencies"
         # TODO use https://github.com/lukka/CppCMakeVcpkgTemplate instead of this
-        shell: "bash"
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
-          vcpkg/bootstrap-vcpkg -disableMetrics
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
           vcpkg install sdl2
 
       - name: "Build"
