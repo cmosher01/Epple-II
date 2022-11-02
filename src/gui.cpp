@@ -17,7 +17,7 @@
  */
 #include <iostream>
 #include "gui.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 /*
  * Initialize SDL 2

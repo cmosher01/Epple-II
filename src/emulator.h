@@ -27,7 +27,7 @@
 #include "keyboardbuffermode.h"
 #include "hypermode.h"
 #include "clipboardhandler.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 class Timable;
 class Config;

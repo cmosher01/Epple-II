@@ -17,7 +17,7 @@
 */
 #include "speakerclicker.h"
 #include "e2const.h"
-#include <SDL2/SDL_audio.h>
+#include <SDL_audio.h>
 #include <iostream>
 #include <ostream>
 

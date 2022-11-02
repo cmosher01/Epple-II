@@ -18,7 +18,7 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <queue>
 
 typedef std::queue<unsigned char> KeypressQueue;

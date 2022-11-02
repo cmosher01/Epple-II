@@ -20,7 +20,7 @@
 #include "e2const.h"
 #include "tinyfiledialogs.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <ctime>
 

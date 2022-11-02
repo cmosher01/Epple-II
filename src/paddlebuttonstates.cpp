@@ -17,7 +17,7 @@
 */
 #include "paddlebuttonstates.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 const int PaddleButtonStates::PADDLE_COUNT(3);
 

@@ -20,7 +20,7 @@
 #define SPEAKERCLICKER_H
 
 #include <cstdint>
-#include <SDL2/SDL_audio.h>
+#include <SDL_audio.h>
 
 class SpeakerClicker {
     private:

@@ -19,8 +19,8 @@
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-#include <SDL2/SDL_audio.h>
-#include <SDL2/SDL_log.h>
+#include <SDL_audio.h>
+#include <SDL_log.h>
 #include "tinyfiledialogs.h"
 #include "cassetteout.h"
 #include "e2const.h"

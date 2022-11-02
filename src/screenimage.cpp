@@ -20,7 +20,7 @@
 #include "applentsc.h"
 #include "card.h"
 #include "util.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <iostream>
 #include <ctime>
 #include <sstream>
