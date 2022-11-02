@@ -1,6 +1,9 @@
 set(CMAKE_FIND_DEBUG_MODE 1)
-find_package(SDL2 CONFIG REQUIRED)
+
+find_package(SDL2 CONFIG)
 include_directories(${SDL2_INCLUDE_DIRS})
+message("SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
+message("SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 
 set(sources
 a2colorsobserved.cpp
