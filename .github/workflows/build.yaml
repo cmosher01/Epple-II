@@ -153,17 +153,15 @@ jobs:
           set -x
           pwd
           cd build
-          mkdir -p stage/usr/local/bin
-          mkdir -p stage/usr/local/etc/epple2
-          mkdir -p stage/usr/local/lib/epple2/system
-          mkdir -p stage/usr/local/lib/epple2/cards
-          cp src/epple2* stage/usr/local/bin/
-          cp conf/*.conf stage/usr/local/etc/epple2/
-          cp ${{steps.epple2-roms.outputs.download-path}}/epple2sys.a65 stage/usr/local/lib/epple2/system/
-          cp ${{steps.epple2-roms.outputs.download-path}}/stdout.a65 stage/usr/local/lib/epple2/cards/
-          cp ${{steps.epple2-roms.outputs.download-path}}/stdin.a65 stage/usr/local/lib/epple2/cards/
-          cp ${{steps.epple2-roms.outputs.download-path}}/clock.a65 stage/usr/local/lib/epple2/cards/
-          cd -
+          mkdir -p stage/epple2/etc/epple2
+          mkdir -p stage/epple2/lib/epple2/system
+          mkdir -p stage/epple2/lib/epple2/cards
+          cp src/epple2* stage/epple2/
+          cp conf/*.conf stage/epple2/etc/epple2/
+          cp ${{steps.epple2-roms.outputs.download-path}}/epple2sys.a65 stage/epple2/lib/epple2/system/
+          cp ${{steps.epple2-roms.outputs.download-path}}/stdout.a65 stage/epple2/lib/epple2/cards/
+          cp ${{steps.epple2-roms.outputs.download-path}}/stdin.a65 stage/epple2/lib/epple2/cards/
+          cp ${{steps.epple2-roms.outputs.download-path}}/clock.a65 stage/epple2/lib/epple2/cards/
 
       - name: "ls"
         run: "Get-ChildItem -Recurse"
