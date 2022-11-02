@@ -57,6 +57,17 @@ UBUNTU:
 
 
 MAC:
+          mkdir -p ./pkg/local/bin
+          cp ./src/epple2 ./pkg/local/bin/
+          mkdir -p ./pkg/local/etc/epple2
+          cp ./conf/epple2.conf ./pkg/local/etc/epple2/
+          mkdir -p ./pkg/local/lib/epple2/system
+          cp ./rom/epple2sys.a65 ./pkg/local/lib/epple2/system/
+          mkdir -p ./pkg/local/lib/epple2/cards
+          cp ./rom/stdout.a65 ./pkg/local/lib/epple2/cards/
+          cp ./rom/stdin.a65 ./pkg/local/lib/epple2/cards/
+          cp ./rom/clock.a65 ./pkg/local/lib/epple2/cards/
+          pkgbuild --identifier nu.mine.mosher.$name --root ./pkg/ --install-location /usr $name.pkg
 
 
 pkgbuild --identifier nu.mine.mosher.$name --root ./pkg/ --install-location /usr $name.pkg
