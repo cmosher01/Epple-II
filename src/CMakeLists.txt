@@ -72,10 +72,6 @@ wozfile.cpp
 )
 
 add_executable(epple2 ${sources})
-
 target_compile_features(epple2 PUBLIC cxx_std_17)
-
-include(GNUInstallDirs)
 target_compile_definitions(epple2 PUBLIC ETCDIR="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}")
-
 target_link_libraries(epple2 ${SDL2_LIBRARIES})
