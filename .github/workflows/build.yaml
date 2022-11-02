@@ -86,32 +86,24 @@ jobs:
     steps:
       - uses: "actions/checkout@v3"
 
-      - name: "Set up vcpkg and install dependencies"
-        # TODO use https://github.com/lukka/CppCMakeVcpkgTemplate instead of this
-        shell: "cmd"
-        run: |
-          git clone https://github.com/Microsoft/vcpkg.git
+      - name: "Download SDL2 package"
+        run: >-
+          wget
+            "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip"
+            -outfile "C:/Program Files/SDL2-devel-VC.zip"
 
-      - name: "Set up vcpkg and install dependencies 2"
-        shell: "cmd"
-        run: "vcpkg\\bootstrap-vcpkg.bat -disableMetrics"
-
-      - name: "Set up vcpkg and install dependencies 3"
-        shell: "cmd"
-        run: |
-          vcpkg install sdl2
-
-      - name: "Set up vcpkg and install dependencies 4"
-        run: |
-          cd vcpkg
-          Get-ChildItem -Recurse installed
+      - name: "Install SDL2"
+        run: >-
+          Expand-Archive
+            -LiteralPath "C:/Program Files/SDL2-devel-VC.zip"
 
       - name: "Build"
         shell: "bash"
         run: |
+          set -x
           mkdir build
-          cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
-          cmake --build build
-          dir build/src
-          dir -Path build/conf
-          cat build/conf/epple2.a2ploaded.conf
+          cd build
+          cmake ..
+          cmake --build .
+          ls -l src conf
+          cat conf/epple2.a2ploaded.conf
