@@ -55,3 +55,24 @@ jobs:
           cmake ..
           cmake --build .
           ls -l src conf
+
+
+
+  "build-epple2-macos":
+    runs-on: "macos-latest"
+    steps:
+      - name: "Prepare runner"
+        run: |
+          set -x
+          HOMEBREW_NO_AUTO_UPDATE=1 brew install sdl2
+
+      - uses: "actions/checkout@v3"
+
+      - name: "Build"
+        run: |
+          set -x
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build .
+          ls -l src conf
