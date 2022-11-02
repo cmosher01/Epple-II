@@ -94,6 +94,7 @@ jobs:
           vcpkg install sdl2
 
       - name: "Build"
+        shell: "bash"
         run: |
           mkdir build
           cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
