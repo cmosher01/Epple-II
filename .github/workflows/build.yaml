@@ -90,8 +90,8 @@ jobs:
         # TODO use https://github.com/lukka/CppCMakeVcpkgTemplate instead of this
         run: |
           git clone https://github.com/Microsoft/vcpkg.git
-          ./vcpkg/bootstrap-vcpkg.sh -disableMetrics
-          ./vcpkg/vcpkg install sdl2[core,wayland]
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          vcpkg install sdl2[core,wayland]
 
       - name: "Build"
         run: |
