@@ -132,6 +132,7 @@ jobs:
           cp epple2-roms/stdout.a65 stage/local/lib/epple2/cards/
           cp epple2-roms/stdin.a65 stage/local/lib/epple2/cards/
           cp epple2-roms/clock.a65 stage/local/lib/epple2/cards/
+          cp /usr/local/lib/libSDL2.dylib stage/local/bin/
           tree stage
 
       - name: "Package"
@@ -198,4 +199,4 @@ jobs:
       - uses: "softprops/action-gh-release@v1"
         with:
           files: |
-            *.zip
+            build/stage/*.zip
