@@ -17,6 +17,7 @@
 */
 #include "configep2.h"
 
+#include "apple2.h"
 #include "memory.h"
 #include "memoryrandomaccess.h"
 #include "slots.h"
@@ -93,14 +94,8 @@ static void trim(std::string& str)
     }
 }
 
-void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
 {
-#ifdef USE_EMU
-    std::cout << "Running with http://www.visual6502.org/ CPU emulation (which will be slow)." << std::endl;
-#endif
-
-
-
     std::ifstream* pConfig;
 
     std::string path(this->file_path);
@@ -192,7 +187,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
         trim(line);
         if (!line.empty())
         {
-            parseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
+            parseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut,apple2);
         }
         std::getline(*pConfig,line);
     }
@@ -201,11 +196,11 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 
     // TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
-void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
 {
     try
     {
-        tryParseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut);
+        tryParseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut,apple2);
     }
     catch (const ConfigException& err)
     {
@@ -220,7 +215,7 @@ static std::string filter_row(const std::string &row) {
     return std::string(1, static_cast<char>(std::toupper(row[0])));
 }
 
-void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
+void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
 {
     std::istringstream tok(line);
 
@@ -456,9 +451,27 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             throw ConfigException("error: unknown cassette command: "+cas);
         }
     }
+    else if (cmd == "cpu")
+    {
+        std::string cpu;
+        tok >> cpu;
+        if (apple2 != NULL) {
+            if (cpu == "epple2") {
+                apple2->useEpple2Cpu();
+            } else if (cpu == "visual6502") {
+                apple2->useVisual6502Cpu();
+            } else {
+                throw ConfigException("invalid value for cpu command: "+cpu);
+            }
+        }
+    }
     else
     {
         throw ConfigException("Invalid command: "+cmd);
+    }
+
+    if (apple2 != NULL) {
+        apple2->useEpple2Cpu(); // set default CPU
     }
 }
 

@@ -15,34 +15,15 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "powerupreset.h"
-#include "apple2.h"
-#include "e2const.h"
+#ifndef ABSTRACTCPU_H
+#define ABSTRACTCPU_H
 
-PowerUpReset::PowerUpReset(Apple2& apple):
-    apple(apple)
-{
-}
+class AbstractCpu {
+public:
+    virtual ~AbstractCpu() {};
+    virtual void powerOn() = 0;
+    virtual void reset() = 0;
+    virtual void tick() = 0;
+};
 
-
-PowerUpReset::~PowerUpReset()
-{
-}
-
-
-void PowerUpReset::tick()
-{
-    if (this->pendingTicks > 0)
-    {
-        --this->pendingTicks;
-        if (this->pendingTicks == 0)
-        {
-            this->apple.reset();
-        }
-    }
-}
-
-void PowerUpReset::powerOn()
-{
-    this->pendingTicks = (int)(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
-}
+#endif

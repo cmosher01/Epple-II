@@ -28,6 +28,7 @@
 #include "picturegenerator.h"
 #include "textcharacters.h"
 #include "video.h"
+#include "abstractcpu.h"
 #include "cpu.h"
 #include "paddles.h"
 #include "paddlebuttonstates.h"
@@ -56,18 +57,17 @@ class Apple2 : public Timable
     PictureGenerator picgen;
     TextCharacters textRows;
     Video video;
-#ifdef USE_EMU
-        std::ifstream transistors;
-        Emu6502 cpu;
-#else
-        CPU cpu;
-#endif
+    std::ifstream transistors;
+    AbstractCpu* cpu;
     PowerUpReset powerUpReset;
     int revision;
 
 public:
     Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui);
     ~Apple2();
+
+    void useEpple2Cpu();
+    void useVisual6502Cpu();
 
     void powerOn();
     void powerOff();

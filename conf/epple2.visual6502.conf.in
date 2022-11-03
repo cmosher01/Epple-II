@@ -1,0 +1,16 @@
+# Use the Visual 6502 emulation algorithm (from http://www.visual6502.org/).
+# WARNING: this is EXTREMELY SLOW
+
+
+
+cpu visual6502
+
+
+
+motherboard ram E MM5290 MM5290 MM5290 MK4116 MM5290 MM5290 MM5290 MK4116
+motherboard strap E 16K 8000
+motherboard ram D MM5290 MM5290 MK4116 MK4116 MM5290 MK4116 MM5290 MCM4116
+motherboard strap D 16K 4000
+motherboard ram C MK4116 MK4116 MM5290 MM5290 MM5290 MM5290 MM5290 MM5290
+motherboard strap C 16K 0000
+import motherboard rom 2C00 ${LIBDIR}/epple2/system/epple2sys.a65

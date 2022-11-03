@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   Emu6502.h
  * Author: Christopher
  *
@@ -8,6 +8,7 @@
 #ifndef EMU6502_H
 #define	EMU6502_H
 
+#include "abstractcpu.h"
 #include "Cpu6502Helper.h"
 #include "Cpu6502.h"
 #include "Trace.h"
@@ -19,7 +20,7 @@
 
 class AddressBus;
 
-class Emu6502 {
+class Emu6502 : public AbstractCpu {
 public:
 
     Emu6502(std::istream& transistors, AddressBus& mem) : tn(transistors, segs, transes), c(tn), trace(segs, transes, c), cpu(mem, trace, c), cpuhelper(cpu, c) {

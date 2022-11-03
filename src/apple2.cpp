@@ -48,12 +48,8 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
     addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
     picgen(tv,videoMode,revision),
     video(videoMode,addressBus,picgen,textRows),
-#ifdef USE_EMU
-        transistors("transistors"),
-        cpu(transistors,addressBus),
-#else
-        cpu(addressBus),
-#endif
+    transistors("transistors"),
+    cpu(NULL),
     powerUpReset(*this),
     revision(1)
 {
@@ -63,9 +59,22 @@ Apple2::~Apple2()
 {
 }
 
+void Apple2::useEpple2Cpu() {
+    if (this->cpu == NULL) {
+        std::cout << "Using fast Epple2 CPU emulator" << std::endl;
+        this->cpu = new CPU(this->addressBus);
+    }
+}
+
+void Apple2::useVisual6502Cpu() {
+    if (this->cpu == NULL) {
+        std::cout << "Using http://www.visual6502.org/ CPU emulation (which will be slow)." << std::endl;
+        this->cpu = new Emu6502(this->transistors, this->addressBus);
+    }
+}
 
 void Apple2::tick() {
-    this->cpu.tick();
+    this->cpu->tick();
     this->slts.tick();
     this->video.tick();
     this->paddles.tick();
@@ -81,7 +90,7 @@ void Apple2::tick() {
 void Apple2::powerOn()
 {
     this->ram.powerOn();
-    this->cpu.powerOn();
+    this->cpu->powerOn();
     this->videoMode.powerOn();
     this->video.powerOn();
     this->picgen.powerOn();
@@ -95,6 +104,6 @@ void Apple2::powerOff()
 
 void Apple2::reset()
 {
-    this->cpu.reset();
+    this->cpu->reset();
     this->slts.reset();
 }

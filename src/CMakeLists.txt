@@ -72,17 +72,9 @@ add_executable(epple2 ${sources})
 
 find_package(SDL2 CONFIG)
 message(STATUS "SDL2_INCLUDE_DIRS: ${SDL2_INCLUDE_DIRS}")
-message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 target_include_directories(epple2 PRIVATE ${SDL2_INCLUDE_DIRS})
+message(STATUS "SDL2_LIBRARIES: ${SDL2_LIBRARIES}")
 target_link_libraries(epple2 ${SDL2_LIBRARIES})
 
 target_compile_features(epple2 PRIVATE cxx_std_17)
 target_compile_definitions(epple2 PRIVATE ETCDIR="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}")
-
-option(USE_EMU "Use http://www.visual6502.org/ CPU (will run slowly)")
-if (USE_EMU)
-  message(STATUS "USE_EMU")
-  target_compile_definitions(epple2 PRIVATE USE_EMU)
-  # target_compile_definitions(epple2 PRIVATE TRACESEG)
-  target_compile_definitions(epple2 PRIVATE TRACEREG)
-endif()

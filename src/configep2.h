@@ -25,6 +25,7 @@ class Slots;
 class ScreenImage;
 class CassetteIn;
 class CassetteOut;
+class Apple2;
 
 class ConfigException {
 public:
@@ -41,14 +42,14 @@ private:
     static void unloadDisk(Slots& slts, int slot, int drive);
     static void saveDisk(Slots& slts, int slot, int drive);
     static void insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok);
-    static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+    static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 
 public:
     Config(const std::string& file_path);
     ~Config();
 
-    void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
-    static void parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut);
+    void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
+    static void parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 };
 
 #endif

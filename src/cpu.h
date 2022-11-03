@@ -18,10 +18,11 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include "abstractcpu.h"
 class AddressBus;
+#include <istream>
 
-class CPU
-{
+class CPU : public AbstractCpu {
 private:
     enum { MEMORY_LIM = 1 << 0x10 };
     enum { IRQ_VECTOR = MEMORY_LIM-2 }; // or BRK
@@ -43,7 +44,7 @@ private:
     bool pendingIRQ;
     bool pendingNMI;
     bool pendingReset;
-    
+
     bool started;
 
     unsigned char a;
@@ -205,7 +206,7 @@ private:
 
 public:
     CPU(AddressBus& addressBus);
-    ~CPU();
+    virtual ~CPU();
 
     void powerOn();
     void reset();

@@ -121,6 +121,26 @@ strap c 4K 0000
 
 
 
+#### cpu
+
+The `cpu` command chooses which CPU emulator to run with.
+
+``` conf
+cpu epple2
+```
+
+Valid values are:
+
+`epple2` The standard, faster, albeit less accurate, high-level emulator. Works for 99.99% of known cases.
+This is the default value, used when the `cpu` command is not present.
+
+`visual6502` The emulator based on the algorithm and transistor circuitry from http://www.visual6502.org/.
+WARNING: this emulator is *extremely slow*, but absolutely 100% accurate to the original MOS6502.
+
+Note: the CPU cannot be changed in the user interface, only in the configuration file.
+
+
+
 #### import
 
 The `import` command imports a binary image file into the emulated Apple's ROMs.

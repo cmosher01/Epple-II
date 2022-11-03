@@ -11,6 +11,8 @@
 
 
 
+cpu epple2
+
 # standard 48K RAM with mixed chip brands
 motherboard ram E MM5290 MM5290 MM5290 MK4116 MM5290 MM5290 MM5290 MK4116
 motherboard strap E 16K 8000
