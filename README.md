@@ -26,6 +26,7 @@ platform (`zip` for Windows, `deb` for Ubuntu, `pkg` for MacOS) and install as f
 
 #### MacOS
 Double-click the `epple2.pkg` file and follow the instructions.
+The application is installed as `/usr/local/bin/epple2`.
 
 #### Windows
 Double-click the `epple2-windows.zip` file. Drag the `epple2` folder into the
