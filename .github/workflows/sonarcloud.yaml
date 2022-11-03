@@ -12,6 +12,11 @@ jobs:
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: "build_wrapper_output_directory"
     steps:
+      - name: "Prepare runner"
+        run: |
+          set -x
+          sudo apt-get update -qqqq
+          sudo apt-get install -qqqq libsdl2-dev tree
       - uses: "actions/checkout@v2"
         with:
           fetch-depth: 0
