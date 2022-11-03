@@ -25,18 +25,18 @@ class AnalogTV;
 class VideoStaticGenerator : public Timable
 {
 private:
-	AnalogTV& display;
-	signed char sig[AppleNTSC::SIGNAL_LEN];
-	signed char* isig;
-	signed char* isiglim;
-	unsigned int hpos;
+    AnalogTV& display;
+    signed char sig[AppleNTSC::SIGNAL_LEN];
+    signed char* isig;
+    signed char* isiglim;
+    unsigned int hpos;
 
 public:
-	VideoStaticGenerator(AnalogTV& display);
-	~VideoStaticGenerator();
+    VideoStaticGenerator(AnalogTV& display);
+    ~VideoStaticGenerator();
 
-	virtual void tick();
-	void powerOn();
+    virtual void tick();
+    void powerOn();
 };
 
 #endif

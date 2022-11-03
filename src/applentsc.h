@@ -21,31 +21,31 @@
 class AppleNTSC
 {
 private:
-	AppleNTSC() {}
+    AppleNTSC() {}
 
 public:
-	enum { V = 262, H =  (25+40)*14+2 };
-	enum { SIGNAL_LEN = V*H };
+    enum { V = 262, H =  (25+40)*14+2 };
+    enum { SIGNAL_LEN = V*H };
 
-	enum
-	{
-		FP_START = 0,
-		SYNC_START = FP_START+126,
-		BP_START = SYNC_START+112,
-		CB_START = BP_START+0,
-		CB_END = CB_START+56,
-		SPIKE = CB_END+34,
-		PIC_START = CB_END+56
-	};
+    enum
+    {
+        FP_START = 0,
+        SYNC_START = FP_START+126,
+        BP_START = SYNC_START+112,
+        CB_START = BP_START+0,
+        CB_END = CB_START+56,
+        SPIKE = CB_END+34,
+        PIC_START = CB_END+56
+    };
 
-	enum
-	{
-		WHITE_LEVEL = 100,
-		BLANK_LEVEL = 0,
-		SYNC_LEVEL = -40,
-		CB_LEVEL = 20,
-		LEVEL_RANGE = WHITE_LEVEL-SYNC_LEVEL
-	};
+    enum
+    {
+        WHITE_LEVEL = 100,
+        BLANK_LEVEL = 0,
+        SYNC_LEVEL = -40,
+        CB_LEVEL = 20,
+        LEVEL_RANGE = WHITE_LEVEL-SYNC_LEVEL
+    };
 };
 
 #endif

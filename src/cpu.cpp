@@ -24,7 +24,7 @@
 
 
 CPU::CPU(AddressBus& addressBus):
-	addressBus(addressBus)
+    addressBus(addressBus)
 {
 }
 
@@ -34,102 +34,102 @@ CPU::~CPU()
 
 void CPU::powerOn()
 {
-	this->started = false;
-	this->pendingReset = false;
-	this->pendingIRQ = false;
-	this->pendingNMI = false;
-	this->p = PMASK_M;
+    this->started = false;
+    this->pendingReset = false;
+    this->pendingIRQ = false;
+    this->pendingNMI = false;
+    this->p = PMASK_M;
 }
 
 void CPU::reset()
 {
-	this->started = true;
-	this->pendingReset = true;
-	this->t = 0;
+    this->started = true;
+    this->pendingReset = true;
+    this->t = 0;
 }
 
 void CPU::IRQ()
 {
-	this->pendingIRQ = true;
+    this->pendingIRQ = true;
 }
 
 void CPU::NMI()
 {
-	this->pendingNMI = true;
+    this->pendingNMI = true;
 }
 
 void CPU::tick()
 {
-	if (!this->started)
-	{
-		return;
-	}
-	if (!this->t)
-	{
-		firstCycle();
-	}
-	else
-	{
-		subsequentCycle();
-	}
-	++this->t;
+    if (!this->started)
+    {
+        return;
+    }
+    if (!this->t)
+    {
+        firstCycle();
+    }
+    else
+    {
+        subsequentCycle();
+    }
+    ++this->t;
 }
 
 void CPU::firstCycle()
 {
-	const bool interrupt = this->pendingNMI || this->pendingReset || (!(this->p & PMASK_I) && this->pendingIRQ);
+    const bool interrupt = this->pendingNMI || this->pendingReset || (!(this->p & PMASK_I) && this->pendingIRQ);
 
-	if (interrupt)
-	{
-		this->pc = getInterruptAddress();
-	}
+    if (interrupt)
+    {
+        this->pc = getInterruptAddress();
+    }
 
-	this->address = this->pc++;
+    this->address = this->pc++;
 
-	read();
+    read();
 
-	if (interrupt)
-	{
-		this->opcode = getInterruptPseudoOpCode();
-	}
-	else
-	{
-		this->opcode = this->data;
-	}
+    if (interrupt)
+    {
+        this->opcode = getInterruptPseudoOpCode();
+    }
+    else
+    {
+        this->opcode = this->data;
+    }
 }
 
 int CPU::getInterruptAddress()
 {
-	if (this->pendingNMI)
-	{
-		return NMI_VECTOR-2;
-	}
-	if (this->pendingReset)
-	{
-		return RESET_VECTOR-2;
-	}
-	if (!(this->p & PMASK_I) && this->pendingIRQ)
-	{
-		return IRQ_VECTOR-2;
-	}
-	return 0; // can't happen
+    if (this->pendingNMI)
+    {
+        return NMI_VECTOR-2;
+    }
+    if (this->pendingReset)
+    {
+        return RESET_VECTOR-2;
+    }
+    if (!(this->p & PMASK_I) && this->pendingIRQ)
+    {
+        return IRQ_VECTOR-2;
+    }
+    return 0; // can't happen
 }
 
 int CPU::getInterruptPseudoOpCode()
 {
-	if (this->pendingNMI)
-	{
-		return 0x100;
-	}
-	if (this->pendingReset)
-	{
-		return 0x101;
-	}
-	if (!(this->p & PMASK_I) && this->pendingIRQ)
-	{
-		return 0x102;
-	}
-	return 0; // can't happen
+    if (this->pendingNMI)
+    {
+        return 0x100;
+    }
+    if (this->pendingReset)
+    {
+        return 0x101;
+    }
+    if (!(this->p & PMASK_I) && this->pendingIRQ)
+    {
+        return 0x102;
+    }
+    return 0; // can't happen
 }
 
 void (CPU::*CPU::addr[])() =
@@ -657,1063 +657,1063 @@ void (CPU::*CPU::exec[])() =
 
 void CPU::subsequentCycle()
 {
-	(this->*this->addr[this->opcode])();
+    (this->*this->addr[this->opcode])();
 }
 
 
 void CPU::addr_SINGLE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_IMMEDIATE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_ZERO_PAGE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			adh = 0;
-			address = ad();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            adh = 0;
+            address = ad();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_ABSOLUTE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			adh = data;
-		break;
-		case 3:
-			address = ad();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            adh = data;
+        break;
+        case 3:
+            address = ad();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_INDIRECT_X()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			address = bal;
-			read(); // discard
-		break;
-		case 3:
-			address += x;
-			address &= 0xFF;
-			read();
-			adl = data;
-		break;
-		case 4:
-			++address;
-			address &= 0xFF;
-			read();
-			adh = data;
-		break;
-		case 5:
-			address = ad();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            address = bal;
+            read(); // discard
+        break;
+        case 3:
+            address += x;
+            address &= 0xFF;
+            read();
+            adl = data;
+        break;
+        case 4:
+            ++address;
+            address &= 0xFF;
+            read();
+            adh = data;
+        break;
+        case 5:
+            address = ad();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_ABSOLUTE_XY()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			bah = data;
-		break;
-		case 3:
-			idx = getIndex();
-			wc = ((unsigned short)bal + (unsigned short)idx) >= 0x100;
-			bal += idx;
-			address = ba();
-			read();
-			if (!wc)
-			{
-				execute();
-				done();
-			}
-		break;
-		case 4:
-			++bah;
-			address = ba();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            bah = data;
+        break;
+        case 3:
+            idx = getIndex();
+            wc = ((unsigned short)bal + (unsigned short)idx) >= 0x100;
+            bal += idx;
+            address = ba();
+            read();
+            if (!wc)
+            {
+                execute();
+                done();
+            }
+        break;
+        case 4:
+            ++bah;
+            address = ba();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_ZERO_PAGE_XY()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			bah = 0;
-			address = ba();
-			read(); // discard
-		break;
-		case 3:
-			idx = getIndex();
-			bal += idx; // doesn't leave page zero
-			address = ba();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            bah = 0;
+            address = ba();
+            read(); // discard
+        break;
+        case 3:
+            idx = getIndex();
+            bal += idx; // doesn't leave page zero
+            address = ba();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_INTERNAL_INDIRECT_Y()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			ial = data;
-		break;
-		case 2:
-			address = ial;
-			read();
-			bal = data;
-		break;
-		case 3:
-			++address;
-			address &= 0xFF; // doesn't leave page zero
-			read();
-			bah = data;
-		break;
-		case 4:
-			wc = ((unsigned short)bal + (unsigned short)y) >= 0x100;
-			bal += y;
-			address = ba();
-			read();
-			if (!wc)
-			{
-				execute();
-				done();
-			}
-		break;
-		case 5:
-			++bah;
-			address = ba();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            ial = data;
+        break;
+        case 2:
+            address = ial;
+            read();
+            bal = data;
+        break;
+        case 3:
+            ++address;
+            address &= 0xFF; // doesn't leave page zero
+            read();
+            bah = data;
+        break;
+        case 4:
+            wc = ((unsigned short)bal + (unsigned short)y) >= 0x100;
+            bal += y;
+            address = ba();
+            read();
+            if (!wc)
+            {
+                execute();
+                done();
+            }
+        break;
+        case 5:
+            ++bah;
+            address = ba();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_ZERO_PAGE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-			execute();
-		break;
-		case 2:
-			adh = 0;
-			address = ad();
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+            execute();
+        break;
+        case 2:
+            adh = 0;
+            address = ad();
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_ABSOLUTE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			adh = data;
-			execute();
-		break;
-		case 3:
-			address = ad();
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            adh = data;
+            execute();
+        break;
+        case 3:
+            address = ad();
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_INDIRECT_X()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			address = bal;
-			address &= 0xFF;
-			read(); // discard
-		break;
-		case 3:
-			address += x;
-			address &= 0xFF;
-			read();
-			adl = data;
-		break;
-		case 4:
-			++address;
-			address &= 0xFF;
-			read();
-			adh = data;
-			execute();
-		break;
-		case 5:
-			address = ad();
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            address = bal;
+            address &= 0xFF;
+            read(); // discard
+        break;
+        case 3:
+            address += x;
+            address &= 0xFF;
+            read();
+            adl = data;
+        break;
+        case 4:
+            ++address;
+            address &= 0xFF;
+            read();
+            adh = data;
+            execute();
+        break;
+        case 5:
+            address = ad();
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_ABSOLUTE_XY()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			bah = data;
-		break;
-		case 3:
-			idx = getIndex();
-			address = ba();
-			address += idx;
-			read(); // discard (assume this is the right address, manual is ambiguous)
-			execute();
-		break;
-		case 4:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            bah = data;
+        break;
+        case 3:
+            idx = getIndex();
+            address = ba();
+            address += idx;
+            read(); // discard (assume this is the right address, manual is ambiguous)
+            execute();
+        break;
+        case 4:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_ZERO_PAGE_XY()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			bah = 0;
-			address = ba();
-			read(); // discard
-			execute();
-		break;
-		case 3:
-			idx = getIndex();
-			bal += idx; // doesn't leave page zero
-			address = ba();
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            bah = 0;
+            address = ba();
+            read(); // discard
+            execute();
+        break;
+        case 3:
+            idx = getIndex();
+            bal += idx; // doesn't leave page zero
+            address = ba();
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_STORE_INDIRECT_Y()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			ial = data;
-		break;
-		case 2:
-			address = ial;
-			read();
-			bal = data;
-		break;
-		case 3:
-			++address;
-			address &= 0xFF;
-			read();
-			bah = data;
-		break;
-		case 4:
-			address = ba();
-			address += y;
-			read(); // discard
-			execute();
-		break;
-		case 5:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            ial = data;
+        break;
+        case 2:
+            address = ial;
+            read();
+            bal = data;
+        break;
+        case 3:
+            ++address;
+            address &= 0xFF;
+            read();
+            bah = data;
+        break;
+        case 4:
+            address = ba();
+            address += y;
+            read(); // discard
+            execute();
+        break;
+        case 5:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RMW_ZERO_PAGE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			adh = 0;
-			address = ad();
-			read();
-		break;
-		case 3:
-			write();
-			execute();
-		break;
-		case 4:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            adh = 0;
+            address = ad();
+            read();
+        break;
+        case 3:
+            write();
+            execute();
+        break;
+        case 4:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RMW_ABSOLUTE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			adh = data;
-		break;
-		case 3:
-			address = ad();
-			read();
-		break;
-		case 4:
-			write();
-			execute();
-		break;
-		case 5:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            adh = data;
+        break;
+        case 3:
+            address = ad();
+            read();
+        break;
+        case 4:
+            write();
+            execute();
+        break;
+        case 5:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RMW_ZERO_PAGE_X()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			bah = 0;
-			address = ba();
-			read(); // discard
-		break;
-		case 3:
-			bal += x; // doesn't leave page zero
-			address = ba();
-			read();
-		break;
-		case 4:
-			write();
-			execute();
-		break;
-		case 5:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            bah = 0;
+            address = ba();
+            read(); // discard
+        break;
+        case 3:
+            bal += x; // doesn't leave page zero
+            address = ba();
+            read();
+        break;
+        case 4:
+            write();
+            execute();
+        break;
+        case 5:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RMW_ABSOLUTE_X()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			bal = data;
-		break;
-		case 2:
-			address = pc++;
-			read();
-			bah = data;
-		break;
-		case 3:
-			address = ba();
-			address += x;
-			read(); // discard
-		break;
-		case 4:
-			read();
-		break;
-		case 5:
-			write();
-			execute();
-		break;
-		case 6:
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            bal = data;
+        break;
+        case 2:
+            address = pc++;
+            read();
+            bah = data;
+        break;
+        case 3:
+            address = ba();
+            address += x;
+            read(); // discard
+        break;
+        case 4:
+            read();
+        break;
+        case 5:
+            write();
+            execute();
+        break;
+        case 6:
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_MISC_PUSH()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-			execute();
-		break;
-		case 2:
-			address = push();
-			write();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+            execute();
+        break;
+        case 2:
+            address = push();
+            write();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_MISC_PULL()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = sp();
-			read(); // discard
-		break;
-		case 3:
-			address = pull();
-			read();
-			execute();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = sp();
+            read(); // discard
+        break;
+        case 3:
+            address = pull();
+            read();
+            execute();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_MISC_JSR()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			address = push();
-			read(); // discard
-		break;
-		case 3:
-			data = pch();
-			write();
-			address = push();
-		break;
-		case 4:
-			data = pcl();
-			write();
-		break;
-		case 5:
-			address = pc;
-			read();
-			adh = data;
-			pc = ad();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            address = push();
+            read(); // discard
+        break;
+        case 3:
+            data = pch();
+            write();
+            address = push();
+        break;
+        case 4:
+            data = pcl();
+            write();
+        break;
+        case 5:
+            address = pc;
+            read();
+            adh = data;
+            pc = ad();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_MISC_BREAK()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = push();
-			data = pch();
-			write();
-		break;
-		case 3:
-			address = push();
-			data = pcl();
-			write();
-		break;
-		case 4:
-			address = push();
-			p |= PMASK_B;
-			data = p;
-			write();
-		break;
-		case 5:
-			address = IRQ_VECTOR;
-			read();
-			adl = data;
-		break;
-		case 6:
-			++address;
-			read();
-			adh = data;
-			pc = ad();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = push();
+            data = pch();
+            write();
+        break;
+        case 3:
+            address = push();
+            data = pcl();
+            write();
+        break;
+        case 4:
+            address = push();
+            p |= PMASK_B;
+            data = p;
+            write();
+        break;
+        case 5:
+            address = IRQ_VECTOR;
+            read();
+            adl = data;
+        break;
+        case 6:
+            ++address;
+            read();
+            adh = data;
+            pc = ad();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_MISC_RTI()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = sp();
-			read(); // discard
-		break;
-		case 3:
-			address = pull();
-			read();
-			p = data; p |= PMASK_M;
-		break;
-		case 4:
-			address = pull();
-			read();
-			adl = data;
-		break;
-		case 5:
-			address = pull();
-			read();
-			adh = data;
-			pc = ad();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = sp();
+            read(); // discard
+        break;
+        case 3:
+            address = pull();
+            read();
+            p = data; p |= PMASK_M;
+        break;
+        case 4:
+            address = pull();
+            read();
+            adl = data;
+        break;
+        case 5:
+            address = pull();
+            read();
+            adh = data;
+            pc = ad();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_JMP_ABSOLUTE()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 2:
-			address = pc;
-			read();
-			adh = data;
-			pc = ad();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 2:
+            address = pc;
+            read();
+            adh = data;
+            pc = ad();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_JMP_INDIRECT()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			ial = data;
-		break;
-		case 2:
-			address = pc;
-			read();
-			iah = data;
-		break;
-		case 3:
-			address = ia();
-			read();
-			adl = data;
-		break;
-		case 4:
-			/* Interactive [newsletter] (Rockwell Intl., 1980), Issue 2,
-			currently available here:
-			http://www.6502.org/documents/publications/interactive/aim_interactive_2.pdf
-			on page 12, documents a bug where JMP absolute does NOT
-			leave the page. This causes problems for
-			example for JMP ($08FF), where high byte
-			is read from $800 instead of $900.
-			*/
-			++ial;  // emulate the bug here (don't touch iah)
-			address = ia();
-			read();
-			adh = data;
-			pc = ad();
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            ial = data;
+        break;
+        case 2:
+            address = pc;
+            read();
+            iah = data;
+        break;
+        case 3:
+            address = ia();
+            read();
+            adl = data;
+        break;
+        case 4:
+            /* Interactive [newsletter] (Rockwell Intl., 1980), Issue 2,
+            currently available here:
+            http://www.6502.org/documents/publications/interactive/aim_interactive_2.pdf
+            on page 12, documents a bug where JMP absolute does NOT
+            leave the page. This causes problems for
+            example for JMP ($08FF), where high byte
+            is read from $800 instead of $900.
+            */
+            ++ial;  // emulate the bug here (don't touch iah)
+            address = ia();
+            read();
+            adh = data;
+            pc = ad();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RTS()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = sp();
-			read(); // discard
-		break;
-		case 3:
-			address = pull();
-			read();
-			adl = data;
-		break;
-		case 4:
-			address = pull();
-			read();
-			adh = data;
-		break;
-		case 5:
-			pc = ad();
-			address = pc;
-			read(); // discard
-			++pc;
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = sp();
+            read(); // discard
+        break;
+        case 3:
+            address = pull();
+            read();
+            adl = data;
+        break;
+        case 4:
+            address = pull();
+            read();
+            adh = data;
+        break;
+        case 5:
+            pc = ad();
+            address = pc;
+            read(); // discard
+            ++pc;
+            done();
+        break;
+    }
 }
 
 void CPU::addr_BRANCH()
 {
-	signed short lo;
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read();
-			offset = (signed char)data;
-			execute();
-			if (!branch)
-			{
-				done();
-			}
-		break;
-		case 2:
-			lo = pcl()+offset;
-			sc = 0;
-			if (lo < 0)
-			{
-				lo += 0x100;
-				sc = -1;
-			}
-			else if (lo >= 0x100)
-			{
-				lo -= 0x100;
-				sc = 1;
-			}
-			pc = (pc & 0xFF00) | lo;
-			address = pc;
-			read();
-			if (sc == 0)
-			{
-				done();
-			}
-		break;
-		case 3:
-			unsigned short hi = pch() + sc;
-			pc = (hi << 8) | pcl();
-			read();
-			done();
-		break;
-	}
+    signed short lo;
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read();
+            offset = (signed char)data;
+            execute();
+            if (!branch)
+            {
+                done();
+            }
+        break;
+        case 2:
+            lo = pcl()+offset;
+            sc = 0;
+            if (lo < 0)
+            {
+                lo += 0x100;
+                sc = -1;
+            }
+            else if (lo >= 0x100)
+            {
+                lo -= 0x100;
+                sc = 1;
+            }
+            pc = (pc & 0xFF00) | lo;
+            address = pc;
+            read();
+            if (sc == 0)
+            {
+                done();
+            }
+        break;
+        case 3:
+            unsigned short hi = pch() + sc;
+            pc = (hi << 8) | pcl();
+            read();
+            done();
+        break;
+    }
 }
 
 void CPU::addr_NMI()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = push();
-			data = pch();
-			write();
-		break;
-		case 3:
-			address = push();
-			data = pcl();
-			write();
-		break;
-		case 4:
-			address = push();
-			p |= PMASK_I;
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = push();
+            data = pch();
+            write();
+        break;
+        case 3:
+            address = push();
+            data = pcl();
+            write();
+        break;
+        case 4:
+            address = push();
+            p |= PMASK_I;
             p &= ~PMASK_B;
-			data = p;
-			write();
-		break;
-		case 5:
-			++address;
-			read();
-			adl = data;
-		break;
-		case 6:
-			++address;
-			read();
-			adh = data;
-			pc = ad();
-			pendingNMI = false;
-			done();
-		break;
-	}
+            data = p;
+            write();
+        break;
+        case 5:
+            ++address;
+            read();
+            adl = data;
+        break;
+        case 6:
+            ++address;
+            read();
+            adh = data;
+            pc = ad();
+            pendingNMI = false;
+            done();
+        break;
+    }
 }
 
 void CPU::addr_RESET()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc++;
-			read(); // discard
-		break;
-		case 2:
-			s = 0xFF; // real CPU doesn't do this ???
-			address = push();
-			data = pch();
-			read(); // discard
-		break;
-		case 3:
-			address = push();
-			data = pcl();
-			read(); // discard
-		break;
-		case 4:
-			address = push();
-			p |= PMASK_I;
-			data = p;
-			read(); // discard
-		break;
-		case 5:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 6:
-			address = pc;
-			read();
-			adh = data;
-			pc = ad();
-			pendingReset = false;
-			done();
-		break;
-	}
+    switch (this->t)
+    {
+        case 1:
+            address = pc++;
+            read(); // discard
+        break;
+        case 2:
+            s = 0xFF; // real CPU doesn't do this ???
+            address = push();
+            data = pch();
+            read(); // discard
+        break;
+        case 3:
+            address = push();
+            data = pcl();
+            read(); // discard
+        break;
+        case 4:
+            address = push();
+            p |= PMASK_I;
+            data = p;
+            read(); // discard
+        break;
+        case 5:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 6:
+            address = pc;
+            read();
+            adh = data;
+            pc = ad();
+            pendingReset = false;
+            done();
+        break;
+    }
 }
 
 void CPU::addr_IRQ()
 {
-	switch (this->t)
-	{
-		case 1:
-			address = pc;
-			read(); // discard
-		break;
-		case 2:
-			address = push();
-			data = pch();
-			write();
-		break;
-		case 3:
-			address = push();
-			data = pcl(); // ???
-			write();
-		break;
-		case 4:
-			address = push();
-			p |= PMASK_I;
+    switch (this->t)
+    {
+        case 1:
+            address = pc;
+            read(); // discard
+        break;
+        case 2:
+            address = push();
+            data = pch();
+            write();
+        break;
+        case 3:
+            address = push();
+            data = pcl(); // ???
+            write();
+        break;
+        case 4:
+            address = push();
+            p |= PMASK_I;
             p &= ~PMASK_B;
-			data = p;
-			write();
-		break;
-		case 5:
-			address = pc++;
-			read();
-			adl = data;
-		break;
-		case 6:
-			address = pc;
-			read();
-			adh = data;
-			pc = ad();
-			pendingIRQ = false;
-			done();
-		break;
-	}
+            data = p;
+            write();
+        break;
+        case 5:
+            address = pc++;
+            read();
+            adl = data;
+        break;
+        case 6:
+            address = pc;
+            read();
+            adh = data;
+            pc = ad();
+            pendingIRQ = false;
+            done();
+        break;
+    }
 }
 
 void CPU::read()
 {
-	this->data = this->addressBus.read(this->address);
+    this->data = this->addressBus.read(this->address);
 }
 
 void CPU::write()
 {
-	this->addressBus.write(this->address,this->data);
+    this->addressBus.write(this->address,this->data);
 }
 
 void CPU::execute()
 {
-	(this->*this->exec[this->opcode])();
+    (this->*this->exec[this->opcode])();
 }
 
 void CPU::done()
 {
-	this->t = -1;
+    this->t = -1;
 }
 
 
 unsigned char CPU::pch()
 {
-	return (unsigned char)(this->pc >> 8);
+    return (unsigned char)(this->pc >> 8);
 }
 
 unsigned char CPU::pcl()
 {
-	return (unsigned char)(this->pc);
+    return (unsigned char)(this->pc);
 }
 
 unsigned short CPU::sp()
 {
-	return 0x100+this->s;
+    return 0x100+this->s;
 }
 
 unsigned short CPU::push()
 {
-	const unsigned short psp = sp();
-	--this->s;
-	return psp;
+    const unsigned short psp = sp();
+    --this->s;
+    return psp;
 }
 
 unsigned short CPU::pull()
 {
-	++this->s;
-	return sp();
+    ++this->s;
+    return sp();
 }
 
 unsigned char CPU::getIndex()
 {
-	// opcode: aaabbbcc
-	const int aaa = (this->opcode & 0xE0) >> 5;
-	int bbb = (this->opcode & 0x1C) >> 2;
-	int cc = (this->opcode & 0x03);
-	if (bbb == 0)
-	{
-		return this->x;
-	}
-	if (bbb == 4 || bbb == 6)
-	{
-		return this->y;
-	}
-	if (bbb == 5 || bbb == 7)
-	{
-		if (cc == 2 && (aaa == 4 || aaa == 5))
-		{
-			return this->y;
-		}
-		return this->x;
-	}
-	return 0;
+    // opcode: aaabbbcc
+    const int aaa = (this->opcode & 0xE0) >> 5;
+    int bbb = (this->opcode & 0x1C) >> 2;
+    int cc = (this->opcode & 0x03);
+    if (bbb == 0)
+    {
+        return this->x;
+    }
+    if (bbb == 4 || bbb == 6)
+    {
+        return this->y;
+    }
+    if (bbb == 5 || bbb == 7)
+    {
+        if (cc == 2 && (aaa == 4 || aaa == 5))
+        {
+            return this->y;
+        }
+        return this->x;
+    }
+    return 0;
 }
 
 unsigned short CPU::ad()
 {
-	return combine(this->adl,this->adh);
+    return combine(this->adl,this->adh);
 }
 
 unsigned short CPU::ia()
 {
-	return combine(this->ial,this->iah);
+    return combine(this->ial,this->iah);
 }
 
 unsigned short CPU::ba()
 {
-	return combine(this->bal,this->bah);
+    return combine(this->bal,this->bah);
 }
 
 unsigned short CPU::combine(const unsigned char lo, const unsigned char hi)
 {
-	return hi << 8 | lo;
+    return hi << 8 | lo;
 }
 
 void CPU::setStatusRegisterNZ(const unsigned char val)
 {
-	setP(PMASK_N,val & 0x80);
-	setP(PMASK_Z,!val);
+    setP(PMASK_N,val & 0x80);
+    setP(PMASK_Z,!val);
 }
 
 void CPU::LDA()
 {
-	this->a = this->data;
-	setStatusRegisterNZ(this->a);
+    this->a = this->data;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::LDX()
 {
-	this->x = this->data;
-	setStatusRegisterNZ(this->x);
+    this->x = this->data;
+    setStatusRegisterNZ(this->x);
 }
 
 void CPU::LDY()
 {
-	this->y = this->data;
-	setStatusRegisterNZ(this->y);
+    this->y = this->data;
+    setStatusRegisterNZ(this->y);
 }
 
 void CPU::STA()
 {
-	this->data = this->a;
+    this->data = this->a;
 }
 
 void CPU::STX()
 {
-	this->data = this->x;
+    this->data = this->x;
 }
 
 void CPU::STY()
 {
-	this->data = this->y;
+    this->data = this->y;
 }
 
 void CPU::compare(const unsigned char r)
 {
-	const signed short tmp = r - this->data;
-	setP(PMASK_C,0 <= tmp && tmp < 0x100);
-	setStatusRegisterNZ((const signed char)tmp);
+    const signed short tmp = r - this->data;
+    setP(PMASK_C,0 <= tmp && tmp < 0x100);
+    setStatusRegisterNZ((const signed char)tmp);
 }
 
 void CPU::CMP()
 {
-	compare(this->a);
+    compare(this->a);
 }
 
 void CPU::CPX()
 {
-	compare(this->x);
+    compare(this->x);
 }
 
 void CPU::CPY()
 {
-	compare(this->y);
+    compare(this->y);
 }
 
 void CPU::AND()
 {
-	this->a &= this->data;
-	setStatusRegisterNZ(this->a);
+    this->a &= this->data;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::ORA()
 {
-	this->a |= this->data;
-	setStatusRegisterNZ(this->a);
+    this->a |= this->data;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::EOR()
 {
-	this->a ^= this->data;
-	setStatusRegisterNZ(this->a);
+    this->a ^= this->data;
+    setStatusRegisterNZ(this->a);
 }
 
 
@@ -1723,92 +1723,92 @@ void CPU::EOR()
 
 void CPU::ASL()
 {
-	this->data = shiftLeft(this->data);
+    this->data = shiftLeft(this->data);
 }
 
 void CPU::ASL_A()
 {
-	this->a = shiftLeft(this->a);
+    this->a = shiftLeft(this->a);
 }
 
 void CPU::LSR()
 {
-	this->data = shiftRight(this->data);
+    this->data = shiftRight(this->data);
 }
 
 void CPU::LSR_A()
 {
-	this->a = shiftRight(this->a);
+    this->a = shiftRight(this->a);
 }
 
 void CPU::ROL()
 {
-	this->data = rotateLeft(this->data);
+    this->data = rotateLeft(this->data);
 }
 
 void CPU::ROL_A()
 {
-	this->a = rotateLeft(this->a);
+    this->a = rotateLeft(this->a);
 }
 
 void CPU::ROR()
 {
-	this->data = rotateRight(this->data);
+    this->data = rotateRight(this->data);
 }
 
 void CPU::ROR_A()
 {
-	this->a = rotateRight(this->a);
+    this->a = rotateRight(this->a);
 }
 
 unsigned char CPU::shiftLeft(unsigned char byt)
 {
-	setP(PMASK_C,byt & 0x80);
-	byt <<= 1;
-	setStatusRegisterNZ(byt);
-	return byt;
+    setP(PMASK_C,byt & 0x80);
+    byt <<= 1;
+    setStatusRegisterNZ(byt);
+    return byt;
 }
 
 unsigned char CPU::shiftRight(unsigned char byt)
 {
-	setP(PMASK_C,byt & 0x01);
-	byt >>= 1;
-	setStatusRegisterNZ(byt);
-	return byt;
+    setP(PMASK_C,byt & 0x01);
+    byt >>= 1;
+    setStatusRegisterNZ(byt);
+    return byt;
 }
 
 unsigned char CPU::rotateLeft(unsigned char byt)
 {
-	const bool newCarry = (byt & 0x80);
+    const bool newCarry = (byt & 0x80);
 
-	byt <<= 1;
+    byt <<= 1;
 
-	if (this->p & PMASK_C)
-	{
-		byt |= 0x01;
-	}
+    if (this->p & PMASK_C)
+    {
+        byt |= 0x01;
+    }
 
-	setP(PMASK_C,newCarry);
-	setStatusRegisterNZ(byt);
+    setP(PMASK_C,newCarry);
+    setStatusRegisterNZ(byt);
 
-	return byt;
+    return byt;
 }
 
 unsigned char CPU::rotateRight(unsigned char byt)
 {
-	const bool newCarry = (byt & 0x01);
+    const bool newCarry = (byt & 0x01);
 
-	byt >>= 1;
+    byt >>= 1;
 
-	if (this->p & PMASK_C)
-	{
-		byt |= 0x80;
-	}
+    if (this->p & PMASK_C)
+    {
+        byt |= 0x80;
+    }
 
-	setP(PMASK_C,newCarry);
-	setStatusRegisterNZ(byt);
+    setP(PMASK_C,newCarry);
+    setStatusRegisterNZ(byt);
 
-	return byt;
+    return byt;
 }
 
 
@@ -1818,62 +1818,62 @@ unsigned char CPU::rotateRight(unsigned char byt)
 
 void CPU::ADC()
 {
-	/*
-	This method based on ADC from the POM1 Apple 1 emulator.
-	Copyright (C) 2000, by Verhille Arnaud, GPLv2 license.
-	*/
-	int Op1 = this->a;
-	int Op2 = this->data;
-	if (this->p & PMASK_D)
-	{
-		setP(PMASK_Z,!((Op1 + Op2 + !!(this->p & PMASK_C)) & 0xff));
-		int tmp = (Op1 & 0xf) + (Op2 & 0xf) + !!(this->p & PMASK_C);
-		tmp = tmp >= 10 ? tmp + 6 : tmp;
-		this->a = tmp;
-		tmp = (Op1 & 0xf0) + (Op2 & 0xf0) + (tmp & 0xf0);
-		setP(PMASK_N,tmp < 0);
-		setP(PMASK_V,((Op1 ^ tmp) & ~(Op1 ^ Op2) & 0x80));
-		tmp = (this->a & 0xf) | (tmp >= 160 ? tmp + 96 : tmp);
-		setP(PMASK_C,tmp >= 0x100);
-		this->a = tmp & 0xff;
-	}
-	else
-	{
-		int tmp = Op1 + Op2 + !!(this->p & PMASK_C);
-		this->a = tmp & 0xFF;
-		setP(PMASK_V,((Op1 ^ this->a) & ~(Op1 ^ Op2) & 0x80));
-		setP(PMASK_C,tmp >= 0x100);
-		setStatusRegisterNZ(this->a);
-	}
+    /*
+    This method based on ADC from the POM1 Apple 1 emulator.
+    Copyright (C) 2000, by Verhille Arnaud, GPLv2 license.
+    */
+    int Op1 = this->a;
+    int Op2 = this->data;
+    if (this->p & PMASK_D)
+    {
+        setP(PMASK_Z,!((Op1 + Op2 + !!(this->p & PMASK_C)) & 0xff));
+        int tmp = (Op1 & 0xf) + (Op2 & 0xf) + !!(this->p & PMASK_C);
+        tmp = tmp >= 10 ? tmp + 6 : tmp;
+        this->a = tmp;
+        tmp = (Op1 & 0xf0) + (Op2 & 0xf0) + (tmp & 0xf0);
+        setP(PMASK_N,tmp < 0);
+        setP(PMASK_V,((Op1 ^ tmp) & ~(Op1 ^ Op2) & 0x80));
+        tmp = (this->a & 0xf) | (tmp >= 160 ? tmp + 96 : tmp);
+        setP(PMASK_C,tmp >= 0x100);
+        this->a = tmp & 0xff;
+    }
+    else
+    {
+        int tmp = Op1 + Op2 + !!(this->p & PMASK_C);
+        this->a = tmp & 0xFF;
+        setP(PMASK_V,((Op1 ^ this->a) & ~(Op1 ^ Op2) & 0x80));
+        setP(PMASK_C,tmp >= 0x100);
+        setStatusRegisterNZ(this->a);
+    }
 }
 
 void CPU::SBC()
 {
-	/*
-	This method based on SBC from the POM1 Apple 1 emulator.
-	Copyright (C) 2000, by Verhille Arnaud, GPLv2 license.
-	*/
-	int Op1 = this->a;
-	int Op2 = this->data;
-	if (this->p & PMASK_D)
-	{
-		int tmp = (Op1 & 0xf) - (Op2 & 0xf) - !(this->p & PMASK_C);
-		tmp = (tmp & 0x10) != 0 ? tmp - 6 : tmp;
-		this->a = tmp;
-		tmp = (Op1 & 0xf0) - (Op2 & 0xf0) - (this->a & 0x10);
-		this->a = (this->a & 0xf) | ((tmp & 0x100) != 0 ? tmp - 96 : tmp);
-		tmp = Op1 - Op2 - !(this->p & PMASK_C);
-		setP(PMASK_C,0 <= tmp && tmp < 0x100);
-		setStatusRegisterNZ(tmp);
-	}
-	else
-	{
-		int tmp = Op1 - Op2 - !(this->p & PMASK_C);
-		this->a = tmp & 0xff;
-		setP(PMASK_V,((Op1 ^ Op2) & (Op1 ^ this->a) & 0x80));
-		setP(PMASK_C,0 <= tmp && tmp < 0x100);
-		setStatusRegisterNZ(this->a);
-	}
+    /*
+    This method based on SBC from the POM1 Apple 1 emulator.
+    Copyright (C) 2000, by Verhille Arnaud, GPLv2 license.
+    */
+    int Op1 = this->a;
+    int Op2 = this->data;
+    if (this->p & PMASK_D)
+    {
+        int tmp = (Op1 & 0xf) - (Op2 & 0xf) - !(this->p & PMASK_C);
+        tmp = (tmp & 0x10) != 0 ? tmp - 6 : tmp;
+        this->a = tmp;
+        tmp = (Op1 & 0xf0) - (Op2 & 0xf0) - (this->a & 0x10);
+        this->a = (this->a & 0xf) | ((tmp & 0x100) != 0 ? tmp - 96 : tmp);
+        tmp = Op1 - Op2 - !(this->p & PMASK_C);
+        setP(PMASK_C,0 <= tmp && tmp < 0x100);
+        setStatusRegisterNZ(tmp);
+    }
+    else
+    {
+        int tmp = Op1 - Op2 - !(this->p & PMASK_C);
+        this->a = tmp & 0xff;
+        setP(PMASK_V,((Op1 ^ Op2) & (Op1 ^ this->a) & 0x80));
+        setP(PMASK_C,0 <= tmp && tmp < 0x100);
+        setStatusRegisterNZ(this->a);
+    }
 }
 
 
@@ -1881,58 +1881,58 @@ void CPU::SBC()
 
 void CPU::INC()
 {
-	++this->data;
-	setStatusRegisterNZ(this->data);
+    ++this->data;
+    setStatusRegisterNZ(this->data);
 }
 
 void CPU::DEC()
 {
-	--this->data;
-	setStatusRegisterNZ(this->data);
+    --this->data;
+    setStatusRegisterNZ(this->data);
 }
 
 void CPU::INX()
 {
-	++this->x;
-	setStatusRegisterNZ(this->x);
+    ++this->x;
+    setStatusRegisterNZ(this->x);
 }
 
 void CPU::INY()
 {
-	++this->y;
-	setStatusRegisterNZ(this->y);
+    ++this->y;
+    setStatusRegisterNZ(this->y);
 }
 
 void CPU::DEX()
 {
-	--this->x;
-	setStatusRegisterNZ(this->x);
+    --this->x;
+    setStatusRegisterNZ(this->x);
 }
 
 void CPU::DEY()
 {
-	--this->y;
-	setStatusRegisterNZ(this->y);
+    --this->y;
+    setStatusRegisterNZ(this->y);
 }
 
 void CPU::setP(const unsigned char mask, const unsigned char val)
 {
-	if (val)
-		this->p |= mask;
-	else
-		this->p &= ~mask;
+    if (val)
+        this->p |= mask;
+    else
+        this->p &= ~mask;
 }
 
 void CPU::BIT()
 {
-	setP(PMASK_V,this->data & 0x40);
-	setP(PMASK_N,this->data & 0x80);
-	setP(PMASK_Z,!(this->data & this->a));
+    setP(PMASK_V,this->data & 0x40);
+    setP(PMASK_N,this->data & 0x80);
+    setP(PMASK_Z,!(this->data & this->a));
 }
 
 void CPU::PHA()
 {
-	this->data = this->a;
+    this->data = this->a;
 }
 
 void CPU::PHP()
@@ -1942,14 +1942,14 @@ void CPU::PHP()
 
 void CPU::PLA()
 {
-	this->a = this->data;
-	setStatusRegisterNZ(this->a);
+    this->a = this->data;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::PLP()
 {
-	this->p = this->data;
-	this->p |= PMASK_M;
+    this->p = this->data;
+    this->p |= PMASK_M;
     this->p |= PMASK_B;
 }
 
@@ -1975,116 +1975,116 @@ void CPU::JSR()
 
 void CPU::BNE()
 {
-	this->branch = !(this->p & PMASK_Z);
+    this->branch = !(this->p & PMASK_Z);
 }
 
 void CPU::BEQ()
 {
-	this->branch = this->p & PMASK_Z;
+    this->branch = this->p & PMASK_Z;
 }
 
 void CPU::BVC()
 {
-	this->branch = !(this->p & PMASK_V);
+    this->branch = !(this->p & PMASK_V);
 }
 
 void CPU::BVS()
 {
-	this->branch = this->p & PMASK_V;
+    this->branch = this->p & PMASK_V;
 }
 
 void CPU::BCC()
 {
-	this->branch = !(this->p & PMASK_C);
+    this->branch = !(this->p & PMASK_C);
 }
 
 void CPU::BCS()
 {
-	this->branch = this->p & PMASK_C;
+    this->branch = this->p & PMASK_C;
 }
 
 void CPU::BPL()
 {
-	this->branch = !(this->p & PMASK_N);
+    this->branch = !(this->p & PMASK_N);
 }
 
 void CPU::BMI()
 {
-	this->branch = this->p & PMASK_N;
+    this->branch = this->p & PMASK_N;
 }
 
 void CPU::TAX()
 {
-	this->x = this->a;
-	setStatusRegisterNZ(this->x);
+    this->x = this->a;
+    setStatusRegisterNZ(this->x);
 }
 
 void CPU::TXA()
 {
-	this->a = this->x;
-	setStatusRegisterNZ(this->a);
+    this->a = this->x;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::TAY()
 {
-	this->y = this->a;
-	setStatusRegisterNZ(this->y);
+    this->y = this->a;
+    setStatusRegisterNZ(this->y);
 }
 
 void CPU::TYA()
 {
-	this->a = this->y;
-	setStatusRegisterNZ(this->a);
+    this->a = this->y;
+    setStatusRegisterNZ(this->a);
 }
 
 void CPU::TXS()
 {
-	this->s = this->x;
-	// make sure this doesn't affect status register
-	// it doesn't
+    this->s = this->x;
+    // make sure this doesn't affect status register
+    // it doesn't
 }
 
 void CPU::TSX()
 {
-	this->x = this->s;
-	setStatusRegisterNZ(this->x);
-	// make sure this does affect status register
-	// it does
+    this->x = this->s;
+    setStatusRegisterNZ(this->x);
+    // make sure this does affect status register
+    // it does
 }
 
 void CPU::CLC()
 {
-	this->p &= ~PMASK_C;
+    this->p &= ~PMASK_C;
 }
 
 void CPU::SEC()
 {
-	this->p |= PMASK_C;
+    this->p |= PMASK_C;
 }
 
 void CPU::CLI()
 {
-	this->p &= ~PMASK_I;
+    this->p &= ~PMASK_I;
 }
 
 void CPU::SEI()
 {
-	this->p |= PMASK_I;
+    this->p |= PMASK_I;
 }
 
 void CPU::CLV()
 {
-	this->p &= ~PMASK_V;
+    this->p &= ~PMASK_V;
 }
 
 void CPU::CLD()
 {
-	this->p &= ~PMASK_D;
+    this->p &= ~PMASK_D;
 }
 
 void CPU::SED()
 {
-	this->p |= PMASK_D;
+    this->p |= PMASK_D;
 }
 
 void CPU::NOP()
@@ -2105,15 +2105,15 @@ void CPU::Unoff1()
 
 void CPU::Unoff2()
 {
-	this->pc++;
+    this->pc++;
 }
 
 void CPU::Unoff3()
 {
-	this->pc += 2;
+    this->pc += 2;
 }
 
 void CPU::Hang()
 {
-	this->pc--;
+    this->pc--;
 }

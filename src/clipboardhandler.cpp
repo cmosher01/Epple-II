@@ -30,9 +30,9 @@ ClipboardHandler::~ClipboardHandler()
 
 std::string ClipboardHandler::getText()
 {
-	std::string ret;
+    std::string ret;
         char* sdlAllocatedText = SDL_GetClipboardText();
         ret.assign(sdlAllocatedText);
         SDL_free(sdlAllocatedText);
-	return ret;
+    return ret;
 }

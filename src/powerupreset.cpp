@@ -20,7 +20,7 @@
 #include "e2const.h"
 
 PowerUpReset::PowerUpReset(Apple2& apple):
-	apple(apple)
+    apple(apple)
 {
 }
 
@@ -32,21 +32,21 @@ PowerUpReset::~PowerUpReset()
 
 void PowerUpReset::tick()
 {
-	if (this->pendingTicks > 0)
-	{
-		--this->pendingTicks;
-		if (this->pendingTicks == 0)
-		{
-			this->apple.reset();
-		}
-	}
+    if (this->pendingTicks > 0)
+    {
+        --this->pendingTicks;
+        if (this->pendingTicks == 0)
+        {
+            this->apple.reset();
+        }
+    }
 }
 
 void PowerUpReset::powerOn()
 {
 #ifdef USE_EMU
-	this->pendingTicks = 99; // TODO REMOVE THIS
+    this->pendingTicks = 99; // TODO REMOVE THIS
 #else
-	this->pendingTicks = (int)(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
+    this->pendingTicks = (int)(E2Const::AVG_CPU_HZ*.3); // U.A.II, p. 7-15
 #endif
 }

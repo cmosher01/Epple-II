@@ -24,11 +24,11 @@ class StandardOut : public Card
 {
 
 public:
-	StandardOut();
-	~StandardOut();
+    StandardOut();
+    ~StandardOut();
 
-	virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
-	virtual std::string getName() { return "standard output"; }
+    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
+    virtual std::string getName() { return "standard output"; }
 };
 
 #endif

@@ -24,21 +24,21 @@
 class VideoMode
 {
 private:
-	bool swText;
-	bool swMixed;
-	int swPage2;
-	bool swHiRes;
+    bool swText;
+    bool swMixed;
+    int swPage2;
+    bool swHiRes;
 
 public:
-	VideoMode();
-	unsigned char io(const unsigned short addr, const unsigned char b);
-	void powerOn();
+    VideoMode();
+    unsigned char io(const unsigned short addr, const unsigned char b);
+    void powerOn();
 
-	bool isText() const { return this->swText; }
-	bool isHiRes() const { return this->swHiRes; }
-	bool isMixed() const { return this->swMixed; }
-	int getPage() const { return this->swPage2; }
-	bool isDisplayingText(const int atTickInField) const { return this->swText || (this->swMixed && atTickInField >= E2Const::MIXED_TEXT_CYCLE); }
+    bool isText() const { return this->swText; }
+    bool isHiRes() const { return this->swHiRes; }
+    bool isMixed() const { return this->swMixed; }
+    int getPage() const { return this->swPage2; }
+    bool isDisplayingText(const int atTickInField) const { return this->swText || (this->swMixed && atTickInField >= E2Const::MIXED_TEXT_CYCLE); }
 };
 
 #endif

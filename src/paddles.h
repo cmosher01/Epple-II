@@ -23,19 +23,19 @@
 class Paddles
 {
 private:
-	std::vector<int> rTick;
+    std::vector<int> rTick;
 
-	enum { PADDLE_COUNT = 4 };
-	enum { PADDLE_CYCLES = 2805 }; // TODO: document where PADDLE_CYCLES==2805 came from
+    enum { PADDLE_COUNT = 4 };
+    enum { PADDLE_CYCLES = 2805 }; // TODO: document where PADDLE_CYCLES==2805 came from
 
-	void tryStartPaddleTimers();
+    void tryStartPaddleTimers();
 
 public:
-	Paddles();
-	~Paddles();
-	void tick();
-	void startTimers();
-	bool isTimedOut(const int paddle);
+    Paddles();
+    ~Paddles();
+    void tick();
+    void startTimers();
+    bool isTimedOut(const int paddle);
 };
 
 #endif

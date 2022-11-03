@@ -30,21 +30,21 @@ StandardOut::~StandardOut()
 
 unsigned char StandardOut::io(const unsigned short address, const unsigned char data, const bool writing)
 {
-	if (!writing)
-	{
-		return data;
-	}
+    if (!writing)
+    {
+        return data;
+    }
 
-	const char c = (char)(data&0x7F);
-	if (c == '\r')
-	{
-		std::cout << std::endl;
-	}
-	else
-	{
-		std::cout << c;
-	}
-	std::cout << std::flush;
+    const char c = (char)(data&0x7F);
+    if (c == '\r')
+    {
+        std::cout << std::endl;
+    }
+    else
+    {
+        std::cout << c;
+    }
+    std::cout << std::flush;
 
-	return data;
+    return data;
 }

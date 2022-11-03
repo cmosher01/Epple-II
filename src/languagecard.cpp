@@ -19,17 +19,17 @@
 #include "screenimage.h"
 
 LanguageCard::LanguageCard(ScreenImage& gui, int slot):
-	gui(gui),
-	slot(slot),
-	inhibit(false),
-	ramTop(0x10000-0xE000),
-	bank(1),
-	readEnable(false),
-	writeEnable(true),
-	writeCount(0)
+    gui(gui),
+    slot(slot),
+    inhibit(false),
+    ramTop(0x10000-0xE000),
+    bank(1),
+    readEnable(false),
+    writeEnable(true),
+    writeCount(0)
 {
-	this->ramBank.push_back(new Memory(0xE000-0xD000));
-	this->ramBank.push_back(new Memory(0xE000-0xD000));
+    this->ramBank.push_back(new Memory(0xE000-0xD000));
+    this->ramBank.push_back(new Memory(0xE000-0xD000));
 }
 
 LanguageCard::~LanguageCard()
@@ -39,57 +39,57 @@ LanguageCard::~LanguageCard()
 
 unsigned char LanguageCard::io(const unsigned short address, const unsigned char data, const bool writing)
 {
-	if ((address & 1) && !writing)
-	{
-		++this->writeCount;
-	}
-	else
-	{
-		this->writeCount = 0;
-	}
-	if (this->writeCount > 1)
-	{
-		this->writeEnable = true;
-	}
-	if (!(address & 1))
-	{
-		this->writeEnable = false;
-	}
+    if ((address & 1) && !writing)
+    {
+        ++this->writeCount;
+    }
+    else
+    {
+        this->writeCount = 0;
+    }
+    if (this->writeCount > 1)
+    {
+        this->writeEnable = true;
+    }
+    if (!(address & 1))
+    {
+        this->writeEnable = false;
+    }
 
-	const int r = address & 3;
-	this->readEnable = (r==0 || r==3);
+    const int r = address & 3;
+    this->readEnable = (r==0 || r==3);
 
-	this->bank = !(address & 8);
+    this->bank = !(address & 8);
 
-	this->gui.setLangCard(this->slot,this->readEnable,this->writeEnable,this->bank);
+    this->gui.setLangCard(this->slot,this->readEnable,this->writeEnable,this->bank);
 
-	return data;
+    return data;
 }
 
 void LanguageCard::ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write)
 {
-	this->inhibit = false;
-	if (this->readEnable && !write)
-	{
-		if (addr < 0x1000)
-		{
+    this->inhibit = false;
+    if (this->readEnable && !write)
+    {
+        if (addr < 0x1000)
+        {
             *pb = this->ramBank[this->bank]->read(addr, *pb);
-		}
-		else
-		{
+        }
+        else
+        {
             *pb = this->ramTop.read(addr-0x1000, *pb);
-		}
-		this->inhibit = true;
-	}
-	else if (this->writeEnable && write)
-	{
-		if (addr < 0x1000)
-		{
-			this->ramBank[this->bank]->write(addr,*pb);
-		}
-		else
-		{
-			this->ramTop.write(addr-0x1000,*pb);
-		}
-	}
+        }
+        this->inhibit = true;
+    }
+    else if (this->writeEnable && write)
+    {
+        if (addr < 0x1000)
+        {
+            this->ramBank[this->bank]->write(addr,*pb);
+        }
+        else
+        {
+            this->ramTop.write(addr-0x1000,*pb);
+        }
+    }
 }

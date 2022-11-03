@@ -19,8 +19,8 @@
 #include <ctime>
 
 ClockCard::ClockCard():
-	latch(0),
-	pos(0)
+    latch(0),
+    pos(0)
 {
 }
 
@@ -33,38 +33,38 @@ ClockCard::~ClockCard()
 
 unsigned char ClockCard::io(const unsigned short address, const unsigned char data, const bool writing)
 {
-	const int sw = address & 0x0F;
-	if (sw == 0)
-	{
-		if (!(this->latch & 0x80))
-		{
-			if (this->pos == 0)
-			{
-				getTime();
-			}
-			char c = this->time[this->pos];
-			this->latch = (unsigned char)(c | 0x80);
-			++this->pos;
-			if (this->pos >= this->timelen)
-			{
-				this->pos = 0;
-			}
-		}
-	}
-	else if (sw == 1)
-	{
-		this->latch &= 0x7F;
-	}
-	return this->latch;
+    const int sw = address & 0x0F;
+    if (sw == 0)
+    {
+        if (!(this->latch & 0x80))
+        {
+            if (this->pos == 0)
+            {
+                getTime();
+            }
+            char c = this->time[this->pos];
+            this->latch = (unsigned char)(c | 0x80);
+            ++this->pos;
+            if (this->pos >= this->timelen)
+            {
+                this->pos = 0;
+            }
+        }
+    }
+    else if (sw == 1)
+    {
+        this->latch &= 0x7F;
+    }
+    return this->latch;
 }
 
 #define TIMEFORMAT "%m,0%w,%d,%H,%M,%S,000,%Y,%Z,D\r"
 
 void ClockCard::getTime()
 {
-	time_t now;
-	::time(&now);
-	struct tm* nowtm = ::localtime(&now);
-	this->timelen = ::strftime(this->time,sizeof(this->time),TIMEFORMAT,nowtm);
-	this->time[this->timelen-2] = nowtm->tm_isdst>0 ? '1' : '0';
+    time_t now;
+    ::time(&now);
+    struct tm* nowtm = ::localtime(&now);
+    this->timelen = ::strftime(this->time,sizeof(this->time),TIMEFORMAT,nowtm);
+    this->time[this->timelen-2] = nowtm->tm_isdst>0 ? '1' : '0';
 }

@@ -233,7 +233,7 @@ bool CassetteIn::load(const std::string& filePath) {
         if (!eject()) {
             return false;
         }
-	}
+    }
 
     /* convert input sample to floating-point, at rate of 10 CPU cycles per sample, for easy calculation */
     SDL_AudioCVT cvt;
@@ -256,7 +256,7 @@ bool CassetteIn::load(const std::string& filePath) {
     rewind();
     tone();
 
-	return true;
+    return true;
 }
 
 bool CassetteIn::eject() {

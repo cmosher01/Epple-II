@@ -24,16 +24,16 @@
 class StandardIn : public Card
 {
 private:
-	StandardInProducer producer;
-	unsigned char latch;
-	bool gotEOF;
+    StandardInProducer producer;
+    unsigned char latch;
+    bool gotEOF;
 
 public:
-	StandardIn();
-	~StandardIn();
+    StandardIn();
+    ~StandardIn();
 
-	virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
-	virtual std::string getName() { return "standard input"; }
+    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
+    virtual std::string getName() { return "standard input"; }
 };
 
 #endif

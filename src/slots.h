@@ -27,25 +27,25 @@ class ScreenImage;
 class Slots
 {
 private:
-	ScreenImage& gui;
-	EmptySlot empty;
-	std::vector<Card*> cards;
+    ScreenImage& gui;
+    EmptySlot empty;
+    std::vector<Card*> cards;
 
 public:
-	Slots(ScreenImage& gui);
-	~Slots();
+    Slots(ScreenImage& gui);
+    ~Slots();
 
         void tick();
-	unsigned char io(const int islot, const int iswch, const unsigned char b, const bool writing);
-	void reset();
-	unsigned char readRom(const int islot, const unsigned short addr, const unsigned char data);
-	unsigned char readSeventhRom(const unsigned short addr, const unsigned char data);
-	unsigned char ioBankRom(const unsigned short addr, const unsigned char data, const bool write);
-	bool inhibitMotherboardRom();
-	void set(const int slot, Card* card);
-	Card* get(const int slot);
-	void remove(const int slot);
-	bool isDirty();
+    unsigned char io(const int islot, const int iswch, const unsigned char b, const bool writing);
+    void reset();
+    unsigned char readRom(const int islot, const unsigned short addr, const unsigned char data);
+    unsigned char readSeventhRom(const unsigned short addr, const unsigned char data);
+    unsigned char ioBankRom(const unsigned short addr, const unsigned char data, const bool write);
+    bool inhibitMotherboardRom();
+    void set(const int slot, Card* card);
+    Card* get(const int slot);
+    void remove(const int slot);
+    bool isDirty();
         void save(int unit);
         void forceGuiUpdate();
 };

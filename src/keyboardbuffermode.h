@@ -21,26 +21,26 @@
 class KeyboardBufferMode
 {
 private:
-	bool buffered;
+    bool buffered;
 
 public:
-	KeyboardBufferMode(): buffered(true) { }
-	~KeyboardBufferMode() { }
+    KeyboardBufferMode(): buffered(true) { }
+    ~KeyboardBufferMode() { }
 
-	bool isBuffered()
-	{
-		return this->buffered;
-	}
+    bool isBuffered()
+    {
+        return this->buffered;
+    }
 
-	void setBuffered(bool buffered)
-	{
-		this->buffered = buffered;
-	}
+    void setBuffered(bool buffered)
+    {
+        this->buffered = buffered;
+    }
 
-	void toggleBuffered()
-	{
-		this->buffered = !this->buffered;
-	}
+    void toggleBuffered()
+    {
+        this->buffered = !this->buffered;
+    }
 };
 
 #endif

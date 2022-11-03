@@ -25,49 +25,49 @@
 class FirmwareCard : public Card
 {
 private:
-	ScreenImage& gui;
-	int slot;
-	bool inhibitBankRom;
-	bool inhibitF8Rom;
-	bool inhibit;
-	Memory bankRom;
+    ScreenImage& gui;
+    int slot;
+    bool inhibitBankRom;
+    bool inhibitF8Rom;
+    bool inhibit;
+    Memory bankRom;
 
 public:
-	FirmwareCard(ScreenImage& gui, int slot);
-	~FirmwareCard();
+    FirmwareCard(ScreenImage& gui, int slot);
+    ~FirmwareCard();
 
-	virtual void ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write);
+    virtual void ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write);
 
-	virtual void reset()
-	{
-		this->inhibitBankRom = false;
-		this->inhibitF8Rom = false;
-		this->gui.setFirmCard(this->slot,this->inhibitBankRom,this->inhibitF8Rom);
-	}
-	
-	
-	
-	virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing)
-	{
-		this->inhibitBankRom = !(address & 1);
-		this->inhibitF8Rom = (address & 2);
-		this->gui.setFirmCard(this->slot,this->inhibitBankRom,this->inhibitF8Rom);
-		return data;
-	}
-	
-	virtual void loadBankRom(const unsigned short base, std::istream& in)
-	{
-		this->bankRom.load(base,in);
-	}
-	
-	
-	
-	virtual bool inhibitMotherboardRom()
-	{
-		return this->inhibit;
-	}
+    virtual void reset()
+    {
+        this->inhibitBankRom = false;
+        this->inhibitF8Rom = false;
+        this->gui.setFirmCard(this->slot,this->inhibitBankRom,this->inhibitF8Rom);
+    }
+    
+    
+    
+    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing)
+    {
+        this->inhibitBankRom = !(address & 1);
+        this->inhibitF8Rom = (address & 2);
+        this->gui.setFirmCard(this->slot,this->inhibitBankRom,this->inhibitF8Rom);
+        return data;
+    }
+    
+    virtual void loadBankRom(const unsigned short base, std::istream& in)
+    {
+        this->bankRom.load(base,in);
+    }
+    
+    
+    
+    virtual bool inhibitMotherboardRom()
+    {
+        return this->inhibit;
+    }
 
-	virtual std::string getName() { return "firmware     "; }
+    virtual std::string getName() { return "firmware     "; }
 };
 
 #endif

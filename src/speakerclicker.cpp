@@ -29,22 +29,22 @@ SpeakerClicker::SpeakerClicker():
     clicked(false),
     t(TICKS_PER_SAMPLE),
     positive(false) {
-	SDL_AudioSpec audio;
+    SDL_AudioSpec audio;
     audio.freq = E2Const::AVG_CPU_HZ/TICKS_PER_SAMPLE; // samples per second
-	audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
-	audio.channels = 1; // mono
+    audio.format = AUDIO_U8; // 8 bits (1 byte) per sample
+    audio.channels = 1; // mono
     audio.silence = 128;
     audio.samples = 512;
     audio.callback = 0;
-	audio.userdata = 0;
+    audio.userdata = 0;
 
     SDL_AudioSpec obtained;
-	obtained.callback = 0;
-	obtained.userdata = 0;
+    obtained.callback = 0;
+    obtained.userdata = 0;
 
     this->devid = SDL_OpenAudioDevice(0,0,&audio,&obtained,0);
     if (!this->devid) {
-		std::cerr << "Unable to initialize audio: " << SDL_GetError() << std::endl;
+        std::cerr << "Unable to initialize audio: " << SDL_GetError() << std::endl;
     } else {
         this->silence = obtained.silence;
 
@@ -57,27 +57,27 @@ SpeakerClicker::SpeakerClicker():
         std::cout << "    samples: " << obtained.samples << std::endl;
         std::cout << "    size: " << obtained.size << std::endl;
         SDL_PauseAudioDevice(this->devid, 0);
-	}
+    }
 }
 
 
 SpeakerClicker::~SpeakerClicker() {
     if (!this->devid) {
-		return;
-	}
+        return;
+    }
     SDL_CloseAudioDevice(this->devid);
 }
 
 void SpeakerClicker::tick() {
     if (!this->devid) {
-		return;
-	}
+        return;
+    }
 
     if (!--this->t) {
         std::uint8_t amp;
         if (this->clicked) {
             amp = this->positive ? this->silence+100u : this->silence-100u;
-			this->positive = !this->positive;
+            this->positive = !this->positive;
             this->clicked = false;
         } else {
             amp = silence;
@@ -91,5 +91,5 @@ void SpeakerClicker::tick() {
 }
 
 void SpeakerClicker::click() {
-	this->clicked = true;
+    this->clicked = true;
 }

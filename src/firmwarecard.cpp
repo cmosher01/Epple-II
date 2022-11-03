@@ -19,12 +19,12 @@
 #include "memory.h"
 
 FirmwareCard::FirmwareCard(ScreenImage& gui, int slot):
-	gui(gui),
-	slot(slot),
-	inhibitBankRom(false),
-	inhibitF8Rom(false),
-	inhibit(false),
-	bankRom(0x10000-0xD000)
+    gui(gui),
+    slot(slot),
+    inhibitBankRom(false),
+    inhibitF8Rom(false),
+    inhibit(false),
+    bankRom(0x10000-0xD000)
 {
 }
 
@@ -40,21 +40,21 @@ FirmwareCard::~FirmwareCard()
 
 void FirmwareCard::ioBankRom(const unsigned short addr, unsigned char* const pb, const bool)
 {
-	this->inhibit = false;
-	if (addr < 0x2800)
-	{
-		if (this->inhibitBankRom)
-		{
+    this->inhibit = false;
+    if (addr < 0x2800)
+    {
+        if (this->inhibitBankRom)
+        {
             *pb = this->bankRom.read(addr, *pb);
-			this->inhibit = true;
-		}
-	}
-	else if (0x2800 <= addr && addr < 0x3000)
-	{
-		if (this->inhibitF8Rom)
-		{
+            this->inhibit = true;
+        }
+    }
+    else if (0x2800 <= addr && addr < 0x3000)
+    {
+        if (this->inhibitF8Rom)
+        {
             *pb = this->bankRom.read(addr, *pb);
-			this->inhibit = true;
-		}
-	}
+            this->inhibit = true;
+        }
+    }
 }

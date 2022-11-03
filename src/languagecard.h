@@ -27,25 +27,25 @@ class ScreenImage;
 class LanguageCard : public Card
 {
 private:
-	ScreenImage& gui;
-	int slot;
-	bool inhibit;
-	std::vector<Memory*> ramBank;
-	Memory ramTop;
-	unsigned char bank;
-	bool readEnable;
-	bool writeEnable;
-	unsigned char writeCount;
+    ScreenImage& gui;
+    int slot;
+    bool inhibit;
+    std::vector<Memory*> ramBank;
+    Memory ramTop;
+    unsigned char bank;
+    bool readEnable;
+    bool writeEnable;
+    unsigned char writeCount;
 
 public:
-	LanguageCard(ScreenImage& gui, int slot);
-	~LanguageCard();
+    LanguageCard(ScreenImage& gui, int slot);
+    ~LanguageCard();
 
-	virtual void reset() { /* does nothing */ }
-	virtual bool inhibitMotherboardRom() { return this->inhibit; }
-	virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
-	virtual void ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write);
-	virtual std::string getName() { return "language  W B2"; }
+    virtual void reset() { /* does nothing */ }
+    virtual bool inhibitMotherboardRom() { return this->inhibit; }
+    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
+    virtual void ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write);
+    virtual std::string getName() { return "language  W B2"; }
 };
 
 #endif

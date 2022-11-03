@@ -23,26 +23,26 @@ VideoMode::VideoMode()
 
 unsigned char VideoMode::io(const unsigned short addr, const unsigned char b)
 {
-	const int sw = (addr & 0xE) >> 1;
-	const bool on = addr & 0x1;
-	switch (sw)
-	{
-		case 0:
-			this->swText = on; break;
-		case 1:
-			this->swMixed = on; break;
-		case 2:
-			this->swPage2 = on ? 1 : 0; break;
-		case 3:
-			this->swHiRes = on; break;
-	}
-	return b;
+    const int sw = (addr & 0xE) >> 1;
+    const bool on = addr & 0x1;
+    switch (sw)
+    {
+        case 0:
+            this->swText = on; break;
+        case 1:
+            this->swMixed = on; break;
+        case 2:
+            this->swPage2 = on ? 1 : 0; break;
+        case 3:
+            this->swHiRes = on; break;
+    }
+    return b;
 }
 
 void VideoMode::powerOn()
 {
-	this->swText = false;
-	this->swMixed = false;
-	this->swPage2 = 0;
-	this->swHiRes = false;
+    this->swText = false;
+    this->swMixed = false;
+    this->swPage2 = 0;
+    this->swHiRes = false;
 }

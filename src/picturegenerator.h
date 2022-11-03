@@ -24,45 +24,45 @@ class VideoMode;
 class PictureGenerator
 {
 private:
-	AnalogTV& display;
-	VideoMode& mode;
+    AnalogTV& display;
+    VideoMode& mode;
 
-	unsigned char latchGraphics;
-	bool d7;
-	unsigned char latchText;
-	unsigned int hpos;
-	unsigned int line;
-	bool lasthires;
-	static const signed char lutCB[];
+    unsigned char latchGraphics;
+    bool d7;
+    unsigned char latchText;
+    unsigned int hpos;
+    unsigned int line;
+    bool lasthires;
+    static const signed char lutCB[];
 
-	signed char testsig[AppleNTSC::SIGNAL_LEN];
-	signed char* itestsig;
-	signed char* itestsiglim;
+    signed char testsig[AppleNTSC::SIGNAL_LEN];
+    signed char* itestsig;
+    signed char* itestsiglim;
 
-	void shiftLoRes();
-	void shiftHiRes();
-	void shiftText();
-	bool getTextBit();
-	bool getHiResBit();
-	bool getLoResBit(const bool odd, const bool vc);
-	void loadGraphics(const unsigned char value);
-	void loadText(const int value);
-	bool shiftLatch(const int t, const int cycle, const bool isText, const bool isHiRes);
-	signed char* writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is);
-	signed char vbl(const int hcycle);
-	signed char hbl(const int hcycle);
+    void shiftLoRes();
+    void shiftHiRes();
+    void shiftText();
+    bool getTextBit();
+    bool getHiResBit();
+    bool getLoResBit(const bool odd, const bool vc);
+    void loadGraphics(const unsigned char value);
+    void loadText(const int value);
+    bool shiftLatch(const int t, const int cycle, const bool isText, const bool isHiRes);
+    signed char* writeVideoSignal(const bool shift, const bool showLastHiRes, const int firstBlankedCycle, const int cycle, const int hcycle, const bool bit, const bool lineVis, const bool hVis, signed char* is);
+    signed char vbl(const int hcycle);
+    signed char hbl(const int hcycle);
 
-	const unsigned int VISIBLE_X_OFFSET;
+    const unsigned int VISIBLE_X_OFFSET;
 
-	const int& revision;
+    const int& revision;
 
 public:
 
-	PictureGenerator(AnalogTV& display, VideoMode& mode, const int& revision);
-	~PictureGenerator();
+    PictureGenerator(AnalogTV& display, VideoMode& mode, const int& revision);
+    ~PictureGenerator();
 
-	void powerOn();
-	void tick(const int t, const unsigned char c);
+    void powerOn();
+    void tick(const int t, const unsigned char c);
 };
 
 #endif

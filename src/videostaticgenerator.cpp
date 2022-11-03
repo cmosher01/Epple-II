@@ -22,13 +22,13 @@
 #include <cstdlib>
 
 VideoStaticGenerator::VideoStaticGenerator(AnalogTV& display):
-	display(display),
-	isig(sig),
-	isiglim(sig+AppleNTSC::SIGNAL_LEN),
-	hpos(0)
+    display(display),
+    isig(sig),
+    isiglim(sig+AppleNTSC::SIGNAL_LEN),
+    hpos(0)
 {
-	this->display.signal = sig;
-	srand(time(0));
+    this->display.signal = sig;
+    srand(time(0));
 }
 
 
@@ -39,32 +39,32 @@ VideoStaticGenerator::~VideoStaticGenerator()
 
 void VideoStaticGenerator::tick()
 {
-	signed char* is = this->isig;
-	unsigned int cycles = E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE;
-	if (this->hpos == E2Const::HORIZ_CYCLES-1)
-	{
-		cycles += E2Const::EXTRA_CRYSTAL_CYCLES_PER_CPU_LONG_CYCLE;
-	}
-	for (unsigned int i = 0; i < cycles; ++i)
-	{
-		*is++ = (rand()>>7&0x7F)-27;
-	}
-	this->isig = is;
-	++this->hpos;
-	if (this->hpos >= E2Const::HORIZ_CYCLES)
-	{
-		this->hpos = 0;
-		if (isig >= isiglim)
-		{
-			isig = sig;
-			this->display.drawCurrent();
-		}
-	}
+    signed char* is = this->isig;
+    unsigned int cycles = E2Const::CRYSTAL_CYCLES_PER_CPU_CYCLE;
+    if (this->hpos == E2Const::HORIZ_CYCLES-1)
+    {
+        cycles += E2Const::EXTRA_CRYSTAL_CYCLES_PER_CPU_LONG_CYCLE;
+    }
+    for (unsigned int i = 0; i < cycles; ++i)
+    {
+        *is++ = (rand()>>7&0x7F)-27;
+    }
+    this->isig = is;
+    ++this->hpos;
+    if (this->hpos >= E2Const::HORIZ_CYCLES)
+    {
+        this->hpos = 0;
+        if (isig >= isiglim)
+        {
+            isig = sig;
+            this->display.drawCurrent();
+        }
+    }
 }
 
 void VideoStaticGenerator::powerOn()
 {
-	this->hpos = 0;
-	this->display.signal = sig;
-	isig = sig;
+    this->hpos = 0;
+    this->display.signal = sig;
+    isig = sig;
 }

@@ -46,39 +46,39 @@ class ScreenImage;
 
 class Apple2 : public Timable
 {
-	Slots slts;
-	VideoMode videoMode;
-	Keyboard kbd;
-	Paddles paddles;
-	SpeakerClicker speaker;
-	Memory rom;
+    Slots slts;
+    VideoMode videoMode;
+    Keyboard kbd;
+    Paddles paddles;
+    SpeakerClicker speaker;
+    Memory rom;
         MemoryRandomAccess ram;
         CassetteIn cassetteIn;
         CassetteOut cassetteOut;
         AddressBus addressBus;
-	PictureGenerator picgen;
-	TextCharacters textRows;
-	Video video;
+    PictureGenerator picgen;
+    TextCharacters textRows;
+    Video video;
 #ifdef USE_EMU
         std::ifstream transistors;
         Emu6502 cpu;
 #else
-	CPU cpu;
+    CPU cpu;
 #endif
-	PowerUpReset powerUpReset;
-	int revision;
+    PowerUpReset powerUpReset;
+    int revision;
 
 public:
-	Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui);
-	~Apple2();
+    Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui);
+    ~Apple2();
 
-	void powerOn();
-	void powerOff();
-	void reset();
+    void powerOn();
+    void powerOff();
+    void reset();
 
-	virtual void tick();
+    virtual void tick();
 
-	friend class Emulator;
+    friend class Emulator;
 };
 
 #endif

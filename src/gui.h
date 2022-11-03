@@ -23,15 +23,15 @@
 class GUI
 {
 public:
-	GUI();
-	~GUI();
+    GUI();
+    ~GUI();
 
-	class NotInitException : public std::runtime_error
-	{
-	public:
-		NotInitException();
-		virtual ~NotInitException() throw () {}
-	};
+    class NotInitException : public std::runtime_error
+    {
+    public:
+        NotInitException();
+        virtual ~NotInitException() throw () {}
+    };
 
 };
 

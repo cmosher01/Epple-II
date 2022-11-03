@@ -18,8 +18,8 @@
 #include "standardin.h"
 
 StandardIn::StandardIn():
-	latch(0),
-	gotEOF(false)
+    latch(0),
+    gotEOF(false)
 {
 }
 
@@ -33,33 +33,33 @@ StandardIn::~StandardIn()
 
 unsigned char StandardIn::io(const unsigned short address, const unsigned char data, const bool writing)
 {
-	int sw = address & 0x0F;
-	if (sw == 0)
-	{
-		if (!(this->latch & 0x80))
-		{
-			if (this->gotEOF)
-			{
-				this->latch = 0xFF;
-			}
-			else
-			{
-				if (!this->producer.getKeys().empty())
-				{
-					this->latch = this->producer.getKeys().front();
-					this->producer.getKeys().pop();
-					if (this->latch == 0xFF)
-					{
-						this->gotEOF = true;
-					}
-					this->latch |= 0x80;
-				}
-			}
-		}
-	}
-	else if (sw == 1)
-	{
-		this->latch &= 0x7F;
-	}
-	return this->latch;
+    int sw = address & 0x0F;
+    if (sw == 0)
+    {
+        if (!(this->latch & 0x80))
+        {
+            if (this->gotEOF)
+            {
+                this->latch = 0xFF;
+            }
+            else
+            {
+                if (!this->producer.getKeys().empty())
+                {
+                    this->latch = this->producer.getKeys().front();
+                    this->producer.getKeys().pop();
+                    if (this->latch == 0xFF)
+                    {
+                        this->gotEOF = true;
+                    }
+                    this->latch |= 0x80;
+                }
+            }
+        }
+    }
+    else if (sw == 1)
+    {
+        this->latch &= 0x7F;
+    }
+    return this->latch;
 }

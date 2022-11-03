@@ -19,8 +19,8 @@
 #include "configep2.h"
 
 Card::Card():
-	rom(0x0100),
-	seventhRom(0x0800)
+    rom(0x0100),
+    seventhRom(0x0800)
 {
 }
 
@@ -41,44 +41,44 @@ void Card::tick()
 
 unsigned char Card::io(const unsigned short /*address*/, const unsigned char data, const bool /*writing*/)
 {
-	return data;
+    return data;
 }
 
 
 
 unsigned char Card::readRom(const unsigned short address, const unsigned char data)
 {
-	this->activeSeventhRom = true;
+    this->activeSeventhRom = true;
     return this->rom.read(address, data);
 }
 
 void Card::readSeventhRom(const unsigned short address, unsigned char* const pb)
 {
-	if (address == 0x7FF)
-	{
-		this->activeSeventhRom = false;
-	}
-	else if (this->activeSeventhRom && hasSeventhRom())
-	{
+    if (address == 0x7FF)
+    {
+        this->activeSeventhRom = false;
+    }
+    else if (this->activeSeventhRom && hasSeventhRom())
+    {
         *pb = this->seventhRom.read(address, *pb);
-	}
+    }
 }
 
 void Card::loadRom(const unsigned short base, std::istream& in)
 {
-	this->rom.load(base,in);
+    this->rom.load(base,in);
 }
 
 void Card::loadSeventhRom(const unsigned short base, std::istream& in)
 {
-	this->seventhRom.load(base,in);
+    this->seventhRom.load(base,in);
 }
 
 
 
 bool Card::inhibitMotherboardRom()
 {
-	return false;
+    return false;
 }
 
 
@@ -91,17 +91,17 @@ void Card::ioBankRom(const unsigned short /*addr*/, unsigned char* const /*pb*/,
 
 void Card::loadBankRom(const unsigned short /*base*/, std::istream& /*in*/)
 {
-	throw ConfigException("This card has no $D000 ROM");
+    throw ConfigException("This card has no $D000 ROM");
 }
 
 std::string Card::getName()
 {
-	return "";
+    return "";
 }
 
 bool Card::isDirty()
 {
-	return false;
+    return false;
 }
 
 void Card::save(int unit)

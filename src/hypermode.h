@@ -21,25 +21,25 @@
 class HyperMode
 {
 private:
-	bool fhyper;
+    bool fhyper;
 
 public:
-	HyperMode(): fhyper(false) { }
-	~HyperMode() { }
-	bool isHyper()
-	{
-		return this->fhyper;
-	}
+    HyperMode(): fhyper(false) { }
+    ~HyperMode() { }
+    bool isHyper()
+    {
+        return this->fhyper;
+    }
 
-	void setHyper(bool isHyper)
-	{
-		this->fhyper = isHyper;
-	}
+    void setHyper(bool isHyper)
+    {
+        this->fhyper = isHyper;
+    }
 
-	void toggleHyper()
-	{
-		this->fhyper = !this->fhyper;
-	}
+    void toggleHyper()
+    {
+        this->fhyper = !this->fhyper;
+    }
 };
 
 #endif

@@ -23,14 +23,14 @@
 class EmptySlot : public Card
 {
 public:
-	EmptySlot() {}
-	virtual ~EmptySlot() {}
+    EmptySlot() {}
+    virtual ~EmptySlot() {}
 
         virtual std::string getName() { return "[empty]"; }
 
-	// empty slots have no ROMs, so just return data (for floating bus emulation)
-	virtual unsigned char readRom(const unsigned short address, const unsigned char data) { return data; }
-	virtual void readSeventhRom(const unsigned short address, unsigned char* const pb) { }
+    // empty slots have no ROMs, so just return data (for floating bus emulation)
+    virtual unsigned char readRom(const unsigned short address, const unsigned char data) { return data; }
+    virtual void readSeventhRom(const unsigned short address, unsigned char* const pb) { }
 };
 
 #endif

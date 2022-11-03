@@ -29,20 +29,20 @@ class KeyboardBufferMode;
 class Keyboard
 {
 private:
-	KeypressQueue& keys;
-	HyperMode& fhyper;
-	KeyboardBufferMode& buffered;
+    KeypressQueue& keys;
+    HyperMode& fhyper;
+    KeyboardBufferMode& buffered;
 
-	unsigned char latch;
-	unsigned char cGet;
-	Uint32 lastGet;
+    unsigned char latch;
+    unsigned char cGet;
+    Uint32 lastGet;
 
-	void waitIfTooFast();
+    void waitIfTooFast();
 
 public:
-	Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered);
-	void clear();
-	unsigned char get();
+    Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered);
+    void clear();
+    unsigned char get();
 };
 
 #endif

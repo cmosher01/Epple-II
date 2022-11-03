@@ -23,13 +23,13 @@
 class StandardInProducer
 {
 private:
-	KeypressQueue keys;
+    KeypressQueue keys;
 
 public:
-	StandardInProducer();
-	~StandardInProducer();
+    StandardInProducer();
+    ~StandardInProducer();
 
-	KeypressQueue& getKeys() { return this->keys; }
+    KeypressQueue& getKeys() { return this->keys; }
 };
 
 #endif

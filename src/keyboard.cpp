@@ -20,54 +20,54 @@
 #include "keyboardbuffermode.h"
 
 Keyboard::Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered):
-	keys(q),
-	fhyper(fhyper),
-	buffered(buffered),
-	cGet(0)
+    keys(q),
+    fhyper(fhyper),
+    buffered(buffered),
+    cGet(0)
 {
 }
 
 void Keyboard::clear()
 {
-	this->latch &= 0x7F;
+    this->latch &= 0x7F;
 }
 
 unsigned char Keyboard::get()
 {
-	waitIfTooFast();
-	if (!this->buffered.isBuffered() || !(this->latch & 0x80))
-	{
-		if (!this->keys.empty())
-		{
-			this->latch = this->keys.front() | 0x80;
-			this->keys.pop();
-		}
-	}
-	return this->latch;
+    waitIfTooFast();
+    if (!this->buffered.isBuffered() || !(this->latch & 0x80))
+    {
+        if (!this->keys.empty())
+        {
+            this->latch = this->keys.front() | 0x80;
+            this->keys.pop();
+        }
+    }
+    return this->latch;
 }
 
 void Keyboard::waitIfTooFast()
 {
-	if (this->fhyper.isHyper())
-	{
-		return;
-	}
+    if (this->fhyper.isHyper())
+    {
+        return;
+    }
 
-	++this->cGet;
-	if (!this->cGet)
-	{
-		if (SDL_GetTicks() - this->lastGet <= 1000)
-		{
-			/*
-			* Check every 256 gets to see if they are
-			* happening too fast (within one second).
-			* If so, it means we are probably just
-			* looping waiting for a keypress, so
-			* wait a millisecond (or so) just to
-			* prevent us from using 100% of CPU time.
-			*/
-			SDL_Delay(1);
-		}
-	}
-	this->lastGet = SDL_GetTicks();
+    ++this->cGet;
+    if (!this->cGet)
+    {
+        if (SDL_GetTicks() - this->lastGet <= 1000)
+        {
+            /*
+            * Check every 256 gets to see if they are
+            * happening too fast (within one second).
+            * If so, it means we are probably just
+            * looping waiting for a keypress, so
+            * wait a millisecond (or so) just to
+            * prevent us from using 100% of CPU time.
+            */
+            SDL_Delay(1);
+        }
+    }
+    this->lastGet = SDL_GetTicks();
 }

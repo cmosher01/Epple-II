@@ -18,28 +18,28 @@
 #include "textcharacters.h"
 
 TextCharacters::TextCharacters():
-	rows(0x40*8)
+    rows(0x40*8)
 {
-	int r(0);
+    int r(0);
 
-	const char *pi =
+    const char *pi =
 #include "textcharacterimages.h"
-	;
+    ;
 
-	for (int ch(0); ch < 0x40; ++ch)
-	{
+    for (int ch(0); ch < 0x40; ++ch)
+    {
 
-		rows[r] = 0;
-		++r;
-		for (int ln(1); ln < 8; ++ln)
-		{
-			for (int bt(0); bt < 5; ++bt)
-			{
-				rows[r] >>= 1;
-				if (*pi++=='@')
-					rows[r] |= 0x20;
-			}
-			++r;
-		}
-	}
+        rows[r] = 0;
+        ++r;
+        for (int ln(1); ln < 8; ++ln)
+        {
+            for (int bt(0); bt < 5; ++bt)
+            {
+                rows[r] >>= 1;
+                if (*pi++=='@')
+                    rows[r] |= 0x20;
+            }
+            ++r;
+        }
+    }
 }

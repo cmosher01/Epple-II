@@ -28,12 +28,12 @@ class SpeakerClicker {
         std::uint8_t silence;
         bool clicked;
         std::uint8_t t;
-	bool positive;
+    bool positive;
     public:
-	SpeakerClicker();
-	~SpeakerClicker();
-	void tick();
-	void click();
+    SpeakerClicker();
+    ~SpeakerClicker();
+    void tick();
+    void click();
 };
 
 #endif

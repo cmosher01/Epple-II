@@ -32,75 +32,75 @@ class CB;
 class AnalogTV
 {
 public:
-	enum DisplayType
-	{
-		TV_OLD_COLOR,
-		MONITOR_COLOR,
-		MONITOR_GREEN,
+    enum DisplayType
+    {
+        TV_OLD_COLOR,
+        MONITOR_COLOR,
+        MONITOR_GREEN,
 
-		NUM_DISPLAY_TYPES
-	};
+        NUM_DISPLAY_TYPES
+    };
 
 private:
-	ScreenImage& image;
+    ScreenImage& image;
 
-	bool on;
-	bool noise;
-	DisplayType type;
-	bool bleed_down;
+    bool on;
+    bool noise;
+    DisplayType type;
+    bool bleed_down;
 
-	static int* rcb;
+    static int* rcb;
 
-	A2ColorsObserved colors;
-	std::vector<unsigned int> hirescolor;
-	std::vector<unsigned int> loreslightcolor;
-	std::vector<unsigned int> loresdarkcolor;
+    A2ColorsObserved colors;
+    std::vector<unsigned int> hirescolor;
+    std::vector<unsigned int> loreslightcolor;
+    std::vector<unsigned int> loresdarkcolor;
 
-	static const int IQINTOFF;
-	static const double IQ_OFFSET_DEGREES;
-	static const double IQ_OFFSET_RADIANS;
-	static const double TINT_I;
-	static const double TINT_Q;
-	static const double COLOR_THRESH;
-	static const IQ& BLACK_AND_WHITE;
+    static const int IQINTOFF;
+    static const double IQ_OFFSET_DEGREES;
+    static const double IQ_OFFSET_RADIANS;
+    static const double TINT_I;
+    static const double TINT_Q;
+    static const double COLOR_THRESH;
+    static const IQ& BLACK_AND_WHITE;
 
-	void drawMonitorColor();
-	void drawMonitorWhite();
-	void drawMonitorGreen();
-	void drawMonitorOrange();
-	void drawMonitorMonochrome(const unsigned int color);
-	void drawTVOld();
-	void drawTVNew();
-	void drawBlank();
-	void ntsc_to_rgb_monitor(const int isignal, const int siglen, unsigned int rgb[]);
-	void ntsc_to_rgb_newtv(const int isignal, const int siglen, unsigned int rgb[]);
-	CB get_cb(int lineno);
-	IQ get_iq_factor(const CB& cb);
-	void ntsc_to_yiq(const int isignal, const int siglen, const IQ& iq_factor, int yiq[]);
-	static int yiq2rgb(const int yiq);
-	static int color2bw(const int rgb);
-	static int rgb2y(const int rgb); // ;y in range 0-255
-	static int calc_color(const double color);
-	static int clamp(int min, int x, int lim);
+    void drawMonitorColor();
+    void drawMonitorWhite();
+    void drawMonitorGreen();
+    void drawMonitorOrange();
+    void drawMonitorMonochrome(const unsigned int color);
+    void drawTVOld();
+    void drawTVNew();
+    void drawBlank();
+    void ntsc_to_rgb_monitor(const int isignal, const int siglen, unsigned int rgb[]);
+    void ntsc_to_rgb_newtv(const int isignal, const int siglen, unsigned int rgb[]);
+    CB get_cb(int lineno);
+    IQ get_iq_factor(const CB& cb);
+    void ntsc_to_yiq(const int isignal, const int siglen, const IQ& iq_factor, int yiq[]);
+    static int yiq2rgb(const int yiq);
+    static int color2bw(const int rgb);
+    static int rgb2y(const int rgb); // ;y in range 0-255
+    static int calc_color(const double color);
+    static int clamp(int min, int x, int lim);
 
 public:
-	void drawCurrent();
-	signed char* signal;
+    void drawCurrent();
+    signed char* signal;
 
-	AnalogTV(ScreenImage& image);
-	~AnalogTV();
+    AnalogTV(ScreenImage& image);
+    ~AnalogTV();
 
-	bool isOn() const
-	{
-		return this->on;
-	}
+    bool isOn() const
+    {
+        return this->on;
+    }
 
-	void powerOn(bool b);
-	void toggleBleedDown();
-	void restartSignal();
-	void setType(DisplayType type);
-	void cycleType();
-	void setNoise(bool noise) { this->noise = noise; }
+    void powerOn(bool b);
+    void toggleBleedDown();
+    void restartSignal();
+    void setType(DisplayType type);
+    void cycleType();
+    void setNoise(bool noise) { this->noise = noise; }
 };
 
 #endif

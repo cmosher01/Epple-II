@@ -23,33 +23,33 @@
 class A2ColorsObserved
 {
 private:
-	std::vector<unsigned int> COLOR;
+    std::vector<unsigned int> COLOR;
 
 public:
-	A2ColorsObserved();
-	~A2ColorsObserved();
+    A2ColorsObserved();
+    ~A2ColorsObserved();
 
-	const std::vector<unsigned int>& c() { return this->COLOR; }
+    const std::vector<unsigned int>& c() { return this->COLOR; }
 
-	enum
-	{
-		BLACK,
-		DARK_MAGENTA,
-		DARK_BLUE,
-		HIRES_VIOLET,
-		DARK_BLUE_GREEN,
-		GREY,
-		HIRES_BLUE,
-		LIGHT_BLUE,
-		DARK_BROWN,
-		HIRES_ORANGE,
-		GREY_ALTERNATE,
-		LIGHT_MAGENTA,
-		HIRES_GREEN,
-		LIGHT_BROWN,
-		LIGHT_BLUE_GREEN,
-		WHITE,
-	};
+    enum
+    {
+        BLACK,
+        DARK_MAGENTA,
+        DARK_BLUE,
+        HIRES_VIOLET,
+        DARK_BLUE_GREEN,
+        GREY,
+        HIRES_BLUE,
+        LIGHT_BLUE,
+        DARK_BROWN,
+        HIRES_ORANGE,
+        GREY_ALTERNATE,
+        LIGHT_MAGENTA,
+        HIRES_GREEN,
+        LIGHT_BROWN,
+        LIGHT_BLUE_GREEN,
+        WHITE,
+    };
 };
 
 #endif

@@ -23,8 +23,8 @@
 class VideoAddressing
 {
 public:
-	VideoAddressing();
-	static void buildLUT(const unsigned short base, const unsigned short len, std::vector<unsigned short>& lut);
+    VideoAddressing();
+    static void buildLUT(const unsigned short base, const unsigned short len, std::vector<unsigned short>& lut);
 };
 
 #endif

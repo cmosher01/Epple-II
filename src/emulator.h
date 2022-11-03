@@ -34,48 +34,48 @@ class Config;
 
 class Emulator
 {
-	PaddleButtonStates paddleButtonStates;
-	KeypressQueue keypresses;
+    PaddleButtonStates paddleButtonStates;
+    KeypressQueue keypresses;
 
-	HyperMode fhyper;
-	KeyboardBufferMode buffered;
-	ScreenImage screenImage;
-	AnalogTV display;
-	VideoStaticGenerator videoStatic;
-	Apple2 apple2;
-	ClipboardHandler clip;
+    HyperMode fhyper;
+    KeyboardBufferMode buffered;
+    ScreenImage screenImage;
+    AnalogTV display;
+    VideoStaticGenerator videoStatic;
+    Apple2 apple2;
+    ClipboardHandler clip;
 
-	Timable* timable;
+    Timable* timable;
 
-	bool quit;
-	bool repeat;
-	int keysDown;
-	int rept;
-	unsigned char lastKeyDown;
-	bool command;
-	bool pendingCommandExit;
-	std::string cmdline;
+    bool quit;
+    bool repeat;
+    int keysDown;
+    int rept;
+    unsigned char lastKeyDown;
+    bool command;
+    bool pendingCommandExit;
+    std::string cmdline;
 
-	void dispatchKeypress(const SDL_KeyboardEvent& keyEvent);
-	void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
-	void cmdKey(const SDL_KeyboardEvent& keyEvent);
-	void processCommand();
+    void dispatchKeypress(const SDL_KeyboardEvent& keyEvent);
+    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
+    void cmdKey(const SDL_KeyboardEvent& keyEvent);
+    void processCommand();
         bool isSafeToQuit();
 
 public:
-	Emulator();
-	virtual ~Emulator();
+    Emulator();
+    virtual ~Emulator();
 
-	void config(Config& cfg);
+    void config(Config& cfg);
 
-	virtual void init();
+    virtual void init();
 
-	void powerOnComputer();
-	void powerOffComputer();
-	void toggleComputerPower();
-	void cycleDisplayType();
+    void powerOnComputer();
+    void powerOffComputer();
+    void toggleComputerPower();
+    void cycleDisplayType();
 
-	virtual int run();
+    virtual int run();
 };
 
 #endif

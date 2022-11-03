@@ -39,23 +39,23 @@
 #include <fstream>
 
 Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui):
-	slts(gui),
-	kbd(keypresses,fhyper,buffered),
-	rom(AddressBus::MOTHERBOARD_ROM_SIZ),
+    slts(gui),
+    kbd(keypresses,fhyper,buffered),
+    rom(AddressBus::MOTHERBOARD_ROM_SIZ),
     ram(revision),
     cassetteIn(gui),
     cassetteOut(gui),
     addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
     picgen(tv,videoMode,revision),
-	video(videoMode,addressBus,picgen,textRows),
+    video(videoMode,addressBus,picgen,textRows),
 #ifdef USE_EMU
         transistors("transistors"),
         cpu(transistors,addressBus),
 #else
-	cpu(addressBus),
+    cpu(addressBus),
 #endif
-	powerUpReset(*this),
-	revision(1)
+    powerUpReset(*this),
+    revision(1)
 {
 }
 
@@ -80,21 +80,21 @@ void Apple2::tick() {
 
 void Apple2::powerOn()
 {
-	this->ram.powerOn();
-	this->cpu.powerOn();
-	this->videoMode.powerOn();
-	this->video.powerOn();
-	this->picgen.powerOn();
-	this->powerUpReset.powerOn();
+    this->ram.powerOn();
+    this->cpu.powerOn();
+    this->videoMode.powerOn();
+    this->video.powerOn();
+    this->picgen.powerOn();
+    this->powerUpReset.powerOn();
 }
 
 void Apple2::powerOff()
 {
-	this->ram.powerOff();
+    this->ram.powerOff();
 }
 
 void Apple2::reset()
 {
-	this->cpu.reset();
-	this->slts.reset();
+    this->cpu.reset();
+    this->slts.reset();
 }

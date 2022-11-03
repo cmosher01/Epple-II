@@ -22,12 +22,12 @@
 
 class PaddleButtonStates
 {
-	static const int PADDLE_COUNT;
+    static const int PADDLE_COUNT;
 
 public:
-	PaddleButtonStates();
-	~PaddleButtonStates();
-	bool isDown(const int paddle);
+    PaddleButtonStates();
+    ~PaddleButtonStates();
+    bool isDown(const int paddle);
 };
 
 #endif

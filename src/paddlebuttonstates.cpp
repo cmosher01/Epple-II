@@ -31,14 +31,14 @@ PaddleButtonStates::~PaddleButtonStates()
 
 bool PaddleButtonStates::isDown(const int paddle)
 {
-	if (paddle < 0 || PADDLE_COUNT <= paddle)
-	{
-		return false;
-	}
-	unsigned char btn = SDL_GetMouseState(0,0);
-	if (paddle==0)
-		return btn&SDL_BUTTON_LMASK;
-	if (paddle==1)
-		return btn&SDL_BUTTON_RMASK;
-	return btn&SDL_BUTTON_MMASK;
+    if (paddle < 0 || PADDLE_COUNT <= paddle)
+    {
+        return false;
+    }
+    unsigned char btn = SDL_GetMouseState(0,0);
+    if (paddle==0)
+        return btn&SDL_BUTTON_LMASK;
+    if (paddle==1)
+        return btn&SDL_BUTTON_RMASK;
+    return btn&SDL_BUTTON_MMASK;
 }

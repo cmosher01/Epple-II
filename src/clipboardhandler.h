@@ -24,10 +24,10 @@
 class ClipboardHandler
 {
 public:
-	ClipboardHandler();
-	~ClipboardHandler();
+    ClipboardHandler();
+    ~ClipboardHandler();
 
-	std::string getText();
+    std::string getText();
 };
 
 #endif

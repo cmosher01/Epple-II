@@ -28,38 +28,38 @@ class TextCharacters;
 class Video
 {
 private:
-	enum { TEXT_BASE_1 = 0x0400 };
-	enum { TEXT_BASE_2 = 0x0800 };
-	enum { TEXT_LEN = 0x0400 };
-	
-	enum { HRES_BASE_1 = 0x2000 };
-	enum { HRES_BASE_2 = 0x4000 };
-	enum { HRES_LEN = 0x2000 };
-	
-		std::vector<unsigned short> lutTEXT[2]; // [0] is page 1, [1] is page 2
-	std::vector<unsigned short> lutHRES[2]; // [0] is page 1, [1] is page 2
+    enum { TEXT_BASE_1 = 0x0400 };
+    enum { TEXT_BASE_2 = 0x0800 };
+    enum { TEXT_LEN = 0x0400 };
+    
+    enum { HRES_BASE_1 = 0x2000 };
+    enum { HRES_BASE_2 = 0x4000 };
+    enum { HRES_LEN = 0x2000 };
+    
+        std::vector<unsigned short> lutTEXT[2]; // [0] is page 1, [1] is page 2
+    std::vector<unsigned short> lutHRES[2]; // [0] is page 1, [1] is page 2
 
-	VideoMode& mode;
-	AddressBus& addressBus;
-	PictureGenerator& picgen;
+    VideoMode& mode;
+    AddressBus& addressBus;
+    PictureGenerator& picgen;
 
-	TextCharacters& textRows;
+    TextCharacters& textRows;
 
-	unsigned int t;
+    unsigned int t;
 
-	bool flash;
-	int cflash;
+    bool flash;
+    int cflash;
 
-	void updateFlash();
-	unsigned char getDataByte();
-	unsigned char getRowToPlot(unsigned char d);
-	bool inverseChar(const unsigned char d);
+    void updateFlash();
+    unsigned char getDataByte();
+    unsigned char getRowToPlot(unsigned char d);
+    bool inverseChar(const unsigned char d);
 
 public:
-	Video(VideoMode& mode, AddressBus& addressBus, PictureGenerator& picgen, TextCharacters& textRows);
-	~Video();
-	void powerOn();
-	void tick();
+    Video(VideoMode& mode, AddressBus& addressBus, PictureGenerator& picgen, TextCharacters& textRows);
+    ~Video();
+    void powerOn();
+    void tick();
 };
 
 #endif /*VIDEO_H_*/
