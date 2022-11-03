@@ -95,6 +95,12 @@ static void trim(std::string& str)
 
 void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut)
 {
+#ifdef USE_EMU
+    std::cout << "Running with http://www.visual6502.org/ CPU emulation (which will be slow)." << std::endl;
+#endif
+
+
+
     std::ifstream* pConfig;
 
     std::string path(this->file_path);

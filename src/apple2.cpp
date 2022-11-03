@@ -52,7 +52,7 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
         transistors("transistors"),
         cpu(transistors,addressBus),
 #else
-    cpu(addressBus),
+        cpu(addressBus),
 #endif
     powerUpReset(*this),
     revision(1)

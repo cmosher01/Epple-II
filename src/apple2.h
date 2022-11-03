@@ -41,9 +41,6 @@
 class Emulator;
 class ScreenImage;
 
-//#define USE_EMU 1
-#undef USE_EMU
-
 class Apple2 : public Timable
 {
     Slots slts;
@@ -52,10 +49,10 @@ class Apple2 : public Timable
     Paddles paddles;
     SpeakerClicker speaker;
     Memory rom;
-        MemoryRandomAccess ram;
-        CassetteIn cassetteIn;
-        CassetteOut cassetteOut;
-        AddressBus addressBus;
+    MemoryRandomAccess ram;
+    CassetteIn cassetteIn;
+    CassetteOut cassetteOut;
+    AddressBus addressBus;
     PictureGenerator picgen;
     TextCharacters textRows;
     Video video;
@@ -63,7 +60,7 @@ class Apple2 : public Timable
         std::ifstream transistors;
         Emu6502 cpu;
 #else
-    CPU cpu;
+        CPU cpu;
 #endif
     PowerUpReset powerUpReset;
     int revision;
