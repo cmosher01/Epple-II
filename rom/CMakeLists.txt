@@ -1,0 +1,1 @@
+add_custom_target(roms COMMAND make WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})

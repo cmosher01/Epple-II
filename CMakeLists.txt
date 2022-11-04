@@ -8,3 +8,4 @@ include(GNUInstallDirs)
 
 add_subdirectory(src)
 add_subdirectory(conf)
+add_subdirectory(rom)
