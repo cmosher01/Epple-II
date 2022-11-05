@@ -5,7 +5,7 @@ Copyright © 2008–2022, Christopher Alan Mosher, Shelton, Connecticut, USA, <c
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CVSSQ2BWDCKQ2)
 [![Website](https://img.shields.io/website/https/cmosher01.github.io/Epple-II.svg)](https://cmosher01.github.io/Epple-II)
 [![Latest Release](https://img.shields.io/github/release/cmosher01/Epple-II.svg)](https://github.com/cmosher01/Epple-II/releases/latest)
-[![Build](https://github.com/cmosher01/Epple-II/actions/workflows/build.yml/badge.svg)](https://github.com/cmosher01/Epple-II/actions/workflows/build.yml)
+[![Build](https://github.com/cmosher01/Epple-II/actions/workflows/build.yaml/badge.svg)](https://github.com/cmosher01/Epple-II/actions/workflows/build.yaml)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](./code-of-conduct.md)
 
 See file [`LICENSE.other`](LICENSE.other) for additional copyright notices.
