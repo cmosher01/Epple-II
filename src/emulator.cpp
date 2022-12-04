@@ -142,9 +142,7 @@ int Emulator::run() {
                 switch (event.type) {
                         // If SDL is going away...
                     case SDL_QUIT:
-                        if (isSafeToQuit()) {
-                            this->quit = true;
-                        }
+                        quitIfSafe();
                         break;
                     case SDL_KEYDOWN:
                         // If we're collecting a command line for changing any
@@ -373,10 +371,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else exit the entire emulation
     else if (sym == SDLK_F9) {
-        this->screenImage.exitFullScreen();
-        if (isSafeToQuit()) {
-            this->quit = true;
-        }
+        quitIfSafe();
         return;
     }// ...else save a screen shot
     else if (sym == SDLK_F8) {
@@ -474,4 +469,11 @@ bool Emulator::isSafeToQuit() {
     }
 
     return true;
+}
+
+void Emulator::quitIfSafe() {
+    this->screenImage.exitFullScreen();
+    if (isSafeToQuit()) {
+        this->quit = true;
+    }
 }

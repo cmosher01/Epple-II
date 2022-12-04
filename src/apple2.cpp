@@ -89,6 +89,7 @@ void Apple2::tick() {
 
 void Apple2::powerOn()
 {
+    useEpple2Cpu(); // default, if not already set
     this->ram.powerOn();
     this->cpu->powerOn();
     this->videoMode.powerOn();

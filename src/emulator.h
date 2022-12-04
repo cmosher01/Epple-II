@@ -74,6 +74,7 @@ public:
     void powerOffComputer();
     void toggleComputerPower();
     void cycleDisplayType();
+    void quitIfSafe();
 
     virtual int run();
 };
