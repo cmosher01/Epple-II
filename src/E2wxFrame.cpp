@@ -20,7 +20,7 @@
 
 #include "E2wxFrame.h"
 #include "E2wxApp.h"
-//#include "PreferencesDialog.h"
+#include "PreferencesDialog.h"
 #include <wx/persist/toplevel.h>
 
 
@@ -90,7 +90,7 @@ void E2wxFrame::OnAbout(wxCommandEvent& event) {
 }
 
 void E2wxFrame::OnPreferences(wxCommandEvent& event) {
-//    PreferencesDialog *dlg = new PreferencesDialog(this);
-//    dlg->OnInit();
-//    dlg->ShowModal();
+    PreferencesDialog *dlg = new PreferencesDialog(this);
+    dlg->OnInit();
+    dlg->ShowModal();
 }

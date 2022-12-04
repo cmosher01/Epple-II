@@ -7,7 +7,6 @@ on:
 env:
   name: "epple2"
   desc: "Apple ][ emulator"
-  deb_depends: "libsdl2-2.0-0"
 
 jobs:
   "build-roms":
@@ -24,7 +23,7 @@ jobs:
       - name: "Build"
         run: |
           set -x
-          cd rom
+          cd share/Resources/rom
           mkdir build
           cd build
           cmake ..
@@ -33,174 +32,234 @@ jobs:
       - uses: "actions/upload-artifact@v3"
         with:
           name: "epple2-roms"
-          path: "./rom/*.a65"
+          path: "share/Resources/rom/*.a65"
 
 
 
-  "build-epple2-ubuntu":
-    needs: "build-roms"
-    runs-on: "ubuntu-latest"
+  "build":
+    strategy:
+      matrix:
+        include:
+          - os: "ubuntu-22.04"
+            shell: "bash"
+          - os: "macos-12"
+            shell: "bash"
+          - os: "windows-latest"
+            shell: "msys2 {0}"
+
+    runs-on: "${{ matrix.os }}"
+
+    defaults:
+      run:
+        shell: "${{ matrix.shell }}"
+
     steps:
-      - name: "Prepare runner"
-        run: |
-          set -x
-          sudo apt-get update -qqqq
-          sudo apt-get install -qqqq libsdl2-dev tree
-
       - uses: "actions/checkout@v3"
 
-      - name: "Build"
-        run: |
-          set -x
-          mkdir build
-          cd build
-          cmake ..
-          cmake --build .
+      - uses: "msys2/setup-msys2@v2"
+        if: ${{ runner.os == 'Windows' }}
+        with:
+          update: true
+          pacboy: >-
+            toolchain:p
+            cmake:p
+            ninja:p
+            boost:p
+            wxwidgets3.2-msw:p
+            SDL2:p
+
+      - name: "Set up environment"
+        run: "./bin/${{ runner.os }}/setup.sh"
 
       - uses: "actions/download-artifact@v3"
         with:
           name: "epple2-roms"
-          path: "build/epple2-roms"
-
-      - name: "Stage"
-        run: |
-          set -x
-          pwd
-          cd build
-          mkdir -p stage/usr/local/bin
-          mkdir -p stage/usr/local/etc/epple2
-          mkdir -p stage/usr/local/lib/epple2/system
-          mkdir -p stage/usr/local/lib/epple2/cards
-          cp src/epple2 stage/usr/local/bin/
-          cp conf/*.conf stage/usr/local/etc/epple2/
-          cp epple2-roms/epple2sys.a65 stage/usr/local/lib/epple2/system/
-          cp epple2-roms/stdout.a65 stage/usr/local/lib/epple2/cards/
-          cp epple2-roms/stdin.a65 stage/usr/local/lib/epple2/cards/
-          cp epple2-roms/clock.a65 stage/usr/local/lib/epple2/cards/
-          tree stage
-
-      - name: "Package"
-        uses: "jiro4989/build-deb-action@v2"
-        with:
-          package: "${{ env.name }}"
-          desc: "${{ env.desc }}"
-          maintainer: "${{ github.repository_owner }}"
-          version: "${{ github.ref }}"
-          arch: "amd64"
-          package_root: "build/stage"
-          depends: "${{ env.deb_depends }}"
-
-      - uses: "softprops/action-gh-release@v1"
-        with:
-          files: |
-            *.deb
-
-
-
-  "build-epple2-macos":
-    needs: "build-roms"
-    runs-on: "macos-latest"
-    steps:
-      - name: "Prepare runner"
-        run: |
-          set -x
-          HOMEBREW_NO_AUTO_UPDATE=1 brew install sdl2 tree
-
-      - uses: "actions/checkout@v3"
+          path: "share/Resources/rom"
 
       - name: "Build"
-        run: |
-          set -x
-          mkdir build
-          cd build
-          cmake ..
-          cmake --build .
-
-      - uses: "actions/download-artifact@v3"
-        with:
-          name: "epple2-roms"
-          path: "build/epple2-roms"
-
-      - name: "Stage"
-        run: |
-          set -x
-          pwd
-          cd build
-          mkdir -p stage/local/bin
-          mkdir -p stage/local/etc/epple2
-          mkdir -p stage/local/lib/epple2/system
-          mkdir -p stage/local/lib/epple2/cards
-          cp src/epple2 stage/local/bin/
-          cp conf/*.conf stage/local/etc/epple2/
-          cp epple2-roms/epple2sys.a65 stage/local/lib/epple2/system/
-          cp epple2-roms/stdout.a65 stage/local/lib/epple2/cards/
-          cp epple2-roms/stdin.a65 stage/local/lib/epple2/cards/
-          cp epple2-roms/clock.a65 stage/local/lib/epple2/cards/
-          cp /usr/local/lib/libSDL2.dylib stage/local/bin/
-          tree stage
-
-      - name: "Package"
-        run: |
-          set -x
-          pkgbuild --identifier nu.mine.mosher.$name --root build/stage --install-location /usr $name.pkg
+        run: "./bin/build.sh"
 
       - uses: "softprops/action-gh-release@v1"
         with:
+          draft: true
+          prerelease: true
+          tag_name: "${{ env.git_tag }}"
           files: |
-            *.pkg
+            tmp/cpack/*.zip
+            tmp/cpack/*.tar.gz
+            tmp/cpack/*.7z
+            tmp/cpack/*.deb
+            tmp/cpack/*.dmg
+            tmp/cpack/*.exe
 
-
-
-  "build-epple2-windows":
-    needs: "build-roms"
-    runs-on: "windows-latest"
-    steps:
-      - name: "Prepare runner"
-        run: |
-          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"
-          Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip" -DestinationPath "C:/Program Files/"
-
-      - uses: "actions/checkout@v3"
-
-      - name: "Build"
-        shell: "bash"
-        run: |
-          set -x
-          mkdir build
-          cd build
-          cmake ..
-          cmake --build .
-
-      - uses: "actions/download-artifact@v3"
-        with:
-          name: "epple2-roms"
-          path: "build/epple2-roms"
-
-      - name: "Stage"
-        shell: "bash"
-        run: |
-          set -x
-          pwd
-          cd build
-          mkdir -p stage/epple2/etc/epple2
-          mkdir -p stage/epple2/lib/epple2/system
-          mkdir -p stage/epple2/lib/epple2/cards
-          cp src/Debug/epple2.exe stage/epple2/
-          cp conf/*.conf stage/epple2/etc/epple2/
-          cp epple2-roms/epple2sys.a65 stage/epple2/lib/epple2/system/
-          cp epple2-roms/stdout.a65 stage/epple2/lib/epple2/cards/
-          cp epple2-roms/stdin.a65 stage/epple2/lib/epple2/cards/
-          cp epple2-roms/clock.a65 stage/epple2/lib/epple2/cards/
-          cp "C:/Program Files/SDL2-2.24.2/lib/x64/SDL2.dll" stage/epple2/
-
-      - name: "Package"
-        uses: "thedoctor0/zip-release@main"
-        with:
-          directory: "build/stage"
-          path: "${{ env.name }}"
-          filename: "${{ env.name }}-windows.zip"
-
-      - uses: "softprops/action-gh-release@v1"
-        with:
-          files: |
-            build/stage/*.zip
+  
+  
+  
+  
+#  "build-epple2-ubuntu":
+#    needs: "build-roms"
+#    runs-on: "ubuntu-latest"
+#    steps:
+#      - name: "Prepare runner"
+#        run: |
+#          set -x
+#          sudo apt-get update -qqqq
+#          sudo apt-get install -qqqq libsdl2-dev tree
+#
+#      - uses: "actions/checkout@v3"
+#
+#      - name: "Build"
+#        run: |
+#          set -x
+#          mkdir build
+#          cd build
+#          cmake ..
+#          cmake --build .
+#
+#      - uses: "actions/download-artifact@v3"
+#        with:
+#          name: "epple2-roms"
+#          path: "build/epple2-roms"
+#
+#      - name: "Stage"
+#        run: |
+#          set -x
+#          pwd
+#          cd build
+#          mkdir -p stage/usr/local/bin
+#          mkdir -p stage/usr/local/etc/epple2
+#          mkdir -p stage/usr/local/lib/epple2/system
+#          mkdir -p stage/usr/local/lib/epple2/cards
+#          cp src/epple2 stage/usr/local/bin/
+#          cp conf/*.conf stage/usr/local/etc/epple2/
+#          cp epple2-roms/epple2sys.a65 stage/usr/local/lib/epple2/system/
+#          cp epple2-roms/stdout.a65 stage/usr/local/lib/epple2/cards/
+#          cp epple2-roms/stdin.a65 stage/usr/local/lib/epple2/cards/
+#          cp epple2-roms/clock.a65 stage/usr/local/lib/epple2/cards/
+#          tree stage
+#
+#      - name: "Package"
+#        uses: "jiro4989/build-deb-action@v2"
+#        with:
+#          package: "${{ env.name }}"
+#          desc: "${{ env.desc }}"
+#          maintainer: "${{ github.repository_owner }}"
+#          version: "${{ github.ref }}"
+#          arch: "amd64"
+#          package_root: "build/stage"
+#          depends: "${{ env.deb_depends }}"
+#
+#      - uses: "softprops/action-gh-release@v1"
+#        with:
+#          files: |
+#            *.deb
+#
+#
+#
+#  "build-epple2-macos":
+#    needs: "build-roms"
+#    runs-on: "macos-latest"
+#    steps:
+#      - name: "Prepare runner"
+#        run: |
+#          set -x
+#          HOMEBREW_NO_AUTO_UPDATE=1 brew install sdl2 tree
+#
+#      - uses: "actions/checkout@v3"
+#
+#      - name: "Build"
+#        run: |
+#          set -x
+#          mkdir build
+#          cd build
+#          cmake ..
+#          cmake --build .
+#
+#      - uses: "actions/download-artifact@v3"
+#        with:
+#          name: "epple2-roms"
+#          path: "build/epple2-roms"
+#
+#      - name: "Stage"
+#        run: |
+#          set -x
+#          pwd
+#          cd build
+#          mkdir -p stage/local/bin
+#          mkdir -p stage/local/etc/epple2
+#          mkdir -p stage/local/lib/epple2/system
+#          mkdir -p stage/local/lib/epple2/cards
+#          cp src/epple2 stage/local/bin/
+#          cp conf/*.conf stage/local/etc/epple2/
+#          cp epple2-roms/epple2sys.a65 stage/local/lib/epple2/system/
+#          cp epple2-roms/stdout.a65 stage/local/lib/epple2/cards/
+#          cp epple2-roms/stdin.a65 stage/local/lib/epple2/cards/
+#          cp epple2-roms/clock.a65 stage/local/lib/epple2/cards/
+#          cp /usr/local/lib/libSDL2.dylib stage/local/bin/
+#          tree stage
+#
+#      - name: "Package"
+#        run: |
+#          set -x
+#          pkgbuild --identifier nu.mine.mosher.$name --root build/stage --install-location /usr $name.pkg
+#
+#      - uses: "softprops/action-gh-release@v1"
+#        with:
+#          files: |
+#            *.pkg
+#
+#
+#
+#  "build-epple2-windows":
+#    needs: "build-roms"
+#    runs-on: "windows-latest"
+#    steps:
+#      - name: "Prepare runner"
+#        run: |
+#          Invoke-WebRequest -Uri "https://github.com/libsdl-org/SDL/releases/download/release-2.24.2/SDL2-devel-2.24.2-VC.zip" -OutFile "C:/Program Files/SDL2-devel-VC.zip"
+#          Expand-Archive -LiteralPath "C:/Program Files/SDL2-devel-VC.zip" -DestinationPath "C:/Program Files/"
+#
+#      - uses: "actions/checkout@v3"
+#
+#      - name: "Build"
+#        shell: "bash"
+#        run: |
+#          set -x
+#          mkdir build
+#          cd build
+#          cmake ..
+#          cmake --build .
+#
+#      - uses: "actions/download-artifact@v3"
+#        with:
+#          name: "epple2-roms"
+#          path: "build/epple2-roms"
+#
+#      - name: "Stage"
+#        shell: "bash"
+#        run: |
+#          set -x
+#          pwd
+#          cd build
+#          mkdir -p stage/epple2/etc/epple2
+#          mkdir -p stage/epple2/lib/epple2/system
+#          mkdir -p stage/epple2/lib/epple2/cards
+#          cp src/Debug/epple2.exe stage/epple2/
+#          cp conf/*.conf stage/epple2/etc/epple2/
+#          cp epple2-roms/epple2sys.a65 stage/epple2/lib/epple2/system/
+#          cp epple2-roms/stdout.a65 stage/epple2/lib/epple2/cards/
+#          cp epple2-roms/stdin.a65 stage/epple2/lib/epple2/cards/
+#          cp epple2-roms/clock.a65 stage/epple2/lib/epple2/cards/
+#          cp "C:/Program Files/SDL2-2.24.2/lib/x64/SDL2.dll" stage/epple2/
+#
+#      - name: "Package"
+#        uses: "thedoctor0/zip-release@main"
+#        with:
+#          directory: "build/stage"
+#          path: "${{ env.name }}"
+#          filename: "${{ env.name }}-windows.zip"
+#
+#      - uses: "softprops/action-gh-release@v1"
+#        with:
+#          files: |
+#            build/stage/*.zip

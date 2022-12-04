@@ -3,9 +3,12 @@ cmake_minimum_required(VERSION 3.22.1)
 set(CMAKE_VERBOSE_MAKEFILE TRUE CACHE BOOL "Echo make commands.")
 set(PACKAGE_SUITE TRUE CACHE BOOL "Build entire suite of packages; otherwise just ZIP file.")
 
-#set(CMAKE_BUILD_TYPE RelWithDebInfo)
-set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_BUILD_TYPE RelWithDebInfo)
 set(CMAKE_FIND_PACKAGE_PREFER_CONFIG TRUE)
+
+
+
+
 
 set(APP_NAME epple2)
 
@@ -100,6 +103,7 @@ paddlebuttonstates.cpp
 paddles.cpp
 picturegenerator.cpp
 powerupreset.cpp
+PreferencesDialog.cpp
 screenimage.cpp
 SegmentCache.cpp
 slots.cpp
@@ -123,10 +127,24 @@ wozfile.cpp
 list(TRANSFORM sources PREPEND "src/")
 
 set(resources
-#epple2.xrc
-#epple2.png
+epple2.xrc
+epple2.png
 conf/epple2.conf
+conf/epple2.rev0bare.conf
+conf/epple2.a2bare.conf
+conf/epple2.a2dos31.conf
+conf/epple2.a2dos33.conf
+conf/epple2.a2loaded.conf
+conf/epple2.a2pbare.conf
+conf/epple2.a2pdos33.conf
+conf/epple2.a2ploaded.conf
+conf/epple2.visual6502.conf
+rom/epple2sys.a65
+rom/stdout.a65
+rom/clock.a65
+rom/stdin.a65
 )
+list(TRANSFORM resources PREPEND "share/Resources/")
 
 add_executable(${APP_NAME} WIN32 MACOSX_BUNDLE ${sources} ${resources})
 
@@ -158,6 +176,12 @@ target_link_libraries(${APP_NAME} PRIVATE ${wxWidgets_LIBRARIES})
 
 
 
+configure_file(src/config.h.in config.h)
+include_directories(${PROJECT_BINARY_DIR})
+
+
+
+# TODO: can we remove this without being too backwardly incompatible?
 target_compile_definitions(${APP_NAME} PRIVATE ETCDIR="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}")
 
 
@@ -165,3 +189,53 @@ target_compile_definitions(${APP_NAME} PRIVATE ETCDIR="${CMAKE_INSTALL_PREFIX}/$
 set_target_properties(${APP_NAME} PROPERTIES RESOURCE "${resources}")
 
 
+
+
+
+
+
+include(InstallRequiredSystemLibraries)
+
+if(APPLE)
+    set_target_properties(${APP_NAME} PROPERTIES
+        MACOSX_BUNDLE_INFO_PLIST ${PROJECT_BINARY_DIR}/Info.plist)
+    install(TARGETS ${APP_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION .)
+    configure_file(share/FixBundle.cmake.in ${PROJECT_BINARY_DIR}/FixBundle.cmake @ONLY)
+    install(SCRIPT ${PROJECT_BINARY_DIR}/FixBundle.cmake)
+elseif(WIN32)
+    install(TARGETS ${APP_NAME}
+        RUNTIME_DEPENDENCIES
+            DIRECTORIES ${CMAKE_SYSTEM_LIBRARY_PATH}
+            PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"
+            POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
+        BUNDLE DESTINATION .
+        RESOURCE DESTINATION share/Resources)
+else()
+    install(TARGETS ${APP_NAME}
+        RUNTIME_DEPENDENCIES
+            DIRECTORIES ${CMAKE_SYSTEM_LIBRARY_PATH}
+        RESOURCE DESTINATION share/Resources)
+endif()
+
+
+
+
+
+set(CPACK_GENERATOR ZIP)
+
+if(PACKAGE_SUITE)
+    set(CPACK_GENERATOR ${CPACK_GENERATOR} TGZ 7Z)
+    if(APPLE)
+        set(CPACK_PACKAGE_FILE_NAME "${PROJECT_NAME}-${PROJECT_VERSION}-macOS")
+        configure_file(share/Info.plist.in ${PROJECT_BINARY_DIR}/Info.plist)
+        set(CPACK_GENERATOR ${CPACK_GENERATOR} DragNDrop)
+    elseif(WIN32)
+        set(CPACK_GENERATOR ${CPACK_GENERATOR} NSIS)
+    else()
+        set(CPACK_GENERATOR ${CPACK_GENERATOR} DEB)
+    endif()
+endif()
+
+include(CPack)

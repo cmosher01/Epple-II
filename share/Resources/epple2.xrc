@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="Preferences">
+		<style>wxCAPTION|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxMINIMIZE_BOX|wxRESIZE_BORDER|wxSYSTEM_MENU</style>
+		<size>1024,768</size>
+		<title>Preferences</title>
+		<centered>1</centered>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<option>1</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>10</border>
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<option>1</option>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<object class="wxSplitterWindow" name="m_splitter1">
+							<style>wxSP_LIVE_UPDATE</style>
+							<sashpos>0</sashpos>
+							<gravity>0.25</gravity>
+							<minsize>0</minsize>
+							<orientation>vertical</orientation>
+							<object class="wxPanel" name="m_panel1">
+								<style>wxTAB_TRAVERSAL</style>
+								<object class="wxBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxTreeCtrl" name="treItems">
+											<style>wxTR_FULL_ROW_HIGHLIGHT|wxTR_HAS_BUTTONS|wxTR_HAS_VARIABLE_ROW_HEIGHT|wxTR_LINES_AT_ROOT|wxTR_TWIST_BUTTONS|wxHSCROLL|wxVSCROLL</style>
+										</object>
+									</object>
+								</object>
+							</object>
+							<object class="wxPanel" name="m_panel2">
+								<style>wxTAB_TRAVERSAL</style>
+								<object class="wxBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<option>0</option>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxEXPAND</flag>
+												<border>0</border>
+												<object class="wxBoxSizer">
+													<orient>wxHORIZONTAL</orient>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag>wxALIGN_CENTER_VERTICAL|wxLEFT</flag>
+														<border>5</border>
+														<object class="wxCheckBox" name="chkActive">
+															<label>Active</label>
+															<checked>0</checked>
+														</object>
+													</object>
+													<object class="spacer">
+														<option>1</option>
+														<flag>wxEXPAND</flag>
+														<border>5</border>
+														<size>0,0</size>
+													</object>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag>wxRIGHT</flag>
+														<border>25</border>
+														<object class="wxButton" name="btnDuplicate">
+															<label>Duplicate</label>
+															<default>0</default>
+															<auth_needed>0</auth_needed>
+															<markup>0</markup>
+															<bitmap />
+														</object>
+													</object>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag></flag>
+														<border>0</border>
+														<object class="wxButton" name="btnDelete">
+															<label>Delete</label>
+															<default>0</default>
+															<auth_needed>0</auth_needed>
+															<markup>0</markup>
+															<bitmap />
+														</object>
+													</object>
+												</object>
+											</object>
+											<object class="sizeritem">
+												<option>0</option>
+												<flag>wxBOTTOM|wxEXPAND|wxLEFT</flag>
+												<border>5</border>
+												<object class="wxStaticBoxSizer">
+													<orient>wxHORIZONTAL</orient>
+													<label>name</label>
+													<object class="sizeritem">
+														<option>1</option>
+														<flag>wxLEFT|wxTOP</flag>
+														<border>7</border>
+														<object class="wxStaticText" name="txtName">
+															<style>wxST_ELLIPSIZE_MIDDLE</style>
+															<label>Example text here</label>
+															<wrap>-1</wrap>
+														</object>
+													</object>
+													<object class="sizeritem">
+														<option>0</option>
+														<flag>wxBOTTOM|wxEXPAND|wxRIGHT</flag>
+														<border>5</border>
+														<object class="wxButton" name="btnRename">
+															<label>Rename</label>
+															<default>0</default>
+															<auth_needed>0</auth_needed>
+															<markup>0</markup>
+															<bitmap />
+														</object>
+													</object>
+												</object>
+											</object>
+										</object>
+									</object>
+									<object class="sizeritem">
+										<option>1</option>
+										<flag>wxBOTTOM|wxEXPAND|wxTOP</flag>
+										<border>5</border>
+										<object class="wxBoxSizer">
+											<orient>wxHORIZONTAL</orient>
+											<object class="sizeritem">
+												<option>1</option>
+												<flag>wxEXPAND</flag>
+												<border>5</border>
+												<object class="wxTextCtrl" name="txtConfig">
+													<style>wxTE_DONTWRAP|wxTE_MULTILINE|wxTE_PROCESS_TAB</style>
+													<value></value>
+												</object>
+											</object>
+										</object>
+									</object>
+								</object>
+							</object>
+						</object>
+					</object>
+					<object class="sizeritem">
+						<option>0</option>
+						<flag>wxEXPAND</flag>
+						<border>0</border>
+						<object class="wxBoxSizer">
+							<orient>wxHORIZONTAL</orient>
+							<object class="spacer">
+								<option>1</option>
+								<flag>wxALIGN_BOTTOM</flag>
+								<border>0</border>
+								<size>0,0</size>
+							</object>
+							<object class="sizeritem">
+								<option>0</option>
+								<flag>wxALIGN_BOTTOM|wxALL</flag>
+								<border>0</border>
+								<object class="wxButton" name="wxID_OK">
+									<label>Close</label>
+									<default>1</default>
+									<auth_needed>0</auth_needed>
+									<markup>0</markup>
+									<bitmap />
+								</object>
+							</object>
+						</object>
+					</object>
+				</object>
+			</object>
+		</object>
+	</object>
+</resource>
