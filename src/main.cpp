@@ -84,8 +84,8 @@ static int runSdl(const std::string config_file) {
 extern "C"
 #endif
 int main(int argc, char *argv[]) {
-    ::setbuf(::stdout, nullptr);
-    ::setbuf(::stderr, nullptr);
+    ::setbuf(stdout, nullptr);
+    ::setbuf(stderr, nullptr);
 
     const int x = E2Const::test();
     if (x != -1) {
