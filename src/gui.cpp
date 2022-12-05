@@ -35,7 +35,41 @@ GUI::~GUI() {
     SDL_Quit();
 }
 
-GUI::NotInitException::NotInitException() :
-    runtime_error("Unable to initialize SDL") {
+static void pushSdlEvent(SDL_Event *e) {
+    const int r = SDL_PushEvent(e);
+
+    if (r < 0) {
+        std::cerr << "SDL reported error: " << SDL_GetError() << std::endl;
+    } else if (r == 0) {
+        std::cerr << "SDL filtered event, sorry" << std::endl;
+    } else if (r == 1) {
+        std::cerr << "Pushed event to SDL" << std::endl;
+    } else {
+        std::cerr << "SDL reported unexpected error code: " << r << std::endl;
+    }
+}
+
+void GUI::queueTogglePower() {
+    SDL_Event *e = new SDL_Event(); // note: creating struct on the stack doesn't seem to work
+    e->type = SDL_KEYDOWN;
+    e->key.keysym.sym = SDLK_F1;
+    pushSdlEvent(e);
+    delete e;
+}
+
+void GUI::queueQuit() {
+    SDL_Event *e = new SDL_Event();
+    e->type = SDL_KEYDOWN;
+    e->key.keysym.sym = SDLK_F9;
+    pushSdlEvent(e);
+    delete e;
+}
+
+
+
+GUI::NotInitException::NotInitException() : runtime_error("Unable to initialize SDL") {
     SDL_GetError();
+}
+
+GUI::NotInitException::~NotInitException() {
 }

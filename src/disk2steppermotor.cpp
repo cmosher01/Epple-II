@@ -25,9 +25,9 @@ help from John Morris, Tom Greene, Michael Guidero, and Lane Roathe.
 
 Stepper motor has 2 cans each with a center-tapped coil, allowing
 for current flow in one of either direction, causing a N/S or S/N
-polarity fo the top/bottom of the can. Each top/bottom has fingers
+polarity of the top/bottom of the can. Each top/bottom has fingers
 bending down/up towards the center, the fingers from alternate surfaces
-being interlased. These fingers transfer the polarity from the coil.
+being interlaced. These fingers transfer the polarity from the coil.
 
 Example of coil-0, controlled by phases 0 and 2,
 the two possible energized states, N/S and S/N,
@@ -134,7 +134,7 @@ But 7&1 is a special case (calculation-wise): since it's a circle, they
 Adjacent fingers within a can are of reverse polarity, and are 4 positions apart.
 Cans are offset from each other by 2 positions.
 
-PH  = phase 0-4 (on or off)
+PH  = phase 0-3 (on or off)
 CAN = can 0-1 (north, south, or off)
 
 CAN0 = PH0+PH2
@@ -288,6 +288,7 @@ int Disk2StepperMotor::magnetic_position() const {
         return this->can_1.magnetic_position();
     }
     assert(false);
+    return 0; // quell compiler warning "control reaches end of non-void function"
 }
 
 void Disk2StepperMotor::tick() {

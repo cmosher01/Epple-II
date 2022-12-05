@@ -204,21 +204,12 @@ void PreferencesDialog::OnTreeSelectionChanged(wxTreeEvent& evt) {
 
 void PreferencesDialog::PreSelectUserConfigItemName(const std::filesystem::path& n) {
     CTRL(wxTreeCtrl, treItems);
-    wxTreeItemId id = treItems->GetRootItem();
-    wxTreeItemIdValue ctx;
-    wxTreeItemId i = treItems->GetFirstChild(id, ctx);
-    while (i.IsOk() && treItems->GetItemText(i) != wxT("user")) {
-        i = treItems->GetNextChild(id, ctx);
-    }
-    if (!i.IsOk()) {
-        return;
+
+    wxTreeItemId i = treItems->GetRootItem();
+    while (i.IsOk() && treItems->GetItemText(i) != wxFileName::FileName(n.c_str()).GetName()) {
+        i = treItems->GetNextVisible(i);
     }
 
-    id = i;
-    i = treItems->GetFirstChild(id, ctx);
-    while (i.IsOk() && treItems->GetItemText(i) != wxFileName::FileName(n.c_str()).GetName()) {
-        i = treItems->GetNextChild(id, ctx);
-    }
     if (!i.IsOk()) {
         return;
     }
@@ -247,6 +238,7 @@ void PreferencesDialog::OnActive(wxCommandEvent& evt) {
             const std::filesystem::path p = data->path();
             wxString name = wxFileName::FileName(p.c_str()).GetName();
             this->active = name;
+            std::cout << "setting current active config file to: " << this->active << std::endl;
             wxConfigBase::Get()->Write(wxT("/ActivePreferences/name"), this->active);
             BuildItemTree(); // invalidates "data" pointer variable
             PreSelectUserConfigItemName(p);

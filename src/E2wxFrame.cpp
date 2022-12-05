@@ -21,14 +21,18 @@
 #include "E2wxFrame.h"
 #include "E2wxApp.h"
 #include "PreferencesDialog.h"
+#include "gui.h"
 #include <wx/persist/toplevel.h>
 
-
+enum E2MenuID {
+    ID_MENUITEM_POWER = wxID_HIGHEST+1
+};
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_MENU(wxID_EXIT, E2wxFrame::OnExit)
     EVT_MENU(wxID_PREFERENCES, E2wxFrame::OnPreferences)
     EVT_MENU(wxID_ABOUT, E2wxFrame::OnAbout)
+    EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
 wxEND_EVENT_TABLE()
 
 
@@ -59,6 +63,10 @@ void E2wxFrame::InitMenuBar() {
     wxMenu *menuEdit = new wxMenu();
     menuBar->Append(menuEdit, "&Edit");
     menuEdit->Append(wxID_PREFERENCES);
+
+    wxMenu *menuMachine = new wxMenu();
+    menuBar->Append(menuMachine, "&Machine");
+    menuMachine->Append(ID_MENUITEM_POWER, "Toggle Power");
 
     wxMenu *menuHelp = new wxMenu();
     menuBar->Append(menuHelp, "&Help");
@@ -93,4 +101,8 @@ void E2wxFrame::OnPreferences(wxCommandEvent& event) {
     PreferencesDialog *dlg = new PreferencesDialog(this);
     dlg->OnInit();
     dlg->ShowModal();
+}
+
+void E2wxFrame::OnTogglePower(wxCommandEvent& event) {
+    GUI::queueTogglePower();
 }

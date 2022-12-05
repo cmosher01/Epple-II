@@ -18,8 +18,12 @@
     Created on December 3, 2022, 3:02 PM
  */
 
+#include "config.h"
 #include "E2wxApp.h"
 #include "E2wxFrame.h"
+#include "emulator.h"
+#include "gui.h"
+#include "configep2.h"
 #include <wx/app.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
@@ -35,6 +39,9 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <wx/debugrpt.h>
 #include <iostream>
+#include <thread>
+#include <string>
+#include <memory>
 #include <algorithm>
 
 
@@ -89,7 +96,9 @@ bool E2wxApp::OnInit() {
         return false;
     }
 
+#ifdef wxUSE_ON_FATAL_EXCEPTION
     wxHandleFatalExceptions();
+#endif
 
     wxStandardPaths& stdpaths = wxStandardPaths::Get();
     //stdpaths.SetInstallPrefix(".");
@@ -135,6 +144,10 @@ bool E2wxApp::OnInit() {
 
 
 
+    StartSdlEpple2();
+
+
+
     E2wxFrame *frame = new E2wxFrame();
     frame->DoInit();
     frame->Show();
@@ -142,6 +155,31 @@ bool E2wxApp::OnInit() {
 
 
     return true;
+}
+
+static int run(const std::string config_file) {
+    std::unique_ptr<Emulator> emu(new Emulator());
+
+    Config cfg(config_file);
+    emu->config(cfg);
+
+    emu->init();
+
+    return emu->run();
+}
+
+void E2wxApp::StartSdlEpple2() {
+    std::cout << "starting sdl thread..." << std::endl;
+    this->thread_sdl = new std::thread(run, this->arg_configfile);
+    std::cout << "started sdl thread." << std::endl;
+}
+
+int E2wxApp::OnExit() {
+    std::cout << "stopping sdl thread..." << std::endl;
+    GUI::queueQuit();
+    this->thread_sdl->join();
+    std::cout << "exiting wx application..." << std::endl;
+    return 0;
 }
 
 void E2wxApp::OnFatalException() {
@@ -154,10 +192,33 @@ void E2wxApp::OnFatalException() {
     }
 }
 
-int E2wxApp::OnExit() {
-    return 0;
+static const wxCmdLineEntryDesc cmdLineDesc[] =
+{
+    { wxCMD_LINE_PARAM,  NULL, NULL, "config file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    wxCMD_LINE_DESC_END
+};
+
+void E2wxApp::OnInitCmdLine(wxCmdLineParser& parser) {
+    wxApp::OnInitCmdLine(parser);
+    parser.SetDesc(cmdLineDesc);
 }
 
+bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
+    if (!wxApp::OnCmdLineParsed(parser)) {
+        return false;
+    }
+
+    const int n = parser.GetParamCount();
+
+    if (n <= 0) {
+        std::cout << "no config file specified on the command line; will use config file specified in user-preferences" << std::endl;
+    } else {
+        this->arg_configfile = parser.GetParam(0);
+        std::cout << "using config file specified on the command line: " << this->arg_configfile << std::endl;
+    }
+
+    return true;
+}
 
 
 const std::filesystem::path E2wxApp::GetLogFile() const {

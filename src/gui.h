@@ -20,19 +20,19 @@
 
 #include <stdexcept>
 
-class GUI
-{
+class GUI {
 public:
     GUI();
-    ~GUI();
+    virtual ~GUI();
 
-    class NotInitException : public std::runtime_error
-    {
+    static void queueQuit();
+    static void queueTogglePower();
+
+    class NotInitException : public std::runtime_error {
     public:
         NotInitException();
-        virtual ~NotInitException() throw () {}
+        virtual ~NotInitException();
     };
-
 };
 
 #endif

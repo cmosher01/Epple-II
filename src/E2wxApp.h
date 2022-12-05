@@ -25,7 +25,10 @@
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
+#include <wx/app.h>
+#include <wx/cmdline.h>
 #include <wx/string.h>
+#include <thread>
 #include <filesystem>
 #include <string>
 
@@ -37,9 +40,12 @@ class E2wxApp : public wxApp {
     std::filesystem::path conffile;
     std::filesystem::path confdir;
     std::filesystem::path docsdir;
+    std::string arg_configfile;
+    std::thread *thread_sdl;
 
     const std::filesystem::path BuildLogFilePath() const;
     void InitBoostLog();
+    void StartSdlEpple2();
 
 public:
     E2wxApp();
@@ -56,6 +62,8 @@ public:
     virtual bool OnInit() override;
     virtual int OnExit() override;
     virtual void OnFatalException() override;
+    virtual void OnInitCmdLine(wxCmdLineParser& parser) override;
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser) override;
 };
 
 wxDECLARE_APP(E2wxApp);
