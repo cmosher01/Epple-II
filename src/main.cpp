@@ -17,15 +17,66 @@
 */
 
 #include "e2const.h"
+#include "emulator.h"
+#include "configep2.h"
 #include "gui.h"
+#include "e2const.h"
+#include "E2wxApp.h"
 
 #include <wx/app.h>
 
+#include <thread>
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
+#include <string>
 #include <cstdio>
 #include <cstddef>
+
+
+
+static std::string parse_args(int argc, char* argv[]) {
+    if (argc > 2) {
+        throw std::runtime_error("usage: epple2 [config-file]" );
+    }
+
+    if (argc <= 1) {
+        return std::string();
+    }
+
+    return std::string(argv[1]);
+}
+
+
+static int fake_argc(0);
+static char fake_prog[] = "epple2";
+static char *fake_argv[] { fake_prog };
+
+static int runWx() {
+    return wxEntry(fake_argc, fake_argv);
+}
+
+static int runSdl(const std::string config_file) {
+    GUI gui;
+
+    std::thread thread_wx(runWx);
+
+    std::unique_ptr<Emulator> emu(new Emulator());
+
+    Config cfg(config_file);
+    emu->config(cfg);
+
+    emu->init();
+
+    const int ret = emu->run();
+
+    if (wxApp::GetInstance() != nullptr) {
+        wxApp::GetInstance()->ExitMainLoop();
+    }
+    thread_wx.join();
+
+    return ret;
+}
 
 
 
@@ -42,9 +93,9 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("bad constant in e2const.h" );
     }
 
-    GUI gui;
+    const std::string config_file = parse_args(argc, argv);
 
-    wxEntry(argc, argv);
+    const int ret = runSdl(config_file);
 
-    return 0;
+    return ret;
 }
