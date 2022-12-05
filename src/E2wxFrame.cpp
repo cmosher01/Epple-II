@@ -22,6 +22,8 @@
 #include "E2wxApp.h"
 #include "PreferencesDialog.h"
 #include "gui.h"
+#include <wx/menu.h>
+#include <wx/msgdlg.h>
 #include <wx/persist/toplevel.h>
 
 enum E2MenuID {
@@ -53,6 +55,7 @@ void E2wxFrame::DoInit() {
 }
 
 void E2wxFrame::InitMenuBar() {
+    // TODO move menu def to xrc
     wxMenuBar *menuBar = new wxMenuBar();
     SetMenuBar(menuBar);
 

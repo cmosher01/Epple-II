@@ -18,7 +18,6 @@
 #ifndef ANALOGTV_H
 #define ANALOGTV_H
 
-#include "analogtv.h"
 #include "applentsc.h"
 #include "a2colorsobserved.h"
 

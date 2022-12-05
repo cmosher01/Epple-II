@@ -21,10 +21,6 @@
 #ifndef E2WXAPP_H
 #define E2WXAPP_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
 #include <wx/app.h>
 #include <wx/cmdline.h>
 #include <wx/string.h>

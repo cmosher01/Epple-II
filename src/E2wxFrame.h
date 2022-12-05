@@ -21,11 +21,8 @@
 #ifndef E2WXFRAME_H
 #define E2WXFRAME_H
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
-
+#include <wx/frame.h>
+#include <wx/event.h>
 #include <string>
 
 class E2wxFrame : public wxFrame {
