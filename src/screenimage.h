@@ -35,7 +35,7 @@ private:
     unsigned int* pixels;
     int screen_pitch;
     bool fullscreen;
-    bool hyper;
+    bool hyper_a2_speed;
     bool buffer;
     bool fillLines;
     AnalogTV::DisplayType display;

@@ -55,7 +55,7 @@ class ScreenException {
 
 ScreenImage::ScreenImage() :
 fullscreen(false),
-hyper(false),
+hyper_a2_speed(false),
 buffer(true),
 fillLines(true),
 display(AnalogTV::TV_OLD_COLOR),
@@ -180,7 +180,7 @@ void ScreenImage::drawFnKeys() {
     else
         invertText(76, 43, 55); // SCAN-LINES
 
-    if (this->hyper)
+    if (this->hyper_a2_speed)
         invertText(77, 102, 109); // HYPER
 
     if (this->buffer)
@@ -206,7 +206,7 @@ void ScreenImage::cycleDisplayLabel() {
 }
 
 void ScreenImage::toggleHyperLabel() {
-    this->hyper = !this->hyper;
+    this->hyper_a2_speed = !this->hyper_a2_speed;
     invertText(77, 102, 109); // HYPER
 }
 
