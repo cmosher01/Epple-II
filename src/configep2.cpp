@@ -40,6 +40,7 @@
 #include <istream>
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #include <string>
 #include <stdexcept>
 #include <cctype>

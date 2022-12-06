@@ -139,10 +139,26 @@ conf/epple2.a2pbare.conf
 conf/epple2.a2pdos33.conf
 conf/epple2.a2ploaded.conf
 conf/epple2.visual6502.conf
+cpu/transistors
 rom/epple2sys.a65
 rom/stdout.a65
 rom/clock.a65
 rom/stdin.a65
+apple/stage/13-disk2.a65
+apple/stage/16-disk2.a65
+apple/stage/a2-monitor.a65
+apple/stage/a2-intbasic.a65
+apple/stage/a2-other.a65
+apple/stage/a2p-monitor.a65
+apple/stage/a2p-applesoft.a65
+apple/stage/original31sysmas.d13.woz
+apple/stage/original32sysmasstd.d13.woz
+apple/stage/original32sysmaspls.d13.woz
+apple/stage/original321sysmasstd.d13.woz
+apple/stage/original321sysmaspls.d13.woz
+apple/stage/original330sysmas.do.woz
+apple/stage/original331sysmas.do.woz
+apple/stage/original332sysmas.do.woz
 )
 list(TRANSFORM resources PREPEND "share/Resources/")
 

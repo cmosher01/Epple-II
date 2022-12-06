@@ -22,7 +22,6 @@
 #include <cstring>
 #include <SDL_audio.h>
 #include <SDL_log.h>
-#include "tinyfiledialogs.h"
 #include "cassettein.h"
 #include "e2const.h"
 #include <vector>
@@ -216,8 +215,8 @@ bool CassetteIn::load(const std::string& filePath) {
     SDL_AudioSpec wav_spec;
     std::uint8_t *wav_buffer;
     std::uint32_t wav_length;
-
     if (SDL_LoadWAV(filePath.c_str(), &wav_spec, &wav_buffer, &wav_length) == nullptr) {
+        // TODO try to load from resources
         SDL_Log("Error: %s ; file: %s\n", SDL_GetError(), filePath.c_str());
         return false;
     }

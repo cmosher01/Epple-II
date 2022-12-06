@@ -48,15 +48,13 @@ Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates
     addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
     picgen(tv,videoMode,revision),
     video(videoMode,addressBus,picgen,textRows),
-    transistors("transistors"),
+    transistors("transistors"), // TODO load file from resources
     cpu(NULL),
     powerUpReset(*this),
-    revision(1)
-{
+    revision(1) {
 }
 
-Apple2::~Apple2()
-{
+Apple2::~Apple2() {
 }
 
 void Apple2::useEpple2Cpu() {

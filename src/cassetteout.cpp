@@ -21,7 +21,6 @@
 #include <cstdlib>
 #include <SDL_audio.h>
 #include <SDL_log.h>
-#include "tinyfiledialogs.h"
 #include "cassetteout.h"
 #include "e2const.h"
 #include <vector>

@@ -18,10 +18,12 @@
 */
 
 #include "wozfile.h"
+#include "E2wxApp.h"
 
 #include <istream>
 #include <ostream>
 #include <fstream>
+#include <filesystem>
 #include <cmath>
 #include <cstring>
 
@@ -112,54 +114,64 @@ void WozFile::dumpTracks() {
 bool WozFile::load(const std::string& filePath) {
     printf("Reading WOZ 2.0 file: %s\n", filePath.c_str());
 
-    std::ifstream in(filePath.c_str(), std::ios::binary|std::ios::in);
-    if (!in.is_open()) {
-        printf("Error opening file: %d\n", errno);
-        return false;
+    std::ifstream *in = new std::ifstream(filePath.c_str(), std::ios::binary|std::ios::in);
+    if (!in->is_open()) {
+        std::filesystem::path f = wxGetApp().GetResDir();
+        f /= filePath.c_str();
+        in = new std::ifstream(f.c_str(), std::ios::binary|std::ios::in);
+        if (!in->is_open()) {
+            printf("Error opening file: %d\n", errno);
+            delete in;
+            return false;
+        }
     }
     if (isLoaded()) {
         unload();
     }
 
     std::uint32_t woz2;
-    in.read((char*)&woz2, sizeof(woz2));
+    in->read((char*)&woz2, sizeof(woz2));
     if (woz2 != 0x325A4F57u) {
-        printf("WOZ2 magic bytes missing.");
+        printf("WOZ2 magic bytes missing. Found: %8x", woz2);
+        delete in;
         return false;
     }
     printf("WOZ2 magic bytes present\n");
 
     std::uint32_t sanity;
-    in.read((char*)&sanity, sizeof(sanity));
+    in->read((char*)&sanity, sizeof(sanity));
     if (sanity != 0x0A0D0AFFu) {
         printf("FF 0A 0D 0A bytes corrupt.\n");
+        delete in;
         return false;
     }
 
     std::uint32_t crc_given;
-    in.read((char*)&crc_given, sizeof(crc_given));
+    in->read((char*)&crc_given, sizeof(crc_given));
     printf("Read given CRC: %08x\n", crc_given);
     // TODO verify CRC
 
     std::uint32_t chunk_id;
     std::uint32_t chunk_size;
     bool five_25(false);
-    while (in.read((char*)&chunk_id, sizeof(chunk_id))) {
-        in.read((char*)&chunk_size, sizeof(chunk_size));
+    while (in->read((char*)&chunk_id, sizeof(chunk_id))) {
+        in->read((char*)&chunk_size, sizeof(chunk_size));
         printf("Chunk %.4s of size 0x%08x\n", (char*)&chunk_id, chunk_size);
         switch (chunk_id) {
             case 0x4F464E49: { // INFO
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
-                in.read((char*)buf, chunk_size);
+                in->read((char*)buf, chunk_size);
                 printf("INFO version %d\n", *buf);
                 if (*buf != 2) {
                     printf("File is not WOZ2 version.\n");
+                    delete in;
                     return false;
                 }
                 five_25 = (buf[1]==1);
                 printf("Disk type: %s\n", five_25 ? "5.25" : buf[1]==2 ? "3.5" : "?");
                 if (!five_25) {
                     printf("Only 5 1/4\" disk images are supported.\n");
+                    delete in;
                     return false;
                 }
                 this->writable = !(buf[2]==1);
@@ -193,7 +205,7 @@ bool WozFile::load(const std::string& filePath) {
             break;
             case 0x50414D54: { // TMAP
                 this->tmap = new std::uint8_t[chunk_size];
-                in.read((char*)this->tmap, chunk_size);
+                in->read((char*)this->tmap, chunk_size);
 
                 this->initialQtrack = 0;
                 while (this->initialQtrack < chunk_size && this->tmap[this->initialQtrack] == 0xFFu) {
@@ -218,10 +230,11 @@ bool WozFile::load(const std::string& filePath) {
             case 0x534B5254: { // TRKS
                 if (chunk_size < C_QTRACK*8) {
                     printf("ERROR: TRKS chunk doesn't have 160 track entries.\n");
+                    delete in;
                     return false;
                 }
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
-                in.read((char*)buf, chunk_size);
+                in->read((char*)buf, chunk_size);
                 std::uint8_t* te = buf;
                 for (std::uint8_t qt(0); qt < C_QTRACK; ++qt) {
                     struct trk_t ts;
@@ -262,7 +275,7 @@ bool WozFile::load(const std::string& filePath) {
             break;
             case 0x4154454D: { // META
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
-                in.read(reinterpret_cast<char*>(buf), chunk_size);
+                in->read(reinterpret_cast<char*>(buf), chunk_size);
                 std::uint32_t i(0);
                 char* pc(reinterpret_cast<char*>(buf));
                 while (i++ < chunk_size) {
@@ -278,7 +291,7 @@ bool WozFile::load(const std::string& filePath) {
             break;
             default: { // unknown type of chunk; safely skip past it and ignore it
                 // TODO save all unknown chunks and write out during save (at end of file)
-                in.seekg(chunk_size, in.cur);
+                in->seekg(chunk_size, in->cur);
             }
             break;
         }
@@ -288,7 +301,8 @@ bool WozFile::load(const std::string& filePath) {
 
 
 
-    in.close();
+    in->close();
+    delete in;
 
     this->filePath = filePath;
 
