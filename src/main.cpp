@@ -27,6 +27,7 @@
 
 #include <thread>
 #include <future>
+#include <chrono>
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
@@ -34,7 +35,7 @@
 #include <cstdio>
 #include <cstddef>
 
-
+using namespace std::chrono_literals;
 
 static std::string parse_args(int argc, char* argv[]) {
     if (argc > 2) {
@@ -66,7 +67,11 @@ static int runSdl(const std::string config_file) {
     std::thread thread_wx(runWx);
 
     std::cout << "wait for wx init" << std::endl;
-    barrier_to_app_init.wait();
+    const std::future_status fut = barrier_to_app_init.wait_for(10s);
+    if (fut == std::future_status::timeout) {
+        std::cerr << "timed-out waiting for wx to finish initializing" << std::endl;
+        return 1;
+    }
     std::cout << "wx init finished" << std::endl;
 
     std::unique_ptr<Emulator> emu(new Emulator());
