@@ -20,6 +20,8 @@
 #include "gui.h"
 #include "e2const.h"
 
+#include <SDL.h>
+
 #include <wx/app.h>
 
 #include <iostream>
