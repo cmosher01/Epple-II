@@ -27,6 +27,7 @@
 #include <thread>
 #include <filesystem>
 #include <string>
+#include <future>
 
 class E2wxApp : public wxApp {
     const std::string id;
@@ -41,6 +42,8 @@ class E2wxApp : public wxApp {
     void InitBoostLog();
 
 public:
+    static std::promise<void> barrier_to_init;
+
     E2wxApp();
     virtual ~E2wxApp();
 

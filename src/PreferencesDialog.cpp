@@ -137,7 +137,7 @@ void PreferencesDialog::OnInit() {
     wxConfigBase *appconf = wxConfigBase::Get();
     if (!appconf->Read(wxT("/ActivePreferences/name"), &this->active)) {
         // TODO what to do when no config?
-        this->active = ".template";
+        this->active = "epple2";
         appconf->Write(wxT("/ActivePreferences/name"), this->active);
         appconf->Flush();
     }

@@ -26,6 +26,7 @@
 #include <wx/app.h>
 
 #include <thread>
+#include <future>
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
@@ -48,18 +49,25 @@ static std::string parse_args(int argc, char* argv[]) {
 }
 
 
-static int fake_argc(0);
+static int fake_argc(1);
 static char fake_prog[] = "epple2";
 static char *fake_argv[] { fake_prog };
 
 static int runWx() {
+    std::cout << "starting wx..." << std::endl;
     return wxEntry(fake_argc, fake_argv);
 }
 
 static int runSdl(const std::string config_file) {
     GUI gui;
 
+    std::future<void> barrier_to_app_init = E2wxApp::barrier_to_init.get_future();
+
     std::thread thread_wx(runWx);
+
+    std::cout << "wait for wx init" << std::endl;
+    barrier_to_app_init.wait();
+    std::cout << "wx init finished" << std::endl;
 
     std::unique_ptr<Emulator> emu(new Emulator());
 

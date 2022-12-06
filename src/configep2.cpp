@@ -17,6 +17,8 @@
 */
 #include "configep2.h"
 
+#include "E2wxApp.h"
+
 #include "apple2.h"
 #include "memory.h"
 #include "memoryrandomaccess.h"
@@ -30,6 +32,9 @@
 #include "cassettein.h"
 #include "cassetteout.h"
 #include "tinyfiledialogs.h"
+
+#include <wx/config.h>
+#include <wx/string.h>
 
 #include <iostream>
 #include <istream>
@@ -105,11 +110,46 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
         pConfig = new std::ifstream(path.c_str());
         if (!pConfig->is_open())
         {
+            // TODO use filename only and look in standard resources
             std::stringstream ss;
             ss << "Cannot open config file " << this->file_path.c_str();
             throw std::runtime_error(ss.str());
         }
     }
+
+
+
+    if (path.empty())
+    {
+        // TODO config file location, how to be backwardly compatible?
+        wxString user_config;
+        if (!wxConfigBase::Get()->Read(wxT("/ActivePreferences/name"), &user_config)) {
+            // TODO what to do when no config?
+            user_config = wxT("epple2");
+        }
+
+        std::filesystem::path f = wxGetApp().GetConfigDir();
+        f /= user_config.t_str();
+        f += ".conf";
+        path = f.string();
+        std::cout << "looking for config file: " << path << std::endl;
+        pConfig = new std::ifstream(path.c_str());
+        if (!pConfig->is_open()) {
+            f = wxGetApp().GetResDir();
+            f /= user_config.t_str();
+            f += ".conf";
+            path = f.string();
+            std::cout << "looking for config file: " << path << std::endl;
+            pConfig = new std::ifstream(path.c_str());
+            if (!pConfig->is_open()) {
+                path.clear();
+            }
+        }
+    }
+
+
+
+
     if (path.empty())
     {
         std::cout << "standard config file location: " ETCDIR "/epple2/epple2.conf" << std::endl;
@@ -304,17 +344,23 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         std::string file;
         std::getline(tok,file);
         trim(file);
-        std::ifstream memfile(file.c_str(),std::ios::binary);
-        if (!memfile.is_open())
+        std::ifstream *memfile = new std::ifstream(file.c_str(),std::ios::binary);
+        if (!memfile->is_open())
         {
-            throw ConfigException("cannot open file "+file);
+            std::filesystem::path f = wxGetApp().GetResDir();
+            f /= file;
+            memfile = new std::ifstream(f,std::ios::binary);
+            if (!memfile->is_open())
+            {
+                throw ConfigException("cannot open file "+file);
+            }
         }
 
         if (slot < 0) // motherboard
         {
             if (romtype == "rom")
             {
-                rom.load(base,memfile);
+                rom.load(base,*memfile);
             }
             else
             {
@@ -329,15 +375,15 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             }
             Card* card = slts.get(slot);
             if (romtype == "rom")
-                card->loadRom(base,memfile);
+                card->loadRom(base,*memfile);
             else if (romtype == "rom7")
-                card->loadSeventhRom(base,memfile);
+                card->loadSeventhRom(base,*memfile);
             else if (romtype == "rombank")
-                card->loadBankRom(base,memfile);
+                card->loadBankRom(base,*memfile);
             else
                 throw ConfigException("error at \""+romtype+"\"; expected rom, rom7, or rombank");
         }
-        memfile.close();
+        memfile->close();
     }
     else if (cmd == "load" || cmd == "save" || cmd == "unload")
     {
@@ -375,6 +421,7 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
                 }
             }
             if (fn_optional.length() > 0) {
+                // TODO check if file exists, if not then check resources
                 loadDisk(slts,slot,drive,fn_optional);
             }
         }

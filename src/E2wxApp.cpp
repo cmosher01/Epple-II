@@ -54,6 +54,11 @@ wxIMPLEMENT_APP_NO_MAIN(E2wxApp);
 #define PROJECT_VERSION 0.0.1
 #endif
 
+
+std::promise<void> E2wxApp::barrier_to_init;
+
+
+
 E2wxApp::E2wxApp() : id("nu.mine.mosher.epple2"), version(wxSTRINGIZE_T(PROJECT_VERSION)) {
 }
 
@@ -151,6 +156,7 @@ bool E2wxApp::OnInit() {
     frame->Show();
 
 
+    barrier_to_init.set_value();
 
     return true;
 }

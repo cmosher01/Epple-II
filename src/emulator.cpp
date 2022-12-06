@@ -95,81 +95,101 @@ void Emulator::init() {
 static const int CYCLES_PER_REPT(E2Const::AVG_CPU_HZ / 10);
 
 
-// The core of this Apple
 
+
+
+
+
+
+// If the Apple ][ keyboard repeat is on (the REPT key is
+// down)...
+void Emulator::handleRepeatKey() {
+    if (this->repeat) {
+        // Count our way down to when the timer for the REPT key
+        // fires off: 10Hz in terms of how many CPU cycles have gone
+        // by
+        --this->rept;
+        // If it's time for the REPT key timer to fire (at long
+        // last)...
+        if (this->rept <= 0) {
+            // ...reload the timer for the next firing 1/10 second from
+            // now ( *reset* the timer )
+            this->rept = CYCLES_PER_REPT;
+            // If any other keys are actually being held down...
+            if (this->keysDown > 0) {
+                // ...REPEAT the most recent one that was pressed
+                this->keypresses.push(this->lastKeyDown);
+            }
+        }
+    }
+}
+
+void Emulator::handleAnyPendingEvents() {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
+            case SDL_QUIT:
+                // If SDL is going away...
+                quitIfSafe();
+            break;
+            case SDL_KEYDOWN:
+                // If we're collecting a command line for changing any
+                // of the configurables of the emulator...
+                if (this->command)
+                    cmdKey(event.key);
+                else
+                    // ...else we're collecting keypresses for the keyboard
+                    // emulation (and thus the Apple ][ emulation itself)
+                    dispatchKeypress(event.key);
+            break;
+            case SDL_KEYUP:
+                // If we're collecting a command line for changing any
+                // of the configurables of the emulator...
+                if (this->command) {
+                    if (this->pendingCommandExit) {
+                        this->command = false;
+                        this->pendingCommandExit = false;
+                    }
+                } else {
+                    // ...else we're collecting keypresses for the keyboard
+                    // emulation (and thus the Apple ][ emulation itself)
+                    dispatchKeyUp(event.key);
+                }
+            break;
+        }
+    }
+}
+
+
+
+
+
+
+
+// The core of this Apple
 int Emulator::run() {
-    int skip = CHECK_EVERY_CYCLE;
+    int skip = 0;
     Uint32 prev_ms = SDL_GetTicks();
+
     // While the user still wants to run this emulation...
     while (!this->quit) {
         // (Obligatory protection against NULL object pointer)
         if (this->timable) {
             this->timable->tick();
-            // If the Apple ][ keyboard repeat is on (the REPT key is
-            // down)...
-            if (this->repeat) {
-                // Count our way down to when the timer for the REPT key
-                // fires off: 10Hz in terms of how many CPU cycles have gone
-                // by
-                --this->rept;
-                // If it's time for the REPT key timer to fire (at long
-                // last)...
-                if (this->rept <= 0) {
-                    // ...reload the timer for the next firing 1/10 second from
-                    // now ( *reset* the timer )
-                    this->rept = CYCLES_PER_REPT;
-                    // If any other keys are actually being held down...
-                    if (this->keysDown > 0) {
-                        // ...REPEAT the most recent one that was pressed
-                        this->keypresses.push(this->lastKeyDown);
-                    }
-                }
-            }
+            handleRepeatKey();
         }
 
         // People who have too many press releases should be referred to as
         // keyboards
 
-        --skip;
-        // If skip has been decremented to zero...
-        if (!skip) {
+        if (CHECK_EVERY_CYCLE <= ++skip) {
             // ...then it's time to drain away any piled-up user interaction
             // events that SDL has stored up for us
             // Reload the skip quantity
-            skip = CHECK_EVERY_CYCLE;
-            SDL_Event event;
-            while (SDL_PollEvent(&event)) {
-                switch (event.type) {
-                        // If SDL is going away...
-                    case SDL_QUIT:
-                        quitIfSafe();
-                        break;
-                    case SDL_KEYDOWN:
-                        // If we're collecting a command line for changing any
-                        // of the configurables of the emulator...
-                        if (this->command)
-                            cmdKey(event.key);
-                        else
-                            // ...else we're collecting keypresses for the keyboard
-                            // emulation (and thus the Apple ][ emulation itself)
-                            dispatchKeypress(event.key);
-                        break;
-                    case SDL_KEYUP:
-                        // If we're collecting a command line for changing any
-                        // of the configurables of the emulator...
-                        if (this->command) {
-                            if (this->pendingCommandExit) {
-                                this->command = false;
-                                this->pendingCommandExit = false;
-                            }
-                        } else {
-                            // ...else we're collecting keypresses for the keyboard
-                            // emulation (and thus the Apple ][ emulation itself)
-                            dispatchKeyUp(event.key);
-                        }
-                        break;
-                }
-            }
+            skip = 0;
+
+            handleAnyPendingEvents();
+
             // If we're trying to run as slow as a real Apple ][...
             if (!this->fhyper.isHyper()) {
                 const int delta_ms = EXPECTED_MS - (SDL_GetTicks() - prev_ms);
@@ -178,14 +198,22 @@ int Emulator::run() {
                 }
 
             }
+
             // Display the current estimate of the emulator's actual speed
             // performance
             this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - prev_ms));
+
             prev_ms = SDL_GetTicks();
         }
     }
     return 0;
 }
+
+
+
+
+
+
 
 void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
     SDL_Keycode sym = keyEvent.keysym.sym;
@@ -429,7 +457,6 @@ void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent) {
 }
 
 // Process a command line typed at the bottom of the emulator window
-
 void Emulator::processCommand() {
     this->screenImage.exitCommandMode();
     this->screenImage.drawPower(this->timable == &this->apple2);

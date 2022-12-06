@@ -62,6 +62,9 @@ class Emulator
     void processCommand();
     bool isSafeToQuit();
 
+    void handleRepeatKey();
+    void handleAnyPendingEvents();
+
 public:
     Emulator();
     virtual ~Emulator();
