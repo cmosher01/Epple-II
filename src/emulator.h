@@ -52,9 +52,13 @@ class Emulator
     int keysDown;
     int rept;
     unsigned char lastKeyDown;
+    int skip;
+    Uint32 prev_ms;
     bool command;
     bool pendingCommandExit;
     std::string cmdline;
+
+    void tick();
 
     void dispatchKeypress(const SDL_KeyboardEvent& keyEvent);
     void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
@@ -80,6 +84,7 @@ public:
     void quitIfSafe();
 
     virtual int run();
+    void tick50ms();
 };
 
 #endif

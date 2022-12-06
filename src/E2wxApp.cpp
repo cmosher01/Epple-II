@@ -39,7 +39,6 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <wx/debugrpt.h>
 #include <iostream>
-#include <thread>
 #include <string>
 #include <memory>
 #include <algorithm>
@@ -53,22 +52,41 @@ wxIMPLEMENT_APP_NO_MAIN(E2wxApp);
 #ifndef PROJECT_VERSION
 #define PROJECT_VERSION 0.0.1
 #endif
+#ifndef PROJECT_VENDOR
+#define PROJECT_VENDOR nu.mine.mosher
+#endif
+#ifndef PROJECT_NAME
+#define PROJECT_NAME Epple-II
+#endif
 
 
-std::promise<void> E2wxApp::barrier_to_init;
 
 
 
-E2wxApp::E2wxApp() : id("nu.mine.mosher.epple2"), version(wxSTRINGIZE_T(PROJECT_VERSION)) {
+EmuTimer::EmuTimer(Emulator *e) : wxTimer(), emu(e) {
+}
+
+EmuTimer::~EmuTimer() {
+}
+
+void EmuTimer::begin() {
+    this->Start(50); // TODO: EXPECTED_MS from Emulator
+}
+
+void EmuTimer::Notify() {
+    this->emu->tick50ms();
+}
+
+
+
+
+E2wxApp::E2wxApp() :
+    id(wxSTRINGIZE_T(PROJECT_VENDOR) wxT(".") wxSTRINGIZE_T(PROJECT_NAME)),
+    version(wxSTRINGIZE_T(PROJECT_VERSION)) {
 }
 
 E2wxApp::~E2wxApp() {
 }
-
-
-
-
-
 
 
 
@@ -107,6 +125,8 @@ bool E2wxApp::OnInit() {
 #endif
 #endif
 
+
+
     wxStandardPaths& stdpaths = wxStandardPaths::Get();
     //stdpaths.SetInstallPrefix(".");
     stdpaths.SetFileLayout(wxStandardPaths::FileLayout_XDG);
@@ -117,16 +137,15 @@ bool E2wxApp::OnInit() {
 
 
 
-
-    this->confdir = dirConfig() / std::filesystem::path(GetID()+".d");
+    this->confdir = dirConfig() / std::filesystem::path((GetID()+wxT(".d")).t_str());
     std::filesystem::create_directories(this->confdir);
     BOOST_LOG_TRIVIAL(info) << "Configuration directory path: " << this->confdir;
 
-    this->conffile = dirConfig() / std::filesystem::path(GetID());
+    this->conffile = dirConfig() / std::filesystem::path(GetID().t_str());
     BOOST_LOG_TRIVIAL(info) << "Configuration      file path: " << this->conffile;
     wxConfigBase::Set(new wxFileConfig("", "", GetID()));
 
-    this->docsdir = dirDocuments() / std::filesystem::path(GetID());
+    this->docsdir = dirDocuments() / std::filesystem::path(GetID().t_str());
     BOOST_LOG_TRIVIAL(info) << "User document directory path: " << this->docsdir;
 
     const std::filesystem::path exe = std::filesystem::path(stdpaths.GetExecutablePath().t_str());
@@ -156,37 +175,32 @@ bool E2wxApp::OnInit() {
     frame->Show();
 
 
-    barrier_to_init.set_value();
+
+    this->emu = new Emulator();
+    Config cfg((const std::string)this->arg_configfile.c_str());
+    this->emu->config(cfg);
+    this->emu->init();
+    this->emu_timer = new EmuTimer(this->emu);
+    this->emu_timer->begin();
+
+
 
     return true;
 }
 
-static int run(const std::string config_file) {
-    GUI gui;
 
-    std::unique_ptr<Emulator> emu(new Emulator());
-
-    Config cfg(config_file);
-    emu->config(cfg);
-
-    emu->init();
-
-    return emu->run();
-}
-
-//void E2wxApp::StartSdlEpple2() {
-//    std::cout << "starting sdl thread..." << std::endl;
-//    this->thread_sdl = new std::thread(run, this->arg_configfile);
-//    std::cout << "started sdl thread." << std::endl;
-//}
 
 int E2wxApp::OnExit() {
-//    std::cout << "stopping sdl thread..." << std::endl;
-    GUI::queueQuit();
-//    this->thread_sdl->join();
-//    std::cout << "exiting wx application..." << std::endl;
+    if (this->emu_timer) {
+        delete this->emu_timer;
+    }
+    if (this->emu) {
+        delete this->emu;
+    }
     return 0;
 }
+
+
 
 void E2wxApp::OnFatalException() {
     wxDebugReport report;
@@ -198,33 +212,36 @@ void E2wxApp::OnFatalException() {
     }
 }
 
-//static const wxCmdLineEntryDesc cmdLineDesc[] =
-//{
-//    { wxCMD_LINE_PARAM,  NULL, NULL, "config file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
-//    wxCMD_LINE_DESC_END
-//};
-//
-//void E2wxApp::OnInitCmdLine(wxCmdLineParser& parser) {
-//    wxApp::OnInitCmdLine(parser);
-//    parser.SetDesc(cmdLineDesc);
-//}
-//
-//bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
-//    if (!wxApp::OnCmdLineParsed(parser)) {
-//        return false;
-//    }
-//
-//    const int n = parser.GetParamCount();
-//
-//    if (n <= 0) {
-//        std::cout << "no config file specified on the command line; will use config file specified in user-preferences" << std::endl;
-//    } else {
-//        this->arg_configfile = parser.GetParam(0);
-//        std::cout << "using config file specified on the command line: " << this->arg_configfile << std::endl;
-//    }
-//
-//    return true;
-//}
+
+
+static const wxCmdLineEntryDesc cmdLineDesc[] =
+{
+    { wxCMD_LINE_PARAM,  NULL, NULL, "config-file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
+    wxCMD_LINE_DESC_END
+};
+
+void E2wxApp::OnInitCmdLine(wxCmdLineParser& parser) {
+    wxApp::OnInitCmdLine(parser);
+    parser.SetDesc(cmdLineDesc);
+}
+
+bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
+    if (!wxApp::OnCmdLineParsed(parser)) {
+        return false;
+    }
+
+    const int n = parser.GetParamCount();
+
+    if (n <= 0) {
+        std::cout << "no config file specified on the command line; will use config file specified in user-preferences" << std::endl;
+    } else {
+        this->arg_configfile = parser.GetParam(0);
+        std::cout << "using config file specified on the command line: " << this->arg_configfile << std::endl;
+    }
+
+    return true;
+}
+
 
 
 const std::filesystem::path E2wxApp::GetLogFile() const {
@@ -235,7 +252,7 @@ const std::filesystem::path E2wxApp::GetResDir() const {
     return this->resdir;
 }
 
-const std::string E2wxApp::GetID() const {
+const wxString E2wxApp::GetID() const {
     return this->id;
 }
 
@@ -260,8 +277,8 @@ const std::filesystem::path E2wxApp::GetDocumentsDir() const {
 const std::filesystem::path E2wxApp::BuildLogFilePath() const {
     std::filesystem::path logfile =
         dirCache() /
-        std::filesystem::path(GetID()) /
-        std::filesystem::path("log");
+        std::filesystem::path(GetID().t_str()) /
+        std::filesystem::path(wxT("log"));
 
     std::filesystem::create_directories(logfile);
     logfile = std::filesystem::canonical(logfile);

@@ -1,6 +1,7 @@
 /*
     epple2
-    Copyright (C) 2008, 2022 by Christopher A. Mosher <cmosher01@gmail.com>
+
+    Copyright (C) 2008, 2022 by Christopher A. Mosher, <cmosher01@gmail.com> https://mosher.mine.nu https://github.com/cmosher01
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,81 +17,16 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "e2const.h"
-#include "emulator.h"
-#include "configep2.h"
 #include "gui.h"
 #include "e2const.h"
-#include "E2wxApp.h"
 
 #include <wx/app.h>
 
-#include <thread>
-#include <future>
-#include <chrono>
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
-#include <string>
+
 #include <cstdio>
-#include <cstddef>
-
-using namespace std::chrono_literals;
-
-static std::string parse_args(int argc, char* argv[]) {
-    if (argc > 2) {
-        throw std::runtime_error("usage: epple2 [config-file]" );
-    }
-
-    if (argc <= 1) {
-        return std::string();
-    }
-
-    return std::string(argv[1]);
-}
-
-
-static int fake_argc(1);
-static char fake_prog[] = "epple2";
-static char *fake_argv[] { fake_prog };
-
-static int runWx() {
-    std::cout << "starting wx..." << std::endl;
-    return wxEntry(fake_argc, fake_argv);
-}
-
-static int runSdl(const std::string config_file) {
-    GUI gui;
-
-    std::future<void> barrier_to_app_init = E2wxApp::barrier_to_init.get_future();
-
-    std::thread thread_wx(runWx);
-
-    std::cout << "wait for wx init" << std::endl;
-    const std::future_status fut = barrier_to_app_init.wait_for(10s);
-    if (fut == std::future_status::timeout) {
-        std::cerr << "timed-out waiting for wx to finish initializing" << std::endl;
-        return 1;
-    }
-    std::cout << "wx init finished" << std::endl;
-
-    std::unique_ptr<Emulator> emu(new Emulator());
-
-    Config cfg(config_file);
-    emu->config(cfg);
-
-    emu->init();
-
-    const int ret = emu->run();
-
-    if (wxApp::GetInstance() != nullptr) {
-        wxApp::GetInstance()->ExitMainLoop();
-    }
-    thread_wx.join();
-
-    return ret;
-}
-
 
 
 #ifdef __cplusplus
@@ -106,9 +42,7 @@ int main(int argc, char *argv[]) {
         throw std::runtime_error("bad constant in e2const.h" );
     }
 
-    const std::string config_file = parse_args(argc, argv);
+    GUI gui;
 
-    const int ret = runSdl(config_file);
-
-    return ret;
+    return wxEntry(argc, argv);
 }

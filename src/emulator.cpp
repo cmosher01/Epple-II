@@ -32,6 +32,8 @@ timable(0), // No ticked object (NULL pointer)
 quit(false),
 repeat(false),
 keysDown(0),
+skip(0),
+prev_ms(SDL_GetTicks()),
 command(false),
 pendingCommandExit(false) {
 }
@@ -162,49 +164,11 @@ void Emulator::handleAnyPendingEvents() {
 
 
 
-
-
-
-
 // The core of this Apple
 int Emulator::run() {
-    int skip = 0;
-    Uint32 prev_ms = SDL_GetTicks();
-
     // While the user still wants to run this emulation...
     while (!this->quit) {
-        // (Obligatory protection against NULL object pointer)
-        if (this->timable) {
-            this->timable->tick();
-            handleRepeatKey();
-        }
-
-        // People who have too many press releases should be referred to as
-        // keyboards
-
-        if (CHECK_EVERY_CYCLE <= ++skip) {
-            // ...then it's time to drain away any piled-up user interaction
-            // events that SDL has stored up for us
-            // Reload the skip quantity
-            skip = 0;
-
-            handleAnyPendingEvents();
-
-            // If we're trying to run as slow as a real Apple ][...
-            if (!this->fhyper.isHyper()) {
-                const int delta_ms = EXPECTED_MS - (SDL_GetTicks() - prev_ms);
-                if (0 < delta_ms && delta_ms <= EXPECTED_MS) {
-                    SDL_Delay(delta_ms);
-                }
-
-            }
-
-            // Display the current estimate of the emulator's actual speed
-            // performance
-            this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - prev_ms));
-
-            prev_ms = SDL_GetTicks();
-        }
+        tick();
     }
     return 0;
 }
@@ -212,6 +176,54 @@ int Emulator::run() {
 
 
 
+void Emulator::tick() {
+    if (this->timable) {
+        this->timable->tick(); // this runs the emulator!
+        handleRepeatKey();
+    }
+
+    // People who have too many press releases should be referred to as
+    // keyboards
+
+    if (CHECK_EVERY_CYCLE <= ++this->skip) {
+        // ...then it's time to drain away any piled-up user interaction
+        // events that SDL has stored up for us
+        // Reload the skip quantity
+        this->skip = 0;
+
+        handleAnyPendingEvents();
+
+        // If we're trying to run as slow as a real Apple ][...
+        if (!this->fhyper.isHyper()) {
+            const int delta_ms = EXPECTED_MS - (SDL_GetTicks() - this->prev_ms);
+            if (0 < delta_ms && delta_ms <= EXPECTED_MS) {
+                SDL_Delay(delta_ms);
+            }
+
+        }
+
+        // Display the current estimate of the emulator's actual speed
+        // performance
+        this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - this->prev_ms));
+
+        this->prev_ms = SDL_GetTicks();
+    }
+}
+
+
+
+void Emulator::tick50ms() {
+    if (this->timable) {
+        for (int i = 0; i < CHECK_EVERY_CYCLE; ++i) {
+            this->timable->tick(); // this runs the emulator!
+            handleRepeatKey();
+        }
+    }
+    handleAnyPendingEvents();
+    this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - this->prev_ms));
+    this->prev_ms = SDL_GetTicks();
+    // TODO: how to check this->quit ?
+}
 
 
 

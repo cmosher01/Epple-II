@@ -21,33 +21,55 @@
 #ifndef E2WXAPP_H
 #define E2WXAPP_H
 
+
+
 #include <wx/app.h>
 #include <wx/cmdline.h>
+#include <wx/timer.h>
 #include <wx/string.h>
-#include <thread>
 #include <filesystem>
 #include <string>
-#include <future>
+
+
+
+class Emulator;
+
+
+
+class EmuTimer : public wxTimer {
+    Emulator *emu;
+
+public:
+    EmuTimer(Emulator *e);
+    virtual ~EmuTimer();
+
+    void Notify() override;
+
+    void begin();
+};
+
+
 
 class E2wxApp : public wxApp {
-    const std::string id;
+    const wxString id;
     const wxString version;
     std::filesystem::path logfile;
     std::filesystem::path resdir;
     std::filesystem::path conffile;
     std::filesystem::path confdir;
     std::filesystem::path docsdir;
+    wxString arg_configfile;
+    EmuTimer *emu_timer;
+    Emulator *emu;
 
     const std::filesystem::path BuildLogFilePath() const;
     void InitBoostLog();
 
 public:
-    static std::promise<void> barrier_to_init;
-
     E2wxApp();
     virtual ~E2wxApp();
 
-    const std::string GetID() const;
+    const wxString GetID() const;
     const wxString GetVersion() const;
     const std::filesystem::path GetLogFile() const;
     const std::filesystem::path GetResDir() const;
@@ -58,10 +80,12 @@ public:
     virtual bool OnInit() override;
     virtual int OnExit() override;
     virtual void OnFatalException() override;
-//    virtual void OnInitCmdLine(wxCmdLineParser& parser) override;
-//    virtual bool OnCmdLineParsed(wxCmdLineParser& parser) override;
+    virtual void OnInitCmdLine(wxCmdLineParser& parser) override;
+    virtual bool OnCmdLineParsed(wxCmdLineParser& parser) override;
 };
 
 wxDECLARE_APP(E2wxApp);
+
+
 
 #endif /* E2WXAPP_H */
