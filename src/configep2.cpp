@@ -63,11 +63,10 @@ static std::uint16_t memory_block_size(const std::string &block_size) {
 
 unsigned char Config::disk_mask(0);
 
-Config::Config(const std::string& file_path):
-    file_path(file_path)
+Config::Config(const std::filesystem::path& f):
+    file_path(f)
 {
 }
-
 
 Config::~Config()
 {
@@ -104,7 +103,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 {
     std::ifstream* pConfig;
 
-    std::string path(this->file_path);
+    std::filesystem::path path(this->file_path);
 
     if (!path.empty())
     {
@@ -128,18 +127,13 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             // TODO what to do when no config?
             user_config = wxT("epple2");
         }
+        user_config += ".conf";
 
-        std::filesystem::path f = wxGetApp().GetConfigDir();
-        f /= user_config.t_str();
-        f += ".conf";
-        path = f.string();
+        path = wxGetApp().GetConfigDir() / user_config.fn_str().data();
         std::cout << "looking for config file: " << path << std::endl;
         pConfig = new std::ifstream(path.c_str());
         if (!pConfig->is_open()) {
-            f = wxGetApp().GetResDir();
-            f /= user_config.t_str();
-            f += ".conf";
-            path = f.string();
+            path = wxGetApp().GetResDir() / user_config.fn_str().data();
             std::cout << "looking for config file: " << path << std::endl;
             pConfig = new std::ifstream(path.c_str());
             if (!pConfig->is_open()) {
@@ -237,6 +231,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 
     // TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
+
 void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
 {
     try

@@ -93,19 +93,19 @@ E2wxApp::~E2wxApp() {
 
 
 static std::filesystem::path dirCache() {
-    return std::filesystem::path(wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Cache).t_str());
+    return std::filesystem::path(wxStandardPaths::Get().GetUserDir(wxStandardPaths::Dir_Cache).fn_str().data());
 }
 
 static std::filesystem::path dirConfig() {
-    return std::filesystem::path(wxStandardPaths::Get().GetUserConfigDir().t_str());
+    return std::filesystem::path(wxStandardPaths::Get().GetUserConfigDir().fn_str().data());
 }
 
 static std::filesystem::path dirDocuments() {
-    return std::filesystem::path(wxStandardPaths::Get().GetAppDocumentsDir().t_str());
+    return std::filesystem::path(wxStandardPaths::Get().GetAppDocumentsDir().fn_str().data());
 }
 
 static std::filesystem::path dirResources() {
-    return std::filesystem::path(wxStandardPaths::Get().GetResourcesDir().t_str());
+    return std::filesystem::path(wxStandardPaths::Get().GetResourcesDir().fn_str().data());
 }
 
 
@@ -137,18 +137,18 @@ bool E2wxApp::OnInit() {
 
 
 
-    this->confdir = dirConfig() / std::filesystem::path((GetID()+wxT(".d")).t_str());
+    this->confdir = dirConfig() / std::filesystem::path((GetID()+wxT(".d")).fn_str().data());
     std::filesystem::create_directories(this->confdir);
     BOOST_LOG_TRIVIAL(info) << "Configuration directory path: " << this->confdir;
 
-    this->conffile = dirConfig() / std::filesystem::path(GetID().t_str());
+    this->conffile = dirConfig() / std::filesystem::path(GetID().fn_str().data());
     BOOST_LOG_TRIVIAL(info) << "Configuration      file path: " << this->conffile;
     wxConfigBase::Set(new wxFileConfig("", "", GetID()));
 
-    this->docsdir = dirDocuments() / std::filesystem::path(GetID().t_str());
+    this->docsdir = dirDocuments() / std::filesystem::path(GetID().fn_str().data());
     BOOST_LOG_TRIVIAL(info) << "User document directory path: " << this->docsdir;
 
-    const std::filesystem::path exe = std::filesystem::path(stdpaths.GetExecutablePath().t_str());
+    const std::filesystem::path exe = std::filesystem::path(stdpaths.GetExecutablePath().fn_str().data());
     std::cout << "Executable         file path: " << exe << std::endl;
     std::filesystem::path res = exe.parent_path();
     if (res.filename() == "bin" || res.filename() == "MacOS") {
@@ -161,7 +161,7 @@ bool E2wxApp::OnInit() {
         res /= "Resources";
     }
     this->resdir = res;
-    std::cout << "Resource      directory path: " << this->resdir << std::endl;
+    std::cout << "Resource      directory path: " << this->resdir.c_str() << std::endl;
 
     wxXmlResource::Get()->InitAllHandlers();
     if (!wxXmlResource::Get()->LoadAllFiles(this->resdir.c_str())) {
@@ -177,7 +177,7 @@ bool E2wxApp::OnInit() {
 
 
     this->emu = new Emulator();
-    Config cfg((const std::string)this->arg_configfile.c_str());
+    Config cfg(this->arg_configfile);
     this->emu->config(cfg);
     this->emu->init();
     this->emu_timer = new EmuTimer(this->emu);
@@ -235,8 +235,8 @@ bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
     if (n <= 0) {
         std::cout << "no config file specified on the command line; will use config file specified in user-preferences" << std::endl;
     } else {
-        this->arg_configfile = parser.GetParam(0);
-        std::cout << "using config file specified on the command line: " << this->arg_configfile << std::endl;
+        this->arg_configfile = std::filesystem::path(parser.GetParam(0).fn_str().data());
+        std::cout << "using config file specified on the command line: " << this->arg_configfile.c_str() << std::endl;
     }
 
     return true;
@@ -277,7 +277,7 @@ const std::filesystem::path E2wxApp::GetDocumentsDir() const {
 const std::filesystem::path E2wxApp::BuildLogFilePath() const {
     std::filesystem::path logfile =
         dirCache() /
-        std::filesystem::path(GetID().t_str()) /
+        std::filesystem::path(GetID().fn_str().data()) /
         std::filesystem::path(wxT("log"));
 
     std::filesystem::create_directories(logfile);

@@ -18,6 +18,7 @@
 #ifndef CONFIGEP2_H
 #define CONFIGEP2_H
 
+#include <filesystem>
 #include <string>
 class Memory;
 class MemoryRandomAccess;
@@ -35,7 +36,7 @@ public:
 
 class Config {
 private:
-    const std::string& file_path;
+    const std::filesystem::path file_path;
     static unsigned char disk_mask;
 
     static void loadDisk(Slots& slts, int slot, int drive, const std::string& fnib);
@@ -45,7 +46,7 @@ private:
     static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 
 public:
-    Config(const std::string& file_path);
+    Config(const std::filesystem::path& f);
     ~Config();
 
     void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);

@@ -70,7 +70,7 @@ public:
     wxDirTraverseResult OnFile(const wxString& filename) {
         wxFileName n = wxFileName::FileName(filename);
         if (n.GetExt() == "conf") {
-            const std::filesystem::path& full = std::filesystem::path(n.GetFullName().t_str());
+            const std::filesystem::path& full = std::filesystem::path(n.GetFullName().fn_str().data());
             const std::filesystem::path path = m_dir / full;
             m_tree->AppendItem(m_parent, n.GetName(), -1, -1, new TreeItemData(path, m_editable));
         }
@@ -220,7 +220,7 @@ const std::filesystem::path BuildNewConfFilePath() {
 
     wxString ts = to_iso_string(boost::posix_time::microsec_clock::universal_time());
     ts.Replace(wxT("."), wxT("_"));
-    f /= (wxT("Untitled_") + ts + wxT(".conf")).t_str();
+    f /= (wxT("Untitled_") + ts + wxT(".conf")).fn_str().data();
 
     BOOST_LOG_TRIVIAL(info) << "will create file: " << f.c_str();
 
@@ -302,7 +302,7 @@ void PreferencesDialog::OnRename(wxCommandEvent& evt) {
                 if (fn.Exists()) {
                     wxMessageBox(wxT("That name is already being used."), wxT("File exists"), wxOK|wxCENTER, this);
                 } else {
-                    const std::filesystem::path newpath(fn.GetFullPath().t_str());
+                    const std::filesystem::path newpath(fn.GetFullPath().fn_str().data());
                     std::filesystem::rename(data->path(), newpath);
                     BuildItemTree();
                     PreSelectUserConfigItemName(newpath);
