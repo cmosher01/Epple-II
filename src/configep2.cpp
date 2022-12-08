@@ -107,12 +107,12 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 
     if (!path.empty())
     {
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
         {
             // TODO use filename only and look in standard resources
             std::stringstream ss;
-            ss << "Cannot open config file " << this->file_path.c_str();
+            ss << "Cannot open config file " << this->file_path;
             throw std::runtime_error(ss.str());
         }
     }
@@ -123,20 +123,20 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
     {
         // TODO config file location, how to be backwardly compatible?
         wxString user_config;
-        if (!wxConfigBase::Get()->Read(wxT("/ActivePreferences/name"), &user_config)) {
+        if (!wxConfigBase::Get()->Read("/ActivePreferences/name", &user_config)) {
             // TODO what to do when no config?
-            user_config = wxT("epple2");
+            user_config = "epple2";
         }
         user_config += ".conf";
-        const std::filesystem::path user_path{user_config.fn_str().data()};
+        std::filesystem::path user_path{user_config.wc_str()};
 
         path = wxGetApp().GetConfigDir() / user_path;
         std::cout << "looking for config file: " << path << std::endl;
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open()) {
             path = wxGetApp().GetResDir() / user_path;
             std::cout << "looking for config file: " << path << std::endl;
-            pConfig = new std::ifstream(path.c_str());
+            pConfig = new std::ifstream(path);
             if (!pConfig->is_open()) {
                 path.clear();
             }
@@ -161,7 +161,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             the current directory is /).
         */
         path = "etc/epple2/epple2.conf";
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
             path.clear();
     }
@@ -173,7 +173,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             /usr/local/etc/epple2/epple2.conf
         */
         path = ETCDIR "/epple2/epple2.conf";
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
             path.clear();
     }
@@ -183,7 +183,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             Try a likely linux location
         */
         path = "/etc/epple2/epple2.conf";
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
             path.clear();
     }
@@ -193,7 +193,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             Try another likely linux location
         */
         path = "/etc/epple2.conf";
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
             path.clear();
     }
@@ -203,7 +203,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             Last effort to find it.
         */
         path = "epple2.conf";
-        pConfig = new std::ifstream(path.c_str());
+        pConfig = new std::ifstream(path);
         if (!pConfig->is_open())
             path.clear();
     }

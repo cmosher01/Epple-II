@@ -78,7 +78,7 @@ void E2wxFrame::InitMenuBar() {
 
 void E2wxFrame::InitStatusBar() {
     CreateStatusBar();
-    SetStatusText(wxT("Welcome to ")+wxGetApp().GetID());
+    SetStatusText("Welcome to "+wxGetApp().GetID());
 }
 
 
@@ -90,14 +90,14 @@ void E2wxFrame::OnExit(wxCommandEvent& event) {
 void E2wxFrame::OnAbout(wxCommandEvent& event) {
     wxString msg = "";
 
-    msg += wxGetApp().GetID()+wxT("\n");
+    msg += wxGetApp().GetID()+"\n";
 
-    msg += wxT("version: ")+wxGetApp().GetVersion()+wxT("\n");
+    msg += "version: "+wxGetApp().GetVersion()+"\n";
 
-    msg += wxT("Current log file:\n");
+    msg += "Current log file:\n";
     msg += wxGetApp().GetLogFile().c_str();
 
-    wxMessageBox(msg, wxT("About ")+wxGetApp().GetID(), wxOK | wxICON_INFORMATION);
+    wxMessageBox(msg, "About "+wxGetApp().GetID(), wxOK | wxICON_INFORMATION);
 }
 
 void E2wxFrame::OnPreferences(wxCommandEvent& event) {

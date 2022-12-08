@@ -78,6 +78,7 @@ diskcontroller.cpp
 drive.cpp
 drivemotor.cpp
 e2filesystem.cpp
+e2string.cpp
 E2wxApp.cpp
 E2wxFrame.cpp
 emptyslot.cpp

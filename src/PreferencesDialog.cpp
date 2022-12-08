@@ -1,5 +1,6 @@
 #include "PreferencesDialog.h"
 #include "E2wxApp.h"
+#include "e2filesystem.h"
 #include <wx/msgdlg.h>
 #include <wx/treectrl.h>
 #include <wx/textctrl.h>
@@ -70,8 +71,7 @@ public:
     wxDirTraverseResult OnFile(const wxString& filename) {
         wxFileName n = wxFileName::FileName(filename);
         if (n.GetExt() == "conf") {
-            const std::filesystem::path& full = std::filesystem::path(n.GetFullName().fn_str().data());
-            const std::filesystem::path path = m_dir / full;
+            const std::filesystem::path path = m_dir / path_from_string(n.GetFullName());
             m_tree->AppendItem(m_parent, n.GetName(), -1, -1, new TreeItemData(path, m_editable));
         }
         return wxDIR_CONTINUE;
@@ -118,13 +118,13 @@ void PreferencesDialog::BuildItemTree() {
 
     treItems->DeleteAllItems();
 
-    wxTreeItemId configs = treItems->AddRoot(wxT("configurations"), -1, -1, new EmptyTreeItem());
+    wxTreeItemId configs = treItems->AddRoot("configurations", -1, -1, new EmptyTreeItem());
 
-    wxTreeItemId user = treItems->AppendItem(configs, wxT("user"), -1, -1, new EmptyTreeItem());
+    wxTreeItemId user = treItems->AppendItem(configs, "user", -1, -1, new EmptyTreeItem());
     fillDir(treItems, user, wxGetApp().GetConfigDir(), true);
     treItems->SortChildren(user);
 
-    wxTreeItemId built_in = treItems->AppendItem(configs, wxT("built-in"), -1, -1, new EmptyTreeItem());
+    wxTreeItemId built_in = treItems->AppendItem(configs, "built-in", -1, -1, new EmptyTreeItem());
     fillDir(treItems, built_in, wxGetApp().GetResDir());
     treItems->SortChildren(built_in);
 
@@ -135,10 +135,10 @@ void PreferencesDialog::BuildItemTree() {
 
 void PreferencesDialog::OnInit() {
     wxConfigBase *appconf = wxConfigBase::Get();
-    if (!appconf->Read(wxT("/ActivePreferences/name"), &this->active)) {
+    if (!appconf->Read("/ActivePreferences/name", &this->active)) {
         // TODO what to do when no config?
         this->active = "epple2";
-        appconf->Write(wxT("/ActivePreferences/name"), this->active);
+        appconf->Write("/ActivePreferences/name", this->active);
         appconf->Flush();
     }
 
@@ -219,8 +219,8 @@ const std::filesystem::path BuildNewConfFilePath() {
     std::filesystem::path f = wxGetApp().GetConfigDir();
 
     wxString ts = to_iso_string(boost::posix_time::microsec_clock::universal_time());
-    ts.Replace(wxT("."), wxT("_"));
-    f /= (wxT("Untitled_") + ts + wxT(".conf")).fn_str().data();
+    ts.Replace(".", "_");
+    f /= path_from_string("Untitled_" + ts + ".conf");
 
     BOOST_LOG_TRIVIAL(info) << "will create file: " << f.c_str();
 
@@ -236,7 +236,7 @@ void PreferencesDialog::OnActive(wxCommandEvent& evt) {
             wxString name = wxFileName::FileName(p.c_str()).GetName();
             this->active = name;
             std::cout << "setting current active config file to: " << this->active << std::endl;
-            wxConfigBase::Get()->Write(wxT("/ActivePreferences/name"), this->active);
+            wxConfigBase::Get()->Write("/ActivePreferences/name", this->active);
             BuildItemTree(); // invalidates "data" pointer variable
             PreSelectUserConfigItemName(p);
         }
@@ -272,8 +272,8 @@ void PreferencesDialog::OnDelete(wxCommandEvent& evt) {
     if (data->isFile()) {
         if (data->isEditable()) {
             if (wxMessageBox(
-                    wxT("Are you sure to want to permanently DELETE this configuration file?"),
-                    wxT("Delete"), wxYES_NO|wxCENTER, this) == wxYES) {
+                    "Are you sure to want to permanently DELETE this configuration file?",
+                    "Delete", wxYES_NO|wxCENTER, this) == wxYES) {
                 std::filesystem::remove(data->path());
                 BuildItemTree();
                 treItems->SetFocus();
@@ -294,15 +294,15 @@ void PreferencesDialog::OnRename(wxCommandEvent& evt) {
         if (data->isEditable()) {
             Save(data->path());
             wxString name = wxFileName::FileName(data->path().c_str()).GetName();
-            wxString newname = wxGetTextFromUser(wxT("new name:"), wxT("Rename configuration"), name, this, -1, -1, true);
+            wxString newname = wxGetTextFromUser("new name:", "Rename configuration", name, this, -1, -1, true);
             if (!newname.IsEmpty() && newname != name) {
                 wxFileName fn(data->path().c_str());
                 fn.SetName(newname);
                 // TODO should we check for existence of name in built-in (to prevent override)?
                 if (fn.Exists()) {
-                    wxMessageBox(wxT("That name is already being used."), wxT("File exists"), wxOK|wxCENTER, this);
+                    wxMessageBox("That name is already being used.", "File exists", wxOK|wxCENTER, this);
                 } else {
-                    const std::filesystem::path newpath(fn.GetFullPath().fn_str().data());
+                    const std::filesystem::path newpath = path_from_string(fn.GetFullPath());
                     std::filesystem::rename(data->path(), newpath);
                     BuildItemTree();
                     PreSelectUserConfigItemName(newpath);

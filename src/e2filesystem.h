@@ -26,8 +26,11 @@
 #ifndef E2FILESYSTEM_H
 #define E2FILESYSTEM_H
 
+#include <wx/string.h>
+
 #include <filesystem>
 
 std::filesystem::path valid_input_file(const std::filesystem::path path, const std::filesystem::path base);
+std::filesystem::path path_from_string(const wxString& s);
 
 #endif /* E2FILESYSTEM_H */

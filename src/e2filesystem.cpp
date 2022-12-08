@@ -109,3 +109,9 @@ std::filesystem::path valid_input_file(const std::filesystem::path path, const s
 
     return p;
 }
+
+
+
+std::filesystem::path path_from_string(const wxString& s) {
+    return std::filesystem::path{s.wc_str()};
+}
