@@ -20,6 +20,7 @@
 #ifndef WOZFILE_H
 #define WOZFILE_H
 
+#include <filesystem>
 #include <string>
 #include <cstdint>
 
@@ -45,7 +46,7 @@ static const std::uint8_t C_QTRACK(160);
  * rather, that information is known by the stepper motor and arm.
  */
 class WozFile {
-    std::string filePath;
+    std::filesystem::path filePath;
     bool loaded;
     bool modified;
 

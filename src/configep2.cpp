@@ -128,12 +128,13 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
             user_config = wxT("epple2");
         }
         user_config += ".conf";
+        const std::filesystem::path user_path{user_config.fn_str().data()};
 
-        path = wxGetApp().GetConfigDir() / user_config.fn_str().data();
+        path = wxGetApp().GetConfigDir() / user_path;
         std::cout << "looking for config file: " << path << std::endl;
         pConfig = new std::ifstream(path.c_str());
         if (!pConfig->is_open()) {
-            path = wxGetApp().GetResDir() / user_config.fn_str().data();
+            path = wxGetApp().GetResDir() / user_path;
             std::cout << "looking for config file: " << path << std::endl;
             pConfig = new std::ifstream(path.c_str());
             if (!pConfig->is_open()) {
