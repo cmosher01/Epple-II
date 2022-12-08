@@ -45,7 +45,6 @@ static const std::uint8_t C_QTRACK(160);
  * rather, that information is known by the stepper motor and arm.
  */
 class WozFile {
-    std::string fileName;
     std::string filePath;
     bool loaded;
     bool modified;
@@ -111,10 +110,6 @@ public:
     ~WozFile();
 
     bool load(const std::string& filePath);
-
-    std::string getFileName() const {
-        return this->fileName;
-    }
 
     bool isLoaded() const {
         return this->loaded;

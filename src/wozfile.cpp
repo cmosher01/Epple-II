@@ -129,10 +129,10 @@ bool WozFile::load(const std::string& filePath) {
         unload();
     }
 
-    std::uint32_t woz2;
+    std::uint32_t woz2(0);
     in->read((char*)&woz2, sizeof(woz2));
     if (woz2 != 0x325A4F57u) {
-        printf("WOZ2 magic bytes missing. Found: %8x", woz2);
+        printf("WOZ2 magic bytes missing. Found: %8x\n", woz2);
         delete in;
         return false;
     }
@@ -321,6 +321,7 @@ void WozFile::checkForWriteProtection() {
         return;
     }
 
+    // TODO: fix; if the file doesn't exist this creates an empty file
     std::ofstream outf(filePath.c_str(),std::ios::binary|std::ios::app);
     this->writable = outf.is_open();
     outf.close();
