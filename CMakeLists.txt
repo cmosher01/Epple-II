@@ -229,12 +229,12 @@ elseif(WIN32)
             PRE_EXCLUDE_REGEXES "api-ms-" "ext-ms-"
             POST_EXCLUDE_REGEXES ".*system32/.*\\.dll"
         BUNDLE DESTINATION .
-        RESOURCE DESTINATION share/Resources)
+        RESOURCE DESTINATION share/Resources PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 else()
     install(TARGETS ${APP_NAME}
         RUNTIME_DEPENDENCIES
             DIRECTORIES ${CMAKE_SYSTEM_LIBRARY_PATH}
-        RESOURCE DESTINATION share/Resources)
+        RESOURCE DESTINATION share/Resources PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 endif()
 
 

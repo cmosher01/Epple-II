@@ -110,7 +110,7 @@ public:
     WozFile();
     ~WozFile();
 
-    bool load(const std::string& filePath);
+    bool load(const std::filesystem::path& filePath);
 
     bool isLoaded() const {
         return this->loaded;

@@ -19,6 +19,7 @@
 
 #include "wozfile.h"
 #include "E2wxApp.h"
+#include "e2filesystem.h"
 
 #include <istream>
 #include <ostream>
@@ -111,19 +112,15 @@ void WozFile::dumpTracks() {
     }
 }
 
-bool WozFile::load(const std::string& filePath) {
-    printf("Reading WOZ 2.0 file: %s\n", filePath.c_str());
+bool WozFile::load(const std::filesystem::path& orig_file) {
+    printf("Reading WOZ 2.0 file: %s\n", orig_file.c_str());
 
-    std::ifstream *in = new std::ifstream(filePath.c_str(), std::ios::binary|std::ios::in);
+    std::filesystem::path filePath = valid_input_file(orig_file, wxGetApp().GetResDir());
+    std::ifstream *in = new std::ifstream(filePath, std::ios::binary|std::ios::in);
     if (!in->is_open()) {
-        std::filesystem::path f = wxGetApp().GetResDir();
-        f /= filePath.c_str();
-        in = new std::ifstream(f.c_str(), std::ios::binary|std::ios::in);
-        if (!in->is_open()) {
-            printf("Error opening file: %d\n", errno);
-            delete in;
-            return false;
-        }
+        printf("Error opening file: %d\n", errno);
+        delete in;
+        return false;
     }
     if (isLoaded()) {
         unload();
@@ -185,7 +182,7 @@ bool WozFile::load(const std::string& filePath) {
                 this->timing = buf[39];
                 printf("Timing: %d/8 microseconds per bit\n", this->timing);
                 std::uint16_t compat = *((std::uint16_t*)buf+40);
-                printf("Campatible hardware: ");
+                printf("Compatible hardware: ");
                 if (!compat) {
                     printf("unknown\n");
                 } else {
@@ -321,8 +318,13 @@ void WozFile::checkForWriteProtection() {
         return;
     }
 
-    // TODO: fix; if the file doesn't exist this creates an empty file
-    std::ofstream outf(filePath.c_str(),std::ios::binary|std::ios::app);
+    if (!std::filesystem::exists(this->filePath)) {
+        this->writable = false;
+    }
+
+    std::filesystem::path canon = std::filesystem::canonical(this->filePath);
+
+    std::ofstream outf(canon, std::ios::binary|std::ios::app);
     this->writable = outf.is_open();
     outf.close();
 }
@@ -336,7 +338,7 @@ void WozFile::save() {
 
     reduceTracks();
 
-    std::ofstream out(filePath.c_str(), std::ios::binary);
+    std::ofstream out(this->filePath, std::ios::binary);
 
     std::uint32_t woz2(0x325A4F57u);
     out.write((char*)&woz2, sizeof(woz2));
