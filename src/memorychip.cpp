@@ -78,7 +78,7 @@ void MemoryChip::rand_init(const std::uint8_t mask, std::vector<std::uint8_t> &b
     std::uint_fast32_t c_chaos16 = 65u;
     std::uint_fast32_t c_chaos16sub = 15u;
     bool on = false;
-    for (std::uint_fast16_t i = 0u; i < 16*K; ++i) {
+    for (std::uint_fast16_t i = 0u; i < size; ++i) {
         double r = static_cast<double>(std::rand())/RAND_MAX;
         bool is_rand = false;
         if (r < GLITCH && c_chaos16 == 65u) {
@@ -94,7 +94,7 @@ void MemoryChip::rand_init(const std::uint8_t mask, std::vector<std::uint8_t> &b
             }
         }
         is_rand |= (r < CHAOS);
-        bitflag(is_rand?!on:on, mask, bytes[i]);
+        bitflag(is_rand?!on:on, mask, bytes.at(i));
         if (c_cycle++ == cycle-1) {
             on = !on;
             c_cycle = 0u;

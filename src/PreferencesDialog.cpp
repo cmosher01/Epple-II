@@ -151,8 +151,10 @@ void PreferencesDialog::Save(const std::filesystem::path& to) {
     CTRL(wxTextCtrl, txtConfig);
     const wxString sConfig = txtConfig->GetValue();
     if (sConfig != this->sOrigConfig) {
+        BOOST_LOG_TRIVIAL(info) << "saving config file: " << to.c_str();
         std::ofstream out(to);
         out << sConfig;
+        out.flush();
         this->sOrigConfig = sConfig;
     }
 }
@@ -252,6 +254,7 @@ void PreferencesDialog::OnDuplicate(wxCommandEvent& evt) {
         BOOST_LOG_TRIVIAL(info) << "copy from: " << data->path().c_str();
         if (!std::filesystem::exists(f)) {
             std::filesystem::copy_file(data->path(), f, std::filesystem::copy_options::skip_existing);
+            std::filesystem::permissions(f, std::filesystem::perms::owner_write, std::filesystem::perm_options::add);
             BuildItemTree();
             PreSelectUserConfigItemName(f);
         } else {

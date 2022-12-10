@@ -33,6 +33,7 @@
 #include "cassetteout.h"
 #include "tinyfiledialogs.h"
 
+#include <wx/filedlg.h>
 #include <wx/config.h>
 #include <wx/string.h>
 
@@ -456,14 +457,12 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             trim(fn_optional);
             if (fn_optional.length() == 0) {
                 gui.exitFullScreen();
-                char const *ft[1] = {"*.woz"};
-                char const *fn = tinyfd_openFileDialog("Load floppy", "", 1, ft, "WOZ 2.0 disk images", 0);
-                if (fn) {
-                    fn_optional = std::string(fn);
+                wxFileDialog dlg{nullptr, "Load floppy", "", "", "WOZ 2.0 disk images (*.woz)|*.woz", wxFD_OPEN|wxFD_FILE_MUST_EXIST};
+                if (dlg.ShowModal() == wxID_OK) {
+                    fn_optional = dlg.GetPath().c_str();
                 }
             }
             if (fn_optional.length() > 0) {
-                // TODO check if file exists, if not then check resources
                 loadDisk(slts, slot, drive, fn_optional);
             }
         } else if (cmd == "unload") {

@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #include "apple2.h"
 #include "slots.h"
 #include "videomode.h"
@@ -38,20 +38,20 @@
 #include <istream>
 #include <fstream>
 
-Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui):
-    slts(gui),
-    kbd(keypresses,fhyper,buffered),
-    rom(AddressBus::MOTHERBOARD_ROM_SIZ),
-    ram(revision),
-    cassetteIn(gui),
-    cassetteOut(gui),
-    addressBus(gui,revision,ram,rom,kbd,videoMode,paddles,paddleButtonStates,speaker,cassetteIn,cassetteOut,slts),
-    picgen(tv,videoMode,revision),
-    video(videoMode,addressBus,picgen,textRows),
-    transistors("transistors"), // TODO load file from resources
-    cpu(NULL),
-    powerUpReset(*this),
-    revision(1) {
+Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui) :
+slts(gui),
+kbd(keypresses, fhyper, buffered),
+rom(AddressBus::MOTHERBOARD_ROM_SIZ),
+ram(revision),
+cassetteIn(gui),
+cassetteOut(gui),
+addressBus(gui, revision, ram, rom, kbd, videoMode, paddles, paddleButtonStates, speaker, cassetteIn, cassetteOut, slts),
+picgen(tv, videoMode, revision),
+video(videoMode, addressBus, picgen, textRows),
+transistors("transistors"), // TODO load file from resources
+cpu(NULL),
+powerUpReset(*this),
+revision(1) {
 }
 
 Apple2::~Apple2() {
@@ -72,6 +72,7 @@ void Apple2::useVisual6502Cpu() {
 }
 
 void Apple2::tick() {
+    useEpple2Cpu(); // default, if not already set
     this->cpu->tick();
     this->slts.tick();
     this->video.tick();
@@ -85,8 +86,7 @@ void Apple2::tick() {
     }
 }
 
-void Apple2::powerOn()
-{
+void Apple2::powerOn() {
     useEpple2Cpu(); // default, if not already set
     this->ram.powerOn();
     this->cpu->powerOn();
@@ -96,13 +96,12 @@ void Apple2::powerOn()
     this->powerUpReset.powerOn();
 }
 
-void Apple2::powerOff()
-{
+void Apple2::powerOff() {
     this->ram.powerOff();
 }
 
-void Apple2::reset()
-{
+void Apple2::reset() {
+    useEpple2Cpu(); // default, if not already set
     this->cpu->reset();
     this->slts.reset();
 }

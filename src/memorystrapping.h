@@ -6,6 +6,7 @@
 
 class MemoryStrapping {
     private:
+        bool strapped;
         MemoryRow &row;
         std::uint16_t addr_base;
         std::uint16_t addr_size;

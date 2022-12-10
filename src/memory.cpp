@@ -36,7 +36,7 @@ void Memory::clear() {
 }
 
 void Memory::load(const std::uint16_t base, std::istream& in) {
-    in.read(reinterpret_cast<char*>(&this->bytes[base]), static_cast<ptrdiff_t>(this->bytes.size()-base));
+    in.read(reinterpret_cast<char*>(&this->bytes.at(base)), static_cast<ptrdiff_t>(this->bytes.size()-base));
 }
 
 void Memory::powerOn() {
@@ -52,9 +52,9 @@ size_t Memory::size() const {
 }
 
 std::uint8_t Memory::read(const std::uint16_t address, const std::uint8_t data) const {
-    return (this->bytes[address] & ~this->missing_bits) | (data & this->missing_bits);
+    return (this->bytes.at(address) & ~this->missing_bits) | (data & this->missing_bits);
 }
 
 void Memory::write(const std::uint16_t address, const std::uint8_t data) {
-    this->bytes[address] = data;
+    this->bytes.at(address) = data;
 }
