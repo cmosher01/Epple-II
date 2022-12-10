@@ -116,6 +116,10 @@ bool WozFile::load(const std::filesystem::path& orig_file) {
     printf("Reading WOZ 2.0 file: %s\n", orig_file.c_str());
 
     std::filesystem::path filePath = valid_input_file(orig_file, wxGetApp().GetResDir());
+    if (filePath.empty()) {
+        printf("Error opening WOZ file.\n");
+        return false;
+    }
     std::ifstream *in = new std::ifstream(filePath, std::ios::binary|std::ios::in);
     if (!in->is_open()) {
         printf("Error opening file: %d\n", errno);

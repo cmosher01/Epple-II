@@ -18,6 +18,7 @@
 #ifndef CONFIGEP2_H
 #define CONFIGEP2_H
 
+#include <wx/string.h>
 #include <filesystem>
 #include <string>
 class Memory;
@@ -34,11 +35,19 @@ public:
     ConfigException(const std::string& msg) : msg(msg) {}
 };
 
+// TODO split out all static things into their own class (and don't make them static)
+// Remember that, besides config, also command line entry calls parseLine
+// This will also help with adding menu items in place of commands
 class Config {
 private:
     const std::filesystem::path file_path;
+    const bool prefs_only;
     static unsigned char disk_mask;
 
+    std::ifstream *openFile();
+    std::ifstream *openFilePref(const wxString& s_name);
+    std::ifstream *openFileExternal(const std::filesystem::path& path);
+    std::ifstream *openFileLegacy();
     static void loadDisk(Slots& slts, int slot, int drive, const std::string& fnib);
     static void unloadDisk(Slots& slts, int slot, int drive);
     static void saveDisk(Slots& slts, int slot, int drive);
@@ -46,7 +55,7 @@ private:
     static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 
 public:
-    Config(const std::filesystem::path& f);
+    Config(const std::filesystem::path& f, bool p);
     ~Config();
 
     void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);

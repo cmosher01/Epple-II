@@ -18,7 +18,7 @@
 #include "configep2.h"
 
 #include "E2wxApp.h"
-
+#include "e2filesystem.h"
 #include "apple2.h"
 #include "memory.h"
 #include "memoryrandomaccess.h"
@@ -36,6 +36,8 @@
 #include <wx/config.h>
 #include <wx/string.h>
 
+#include <boost/log/trivial.hpp>
+
 #include <iostream>
 #include <istream>
 #include <fstream>
@@ -44,6 +46,10 @@
 #include <string>
 #include <stdexcept>
 #include <cctype>
+
+
+
+static const wxString DEFAULT_CONFIG_NAME{"epple2"};
 
 
 
@@ -61,15 +67,11 @@ static std::uint16_t memory_block_size(const std::string &block_size) {
 
 
 
-unsigned char Config::disk_mask(0);
 
-Config::Config(const std::filesystem::path& f):
-    file_path(f)
-{
+Config::Config(const std::filesystem::path& f, bool p): file_path {f}, prefs_only {p} {
 }
 
-Config::~Config()
-{
+Config::~Config() {
 }
 
 static void strip_comment(std::string& str)
@@ -99,139 +101,210 @@ static void trim(std::string& str)
     }
 }
 
-void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
-{
-    std::ifstream* pConfig;
 
-    std::filesystem::path path(this->file_path);
 
-    if (!path.empty())
-    {
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-        {
-            // TODO use filename only and look in standard resources
-            std::stringstream ss;
-            ss << "Cannot open config file " << this->file_path;
-            throw std::runtime_error(ss.str());
+/*
+ * Searches for config file with the given name in the preferences areas.
+ * The name must not be a filesystem path.
+ * The actual config files themselves have ".conf" extension.
+ * The preferences areas are searched in this order:
+ * user area
+ * built-in area
+ *
+ * If successful, returns an open stream, caller is responsible for deleting it
+ * Otherwise, returns null
+ */
+std::ifstream *Config::openFilePref(const wxString& s_name) {
+    std::ifstream *ret = nullptr;
+
+
+
+    BOOST_LOG_TRIVIAL(info) << "config file name was specified as: " << s_name;
+    std::filesystem::path path_name = path_from_string(s_name);
+    if (path_name.has_parent_path()) {
+        BOOST_LOG_TRIVIAL(error) << "invalid name for config file (paths are not allowed): " << path_name.c_str();
+        return ret;
+    }
+
+    if (path_name.empty()) {
+        BOOST_LOG_TRIVIAL(error) << "invalid: empty name for config file";
+        return ret;
+    }
+
+    // required file extension for any file to be recognized as a config file
+    path_name = path_from_string(s_name+".conf");
+
+
+
+    std::filesystem::path path;
+
+    path = valid_input_file(path_name, wxGetApp().GetConfigDir());
+    if (!path.empty()) {
+        ret = new std::ifstream(path);
+        if (ret->is_open()) {
+            return ret; // Found specified config file in user area of preferences
         }
+        delete ret;
+        ret = nullptr;
+    }
+
+    path = valid_input_file(path_name, wxGetApp().GetResDir());
+    if (!path.empty()) {
+        ret = new std::ifstream(path);
+        if (ret->is_open()) {
+            return ret; // Found specified config file in built-in area of preferences
+        }
+        delete ret;
+        ret = nullptr;
     }
 
 
 
-    if (path.empty())
-    {
-        // TODO config file location, how to be backwardly compatible?
-        wxString user_config;
-        if (!wxConfigBase::Get()->Read("/ActivePreferences/name", &user_config)) {
-            // TODO what to do when no config?
-            user_config = "epple2";
-        }
-        user_config += ".conf";
-        std::filesystem::path user_path{user_config.wc_str()};
+    return ret;
+}
 
-        path = wxGetApp().GetConfigDir() / user_path;
-        std::cout << "looking for config file: " << path << std::endl;
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open()) {
-            path = wxGetApp().GetResDir() / user_path;
-            std::cout << "looking for config file: " << path << std::endl;
-            pConfig = new std::ifstream(path);
-            if (!pConfig->is_open()) {
-                path.clear();
+std::ifstream *Config::openFileExternal(const std::filesystem::path& path) {
+    std::ifstream *ret = nullptr;
+
+    const std::filesystem::path p = valid_input_file(path);
+    if (!p.empty()) {
+        ret = new std::ifstream(p);
+        if (ret->is_open()) {
+            return ret;
+        }
+        delete ret;
+        ret = nullptr;
+    }
+
+    return ret;
+}
+
+static const std::array rs_path_legacy{
+    "./etc/epple2/epple2.conf",
+    ETCDIR "/epple2/epple2.conf",
+    "/etc/epple2/epple2.conf",
+    "/etc/epple2.conf",
+    "./epple2.conf",
+};
+
+std::ifstream *Config::openFileLegacy() {
+    std::ifstream *ret = nullptr;
+
+    for (const auto &s_path_legacy : rs_path_legacy) {
+        if ((ret = openFileExternal(std::filesystem::path{s_path_legacy})) != nullptr) {
+            return ret;
+        }
+    }
+
+    return ret;
+}
+
+/*
+ * Algorithm to locate and open the configuration file, as specified by
+ * the user, either on command line, or via preferences, allowing for
+ * backward compatibility with legacy file locations.
+ */
+std::ifstream *Config::openFile() {
+    std::ifstream *ret = nullptr;
+
+    if (this->file_path.empty()) {
+        wxString cname{};
+        const bool stored_prefs_found = wxConfigBase::Get()->Read("/ActivePreferences/name", &cname, DEFAULT_CONFIG_NAME);
+
+        if (stored_prefs_found) {
+            ret = openFilePref(cname);
+            if (ret != nullptr) {
+                return ret;
+            }
+
+            if (!this->prefs_only) {
+                ret = openFileLegacy();
+                if (ret != nullptr) {
+                    return ret;
+                }
+            }
+        } else {
+            if (!this->prefs_only) {
+                ret = openFileLegacy();
+                if (ret != nullptr) {
+                    return ret;
+                }
+            }
+            ret = openFilePref(cname);
+            if (ret != nullptr) {
+                return ret;
             }
         }
+    } else {
+        if (!this->prefs_only) {
+            ret = openFileExternal(this->file_path);
+            if (ret != nullptr) {
+                return ret;
+            }
+        }
+        ret = openFilePref(this->file_path.c_str());
+        if (ret != nullptr) {
+            return ret;
+        }
     }
+
+    return ret;
+}
 
 
 
+void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
+    std::ifstream *p_ifstream_config = openFile();
 
-    if (path.empty())
-    {
-        std::cout << "standard config file location: " ETCDIR "/epple2/epple2.conf" << std::endl;
-
-        /*
-            On Windows, the default directory will be
-            C:\Program Files\Epple2 if they start the
-            program from the Start Menu; therefore
-            etc/epple2/epple2.conf would be
-            C:\Program Files\epple2\etc\epple2\epple2.conf
-            On Linux... the current directory could be
-            anything, so this probably won't find it (unless
-            the current directory is /).
-        */
-        path = "etc/epple2/epple2.conf";
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-            path.clear();
-    }
-    if (path.empty())
-    {
-        /*
-            This is primarily for Linux. If configured for
-            a PREFIX of "/usr/local", then this would be
-            /usr/local/etc/epple2/epple2.conf
-        */
-        path = ETCDIR "/epple2/epple2.conf";
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-            path.clear();
-    }
-    if (path.empty())
-    {
-        /*
-            Try a likely linux location
-        */
-        path = "/etc/epple2/epple2.conf";
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-            path.clear();
-    }
-    if (path.empty())
-    {
-        /*
-            Try another likely linux location
-        */
-        path = "/etc/epple2.conf";
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-            path.clear();
-    }
-    if (path.empty())
-    {
-        /*
-            Last effort to find it.
-        */
-        path = "epple2.conf";
-        pConfig = new std::ifstream(path);
-        if (!pConfig->is_open())
-            path.clear();
-    }
-    if (path.empty())
-    {
+    if (p_ifstream_config == nullptr) {
         std::cerr << "Cannot find config file. Running without any RAM, ROM, or cards." << std::endl;
         return;
     }
 
-    std::cout << "Reading configuration from file: " << path << std::endl;
-
     std::string line;
-    std::getline(*pConfig,line);
-    while (!pConfig->eof())
-    {
+    std::getline(*p_ifstream_config, line);
+    while (!p_ifstream_config->eof()) {
         strip_comment(line);
         trim(line);
-        if (!line.empty())
-        {
-            parseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut,apple2);
+        if (!line.empty()) {
+            // TODO "parseLine" will become Command::execute, or similar
+            parseLine(line, ram, rom, slts, revision, gui, cassetteIn, cassetteOut, apple2);
         }
-        std::getline(*pConfig,line);
+        std::getline(*p_ifstream_config, line);
     }
-    pConfig->close();
-    delete pConfig;
+
+    delete p_ifstream_config;
 
     // TODO: make sure there is no more than ONE stdin and/or ONE stdout card
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
 {
@@ -518,6 +591,12 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         apple2->useEpple2Cpu(); // set default CPU
     }
 }
+
+
+
+unsigned char Config::disk_mask(0);
+
+
 
 void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib)
 {

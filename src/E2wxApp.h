@@ -59,6 +59,7 @@ class E2wxApp : public wxApp {
     std::filesystem::path confdir;
     std::filesystem::path docsdir;
     std::filesystem::path arg_configfile;
+    bool opt_config_from_prefs_only;
     EmuTimer *emu_timer;
     Emulator *emu;
 

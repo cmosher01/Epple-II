@@ -221,6 +221,7 @@ if(APPLE)
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
         BUNDLE DESTINATION .)
     configure_file(share/FixBundle.cmake.in ${PROJECT_BINARY_DIR}/FixBundle.cmake @ONLY)
+#    TODO: how to make resources read-only (on Mac)
     install(SCRIPT ${PROJECT_BINARY_DIR}/FixBundle.cmake)
 elseif(WIN32)
     install(TARGETS ${APP_NAME}

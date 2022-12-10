@@ -178,7 +178,7 @@ bool E2wxApp::OnInit() {
 
 
     this->emu = new Emulator();
-    Config cfg(this->arg_configfile);
+    Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
     this->emu->config(cfg);
     this->emu->init();
     this->emu_timer = new EmuTimer(this->emu);
@@ -215,8 +215,8 @@ void E2wxApp::OnFatalException() {
 
 
 
-static const wxCmdLineEntryDesc cmdLineDesc[] =
-{
+static const wxCmdLineEntryDesc cmdLineDesc[] = {
+    { wxCMD_LINE_SWITCH, "p", "prefs", "Read config only from preferences, never an external file.", wxCMD_LINE_VAL_NONE },
     { wxCMD_LINE_PARAM,  NULL, NULL, "config-file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
     wxCMD_LINE_DESC_END
 };
@@ -230,6 +230,8 @@ bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
     if (!wxApp::OnCmdLineParsed(parser)) {
         return false;
     }
+
+    this->opt_config_from_prefs_only = parser.Found("p");
 
     const int n = parser.GetParamCount();
 

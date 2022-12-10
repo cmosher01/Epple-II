@@ -134,13 +134,7 @@ void PreferencesDialog::BuildItemTree() {
 }
 
 void PreferencesDialog::OnInit() {
-    wxConfigBase *appconf = wxConfigBase::Get();
-    if (!appconf->Read("/ActivePreferences/name", &this->active)) {
-        // TODO what to do when no config?
-        this->active = "epple2";
-        appconf->Write("/ActivePreferences/name", this->active);
-        appconf->Flush();
-    }
+    wxConfigBase::Get()->Read("/ActivePreferences/name", &this->active, "");
 
     wxXmlResource::Get()->LoadDialog(this, this->parent, "Preferences");
 
@@ -162,6 +156,8 @@ void PreferencesDialog::Save(const std::filesystem::path& to) {
         this->sOrigConfig = sConfig;
     }
 }
+
+// TODO: enable/disable the various buttons, etc. (currently all are enabled even if not functional)
 
 void PreferencesDialog::OnTreeSelectionChanged(wxTreeEvent& evt) {
     // note: we don't get the first select upon dialog creation,
