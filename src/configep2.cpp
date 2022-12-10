@@ -303,17 +303,10 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 
 
 
-
-
-
-void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
-{
-    try
-    {
-        tryParseLine(line,ram,rom,slts,revision,gui,cassetteIn,cassetteOut,apple2);
-    }
-    catch (const ConfigException& err)
-    {
+void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
+    try {
+        tryParseLine(line, ram, rom, slts, revision, gui, cassetteIn, cassetteOut, apple2);
+    }    catch (const ConfigException& err) {
         std::cerr << err.msg.c_str() << std::endl;
     }
 }
@@ -322,24 +315,21 @@ static std::string filter_row(const std::string &row) {
     if (row.length() != 1) {
         return "";
     }
-    return std::string(1, static_cast<char>(std::toupper(row[0])));
+    return std::string(1, static_cast<char> (std::toupper(row[0])));
 }
 
-void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2)
-{
+void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
     std::istringstream tok(line);
 
     std::string cmd;
     tok >> cmd;
-    if (cmd == "slot")
-    {
+    if (cmd == "slot") {
         int slot;
         std::string sCardType;
         tok >> slot >> sCardType;
 
-        insertCard(sCardType,slot,slts,gui,tok);
-    }
-    else if (cmd == "motherboard") {
+        insertCard(sCardType, slot, slts, gui, tok);
+    } else if (cmd == "motherboard") {
         std::string op;
         tok >> op;
         if (op == "ram") {
@@ -389,20 +379,15 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         } else {
             throw ConfigException("error at \"motherboard\"; expected \"ram\" or \"strap\"");
         }
-    }
-    else if (cmd == "import")
-    {
+    } else if (cmd == "import") {
         std::string sm;
         tok >> sm;
 
         int slot(-1);
-        if (sm == "slot")
-        {
+        if (sm == "slot") {
             tok >> slot;
-        }
-        else if (sm != "motherboard")
-        {
-            throw ConfigException("error at \""+sm+"\"; expected \"slot #\" or \"motherboard\"");
+        } else if (sm != "motherboard") {
+            throw ConfigException("error at \"" + sm + "\"; expected \"slot #\" or \"motherboard\"");
         }
 
         std::string romtype;
@@ -412,56 +397,45 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
         tok >> std::hex >> base;
 
         std::string file;
-        std::getline(tok,file);
+        std::getline(tok, file);
         trim(file);
-        std::ifstream *memfile = new std::ifstream(file.c_str(),std::ios::binary);
-        if (!memfile->is_open())
-        {
+        std::ifstream *memfile = new std::ifstream(file.c_str(), std::ios::binary);
+        if (!memfile->is_open()) {
             std::filesystem::path f = wxGetApp().GetResDir();
             f /= file;
-            memfile = new std::ifstream(f,std::ios::binary);
-            if (!memfile->is_open())
-            {
-                throw ConfigException("cannot open file "+file);
+            memfile = new std::ifstream(f, std::ios::binary);
+            if (!memfile->is_open()) {
+                throw ConfigException("cannot open file " + file);
             }
         }
 
         if (slot < 0) // motherboard
         {
-            if (romtype == "rom")
-            {
-                rom.load(base,*memfile);
+            if (romtype == "rom") {
+                rom.load(base, *memfile);
+            } else {
+                throw ConfigException("error at \"" + romtype + "\"; expected rom or ram");
             }
-            else
-            {
-                throw ConfigException("error at \""+romtype+"\"; expected rom or ram");
-            }
-        }
-        else
-        {
-            if (8 <= slot)
-            {
+        } else {
+            if (8 <= slot) {
                 throw ConfigException("invalid slot number");
             }
             Card* card = slts.get(slot);
             if (romtype == "rom")
-                card->loadRom(base,*memfile);
+                card->loadRom(base, *memfile);
             else if (romtype == "rom7")
-                card->loadSeventhRom(base,*memfile);
+                card->loadSeventhRom(base, *memfile);
             else if (romtype == "rombank")
-                card->loadBankRom(base,*memfile);
+                card->loadBankRom(base, *memfile);
             else
-                throw ConfigException("error at \""+romtype+"\"; expected rom, rom7, or rombank");
+                throw ConfigException("error at \"" + romtype + "\"; expected rom, rom7, or rombank");
         }
         memfile->close();
-    }
-    else if (cmd == "load" || cmd == "save" || cmd == "unload")
-    {
+    } else if (cmd == "load" || cmd == "save" || cmd == "unload") {
         std::string slotk;
         tok >> slotk;
-        if (slotk != "slot")
-        {
-            throw ConfigException("error at \""+slotk+"\"; expected \"slot\"");
+        if (slotk != "slot") {
+            throw ConfigException("error at \"" + slotk + "\"; expected \"slot\"");
         }
 
         int slot(-1);
@@ -469,22 +443,20 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
 
         std::string drivek;
         tok >> drivek;
-        if (drivek != "drive")
-        {
-            throw ConfigException("error at \""+drivek+"\"; expected \"drive\"");
+        if (drivek != "drive") {
+            throw ConfigException("error at \"" + drivek + "\"; expected \"drive\"");
         }
 
         int drive(-1);
         tok >> drive;
 
-        if (cmd == "load")
-        {
+        if (cmd == "load") {
             std::string fn_optional;
-            std::getline(tok,fn_optional);
+            std::getline(tok, fn_optional);
             trim(fn_optional);
             if (fn_optional.length() == 0) {
                 gui.exitFullScreen();
-                char const *ft[1] = { "*.woz" };
+                char const *ft[1] = {"*.woz"};
                 char const *fn = tinyfd_openFileDialog("Load floppy", "", 1, ft, "WOZ 2.0 disk images", 0);
                 if (fn) {
                     fn_optional = std::string(fn);
@@ -492,52 +464,37 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             }
             if (fn_optional.length() > 0) {
                 // TODO check if file exists, if not then check resources
-                loadDisk(slts,slot,drive,fn_optional);
+                loadDisk(slts, slot, drive, fn_optional);
             }
+        } else if (cmd == "unload") {
+            unloadDisk(slts, slot, drive);
+        } else if (cmd == "save") {
+            saveDisk(slts, slot, drive);
         }
-        else if (cmd == "unload")
-        {
-            unloadDisk(slts,slot,drive);
-        }
-        else if (cmd == "save")
-        {
-            saveDisk(slts,slot,drive);
-        }
-    }
-    else if (cmd == "revision")
-    {
+    } else if (cmd == "revision") {
         tok >> std::hex >> revision;
-    }
-    else if (cmd == "cassette")
-    {
+    } else if (cmd == "cassette") {
         std::string cas;
         tok >> cas;
 
-        if (cas == "rewind")
-        {
+        if (cas == "rewind") {
             cassetteIn.rewind();
-        }
-        else if (cas == "tone")
-        {
+        } else if (cas == "tone") {
             cassetteIn.tone();
-        }
-        else if (cas == "blank")
-        {
+        } else if (cas == "blank") {
             std::string fcas;
-            std::getline(tok,fcas);
+            std::getline(tok, fcas);
             trim(fcas);
             if (!fcas.empty()) {
                 cassetteOut.blank(fcas);
             }
-        }
-        else if (cas == "load")
-        {
+        } else if (cas == "load") {
             std::string fn_optional;
-            std::getline(tok,fn_optional);
+            std::getline(tok, fn_optional);
             trim(fn_optional);
             if (fn_optional.length() == 0) {
                 gui.exitFullScreen();
-                char const *ft[1] = { "*.wav" };
+                char const *ft[1] = {"*.wav"};
                 char const *fn = tinyfd_openFileDialog("Load cassette audio", "", 1, ft, "WAVE cassette images", 0);
                 if (fn) {
                     fn_optional = std::string(fn);
@@ -546,9 +503,7 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             if (fn_optional.length() > 0) {
                 cassetteIn.load(fn_optional);
             }
-        }
-        else if (cas == "eject")
-        {
+        } else if (cas == "eject") {
             std::string eject;
             tok >> eject;
             if (eject == "in") {
@@ -556,20 +511,14 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             } else if (eject == "out") {
                 cassetteOut.eject();
             } else {
-                throw ConfigException("error: unknown cassette to eject: "+eject);
+                throw ConfigException("error: unknown cassette to eject: " + eject);
             }
-        }
-        else if (cas == "save")
-        {
+        } else if (cas == "save") {
             cassetteOut.save();
+        } else {
+            throw ConfigException("error: unknown cassette command: " + cas);
         }
-        else
-        {
-            throw ConfigException("error: unknown cassette command: "+cas);
-        }
-    }
-    else if (cmd == "cpu")
-    {
+    } else if (cmd == "cpu") {
         std::string cpu;
         tok >> cpu;
         if (apple2 != NULL) {
@@ -578,13 +527,11 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             } else if (cpu == "visual6502") {
                 apple2->useVisual6502Cpu();
             } else {
-                throw ConfigException("invalid value for cpu command: "+cpu);
+                throw ConfigException("invalid value for cpu command: " + cpu);
             }
         }
-    }
-    else
-    {
-        throw ConfigException("Invalid command: "+cmd);
+    } else {
+        throw ConfigException("Invalid command: " + cmd);
     }
 
     if (apple2 != NULL) {
@@ -596,58 +543,46 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
 
 unsigned char Config::disk_mask(0);
 
-
-
-void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib)
-{
-    if (drive < 1 || 2 < drive)
-    {
+void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib) {
+    if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
 
     // TODO if file doesn't exist, name still gets displayed, and there's no error message
     Card* card = slts.get(slot);
-    if (!(disk_mask & (1 << slot)))
-    {
+    if (!(disk_mask & (1 << slot))) {
         std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
         return;
     }
 
-    DiskController* controller = (DiskController*)card;
-    controller->loadDisk(drive-1,fnib);
+    DiskController* controller = (DiskController*) card;
+    controller->loadDisk(drive - 1, fnib);
 }
 
-void Config::unloadDisk(Slots& slts, int slot, int drive)
-{
-    if (drive < 1 || 2 < drive)
-    {
+void Config::unloadDisk(Slots& slts, int slot, int drive) {
+    if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
 
     Card* card = slts.get(slot);
-    if (!(disk_mask & (1 << slot)))
-    {
+    if (!(disk_mask & (1 << slot))) {
         std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
         return;
     }
 
-    DiskController* controller = (DiskController*)card;
-    controller->unloadDisk(drive-1);
+    DiskController* controller = (DiskController*) card;
+    controller->unloadDisk(drive - 1);
 }
 
-void Config::saveDisk(Slots& slts, int slot, int drive)
-{
-    if (drive < 1 || 2 < drive)
-    {
+void Config::saveDisk(Slots& slts, int slot, int drive) {
+    if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
-    slts.get(slot)->save(drive-1);
+    slts.get(slot)->save(drive - 1);
 }
 
-void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok)
-{
-    if (slot < 0 || 8 <= slot)
-    {
+void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok) {
+    if (slot < 0 || 8 <= slot) {
         throw ConfigException("Invalid slot number");
     }
 
@@ -655,53 +590,39 @@ void Config::insertCard(const std::string& cardType, int slot, Slots& slts, Scre
 
     disk_mask &= ~(1 << slot);
 
-    if (cardType == "language")
-    {
-        card = new LanguageCard(gui,slot);
-    }
-    else if (cardType == "firmware")
-    {
-        card = new FirmwareCard(gui,slot);
-    }
-    else if (cardType == "disk") // 16-sector LSS ROM
-    {
+    if (cardType == "language") {
+        card = new LanguageCard(gui, slot);
+    } else if (cardType == "firmware") {
+        card = new FirmwareCard(gui, slot);
+    } else if (cardType == "disk") {
+        // 16-sector LSS ROM
         double random_ones_rate(0.3); // WOZ spec v2.0: 30%
         tok >> random_ones_rate;
         std::cerr << "MC3470: rate of 1 bits during random bit generation: " << random_ones_rate << std::endl;
-        card = new DiskController(gui,slot,false,random_ones_rate);
+        card = new DiskController(gui, slot, false, random_ones_rate);
         disk_mask |= (1 << slot);
-    }
-    else if (cardType == "disk13") // 13-sector LSS ROM
-    {
+    } else if (cardType == "disk13") {
+        // 13-sector LSS ROM
         double random_ones_rate(0.3); // WOZ spec v2.0: 30%
         tok >> random_ones_rate;
         std::cerr << "MC3470: rate of 1 bits during random bit generation: " << random_ones_rate << std::endl;
-        card = new DiskController(gui,slot,true,random_ones_rate);
+        card = new DiskController(gui, slot, true, random_ones_rate);
         disk_mask |= (1 << slot);
-    }
-    else if (cardType == "clock")
-    {
+    } else if (cardType == "clock") {
         card = new ClockCard();
-    }
-    else if (cardType == "stdout")
-    {
+    } else if (cardType == "stdout") {
         card = new StandardOut();
-    }
-    else if (cardType == "stdin")
-    {
+    } else if (cardType == "stdin") {
         card = new StandardIn();
-    }
-    else if (cardType == "empty")
-    {
+    } else if (cardType == "empty") {
         card = 0;
-    }
-    else
-    {
-        throw ConfigException("Invalid card type: "+cardType);
+    } else {
+        throw ConfigException("Invalid card type: " + cardType);
     }
 
-    if (card)
-        slts.set(slot,card);
-    else
+    if (card) {
+        slts.set(slot, card);
+    } else {
         slts.remove(slot);
+    }
 }
