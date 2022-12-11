@@ -123,12 +123,12 @@ std::ifstream *Config::openFilePref(const wxString& s_name) {
     BOOST_LOG_TRIVIAL(info) << "config file name was specified as: " << s_name;
     std::filesystem::path path_name = path_from_string(s_name);
     if (path_name.has_parent_path()) {
-        BOOST_LOG_TRIVIAL(error) << "invalid name for config file (paths are not allowed): " << path_name.c_str();
+        BOOST_LOG_TRIVIAL(warning) << "invalid name for config file (paths are not allowed): " << path_name.c_str();
         return ret;
     }
 
     if (path_name.empty()) {
-        BOOST_LOG_TRIVIAL(error) << "invalid: empty name for config file";
+        BOOST_LOG_TRIVIAL(warning) << "invalid: empty name for config file";
         return ret;
     }
 
@@ -191,11 +191,13 @@ static const std::array rs_path_legacy{
 std::ifstream *Config::openFileLegacy() {
     std::ifstream *ret = nullptr;
 
+    BOOST_LOG_TRIVIAL(warning) << "Searching for config file in legacy locations...";
     for (const auto &s_path_legacy : rs_path_legacy) {
         if ((ret = openFileExternal(std::filesystem::path{s_path_legacy})) != nullptr) {
             return ret;
         }
     }
+    BOOST_LOG_TRIVIAL(warning) << "Could not file config file in any legacy locations.";
 
     return ret;
 }
@@ -209,6 +211,8 @@ std::ifstream *Config::openFile() {
     std::ifstream *ret = nullptr;
 
     if (this->file_path.empty()) {
+        BOOST_LOG_TRIVIAL(info) << "No config file specified on command line.";
+
         wxString cname{};
         const bool stored_prefs_found = wxConfigBase::Get()->Read("/ActivePreferences/name", &cname, DEFAULT_CONFIG_NAME);
 
@@ -217,6 +221,7 @@ std::ifstream *Config::openFile() {
             if (ret != nullptr) {
                 return ret;
             }
+            BOOST_LOG_TRIVIAL(warning) << "Could not find the previously chosen active config file: " << cname.wc_str();
 
             if (!this->prefs_only) {
                 ret = openFileLegacy();
@@ -226,6 +231,7 @@ std::ifstream *Config::openFile() {
             }
         } else {
             if (!this->prefs_only) {
+                BOOST_LOG_TRIVIAL(warning) << "User has not specified any active config file.";
                 ret = openFileLegacy();
                 if (ret != nullptr) {
                     return ret;
@@ -237,17 +243,23 @@ std::ifstream *Config::openFile() {
             }
         }
     } else {
+        BOOST_LOG_TRIVIAL(info) << "Config file specified on command line as: " << this->file_path.c_str();
+
         if (!this->prefs_only) {
+            BOOST_LOG_TRIVIAL(info) << "Searching for external configuration file.";
             ret = openFileExternal(this->file_path);
             if (ret != nullptr) {
                 return ret;
             }
         }
+
         ret = openFilePref(this->file_path.c_str());
         if (ret != nullptr) {
             return ret;
         }
     }
+
+    BOOST_LOG_TRIVIAL(warning) << "Could not find any config file.";
 
     return ret;
 }

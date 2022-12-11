@@ -14,8 +14,7 @@
 #include <wx/filename.h>
 #include <boost/log/trivial.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <iostream>
-#include <ostream>
+#include <filesystem>
 #include <fstream>
 #include <sstream>
 
@@ -226,20 +225,30 @@ const std::filesystem::path BuildNewConfFilePath() {
 }
 
 void PreferencesDialog::OnActive(wxCommandEvent& evt) {
+    CTRL(wxTreeCtrl, treItems);
+    const TreeItemData *data = (TreeItemData*)treItems->GetItemData(treItems->GetSelection());
+    if (!data->isFile()) {
+        return;
+    }
+
+    if (data->isEditable()) {
+        Save(data->path());
+    }
+
+    const std::filesystem::path p = data->path();
     if (evt.IsChecked()) {
-        CTRL(wxTreeCtrl, treItems);
-        const TreeItemData *data = (TreeItemData*)treItems->GetItemData(treItems->GetSelection());
-        if (data->isFile()) {
-            const std::filesystem::path p = data->path();
-            wxString name = wxFileName::FileName(p.c_str()).GetName();
-            this->active = name;
-            std::cout << "setting current active config file to: " << this->active << std::endl;
-            wxConfigBase::Get()->Write("/ActivePreferences/name", this->active);
-            BuildItemTree(); // invalidates "data" pointer variable
-            PreSelectUserConfigItemName(p);
-        }
+        wxString name = wxFileName::FileName(p.c_str()).GetName();
+        this->active = name;
+        BOOST_LOG_TRIVIAL(info) << "setting current active config file to: " << this->active;
+        wxConfigBase::Get()->Write("/ActivePreferences/name", this->active);
+        BuildItemTree(); // invalidates "data" pointer variable
+        PreSelectUserConfigItemName(p);
     } else {
-        // TODO what if they uncheck the active checkbox?
+        this->active = "";
+        BOOST_LOG_TRIVIAL(info) << "removing active config file from settings";
+        wxConfigBase::Get()->DeleteEntry("/ActivePreferences/name");
+        BuildItemTree(); // invalidates "data" pointer variable
+        PreSelectUserConfigItemName(p);
     }
 }
 
@@ -298,6 +307,7 @@ void PreferencesDialog::OnRename(wxCommandEvent& evt) {
                 wxFileName fn(data->path().c_str());
                 fn.SetName(newname);
                 // TODO should we check for existence of name in built-in (to prevent override)?
+                // TODO handle case when renaming the currently active file
                 if (fn.Exists()) {
                     wxMessageBox("That name is already being used.", "File exists", wxOK|wxCENTER, this);
                 } else {
