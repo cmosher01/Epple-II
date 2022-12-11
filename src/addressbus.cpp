@@ -156,23 +156,23 @@ void AddressBus::readSwitch(unsigned short address) {
         this->data = this->slts.io(islot, iswch, this->data, false);
         ///////////////////////////////////////////////
         // debug raw nibble disk reads
-        if (islot==6 && ((this->data & 0x80u) != 0u)) {
-            if (debugfirst) {
-                debugfirst = false;
-                for (int i = 0; i < 128; ++i) {
-                    printf("%02X", i);
-                }
-                printf("\n");
-            }
-            printf("%02X", this->data);
-            ++debugoutpos;
-            if (128 <= debugoutpos) {
-                debugoutpos = 0;
-                printf("\n");
+//        if (islot==6 && ((this->data & 0x80u) != 0u)) {
+//            if (debugfirst) {
+//                debugfirst = false;
+//                for (int i = 0; i < 128; ++i) {
+//                    printf("%02X", i);
+//                }
+//                printf("\n");
+//            }
+//            printf("%02X", this->data);
+//            ++debugoutpos;
+//            if (128 <= debugoutpos) {
+//                debugoutpos = 0;
+//                printf("\n");
 //                DiskController* dsk = (DiskController*)(this->slts.get(6));
 //                dsk->dumpLss();
-            }
-        }
+//            }
+//        }
         ///////////////////////////////////////////////
     }
 }

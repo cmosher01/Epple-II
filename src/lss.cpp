@@ -22,19 +22,11 @@
 #include <algorithm>
 #include <iterator>
 
-static void setcmd(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t cmd) {
-    lssrom.at(x) = (lssrom.at(x) & 0xF0u) | cmd;
-}
 
-static void setseq(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t seq) {
-    lssrom.at(x) = (lssrom.at(x) & 0x0Fu) | seq;
-}
 
-static void setbth(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t both) {
-    lssrom.at(x) = both;
-}
 
-static void inst(std::uint8_t seq, std::uint8_t inst) {
+
+static void inst_sym(std::uint8_t seq, std::uint8_t inst) {
     const std::uint8_t next_seq((inst & 0xF0u) >> 4);
     const bool stdseq((seq == 0x0Fu && next_seq == 0x00u) || next_seq == seq+1);
     const std::uint8_t cmd(inst & 0x0Fu);
@@ -71,32 +63,87 @@ static void inst(std::uint8_t seq, std::uint8_t inst) {
     printf(" ");
 }
 
-static void showua2seq(const std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t seq) {
+static void inst_hex(std::uint8_t seq, std::uint8_t inst) {
+    const std::uint8_t next_seq((inst & 0xF0u) >> 4);
+    const bool stdseq((seq == 0x0Fu && next_seq == 0x00u) || next_seq == seq+1);
+    const std::uint8_t cmd(inst & 0x0Fu);
+
+    printf("%02X    ", inst);
+}
+
+static void inst(std::uint8_t seq, std::uint8_t inst, bool sym = true) {
+    if (sym) {
+        inst_sym(seq, inst);
+    } else {
+        inst_hex(seq, inst);
+    }
+}
+
+static void showua2seq(const std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t seq, bool sym = true) {
     const std::uint8_t s(seq >> 4);
     printf("%1X: | ", s);
-    inst(s,lssrom.at(seq|0x9));
-    inst(s,lssrom.at(seq|0xB));
-    inst(s,lssrom.at(seq|0xD));
-    inst(s,lssrom.at(seq|0xF));
+    inst(s,lssrom.at(seq|0x9),sym);
+    inst(s,lssrom.at(seq|0xB),sym);
+    inst(s,lssrom.at(seq|0xD),sym);
+    inst(s,lssrom.at(seq|0xF),sym);
     printf("| ");
-    inst(s,lssrom.at(seq|0x8));
-    inst(s,lssrom.at(seq|0xA));
-    inst(s,lssrom.at(seq|0xC));
-    inst(s,lssrom.at(seq|0xE));
+    inst(s,lssrom.at(seq|0x8),sym);
+    inst(s,lssrom.at(seq|0xA),sym);
+    inst(s,lssrom.at(seq|0xC),sym);
+    inst(s,lssrom.at(seq|0xE),sym);
     printf("| ");
-    inst(s,lssrom.at(seq|0x1));
-    inst(s,lssrom.at(seq|0x0));
-    inst(s,lssrom.at(seq|0x3));
-    inst(s,lssrom.at(seq|0x2));
+    inst(s,lssrom.at(seq|0x1),sym);
+    inst(s,lssrom.at(seq|0x0),sym);
+    inst(s,lssrom.at(seq|0x3),sym);
+    inst(s,lssrom.at(seq|0x2),sym);
     printf("| ");
-    inst(s,lssrom.at(seq|0x5));
-    inst(s,lssrom.at(seq|0x4));
-    inst(s,lssrom.at(seq|0x7));
-    inst(s,lssrom.at(seq|0x6));
+    inst(s,lssrom.at(seq|0x5),sym);
+    inst(s,lssrom.at(seq|0x4),sym);
+    inst(s,lssrom.at(seq|0x7),sym);
+    inst(s,lssrom.at(seq|0x6),sym);
     printf("\n");
     if (s == 7) {
         printf("   +-------------------------+-------------------------+-------------------------+------------------------\n");
     }
+}
+
+void LSS::dump() const {
+    printf("%s\n", "Disk ][ Controller Logic State Sequencer ROM:");
+    if (this->use13Sector) {
+        printf("%s\n", "for 13-sector disks");
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(this->lss13rom,seq);
+        }
+//        printf("%s\n", "===================================================");
+//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+//            showua2seq(this->lss13rom,seq,false);
+//        }
+    } else {
+        printf("%s\n", "for 16-sector disks");
+        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+            showua2seq(this->lssrom,seq);
+        }
+//        printf("%s\n", "===================================================");
+//        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
+//            showua2seq(this->lssrom,seq,false);
+//        }
+    }
+}
+
+
+
+
+
+static void setcmd(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t cmd) {
+    lssrom.at(x) = (lssrom.at(x) & 0xF0u) | cmd;
+}
+
+static void setseq(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t seq) {
+    lssrom.at(x) = (lssrom.at(x) & 0x0Fu) | seq;
+}
+
+static void setbth(std::array<std::uint8_t, 0x100> &lssrom, std::uint8_t x, std::uint8_t both) {
+    lssrom.at(x) = both;
 }
 
 LSS::LSS(bool use13SectorDos32LSS):
@@ -230,77 +277,6 @@ LSS::LSS(bool use13SectorDos32LSS):
 LSS::~LSS() {
 }
 
-void LSS::dump() const {
-    printf("%s\n", "Disk ][ Controller Logic State Sequencer ROM:");
-    if (this->use13Sector) {
-        printf("%s\n", "for 13-sector disks");
-        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-            showua2seq(this->lss13rom,seq);
-        }
-//        printf("%s\n", "===================================================");
-//        for (int r = 0; r < 0x10; ++r) {
-//            for (int c = 0; c < 0x10; ++c) {
-//                printf("%02X ", this->lss13rom.at(r*0x10+c));
-//            }
-//            printf("\n");
-//        }
-    } else {
-        printf("%s\n", "for 16-sector disks");
-        for (unsigned int seq = 0; seq < 0x100u; seq += 0x10u) {
-            showua2seq(this->lssrom,seq);
-        }
-//        printf("%s\n", "===================================================");
-//        for (int r = 0; r < 0x10; ++r) {
-//            for (int c = 0; c < 0x10; ++c) {
-//                printf("%02X ", this->lssrom.at(r*0x10+c));
-//            }
-//            printf("\n");
-//        }
-    }
-}
-
-/*
- * AA 10101010
- * AE 10101110
-
- * B6 10110110
- * BA 10111010
- * BE 10111110
-
- * D6 11010110
- * DA 11011010
- * DE 11011110
-
- * EA 11101010
- * EE 11101110
-
- * F6 11110110
- * FA 11111010
- * FE 11111110
- */
-
-std::uint8_t LSS::read(const std::uint8_t addr) {
-    int i = addr;
-    i &= 0x000000FF;
-    if (0x100 <= i) {
-        throw std::runtime_error("bad lss ROM read");
-    }
-
-    //return use13Sector ? lss13rom[addr] : lssrom[addr];
-    std::uint8_t r = 0;
-    if (this->use13Sector) {
-        const std::uint8_t candidate = this->lss13rom.at(i);
-        if (candidate == 0x44u) {
-            throw std::runtime_error("attempt to read uninitialized LSS ROM");
-        }
-        r = candidate;
-    } else {
-        const std::uint8_t candidate = this->lssrom.at(i);
-        if (candidate == 0x44u) {
-            throw std::runtime_error("attempt to read uninitialized LSS ROM");
-        }
-        r = candidate;
-    }
-
-    return r;
+std::uint8_t LSS::read(const std::uint8_t addr) const {
+    return this->use13Sector ? this->lss13rom.at(addr) : this->lssrom.at(addr);
 }

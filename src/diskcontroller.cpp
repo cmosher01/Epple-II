@@ -109,15 +109,14 @@ void DiskController::tick() {
 
 
     // run two LSS cycles = 2MHz
-
+    rotateCurrentDisk();
+    stepLss();
     rotateCurrentDisk();
     stepLss();
 
-    // pulse lasts only 500 nanoseconds (1 LSS clock cycle), so clear it now:
+
+
     this->currentDrive->clearPulse();
-
-    rotateCurrentDisk();
-    stepLss();
 }
 
 void DiskController::rotateCurrentDisk() {

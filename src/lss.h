@@ -34,7 +34,7 @@ public:
     LSS(bool use13SectorDos32LSS);
     ~LSS();
 
-    std::uint8_t read(const std::uint8_t addr);
+    std::uint8_t read(const std::uint8_t addr) const;
     void dump() const;
 };
 
