@@ -18,7 +18,8 @@
 #include "emulator.h"
 #include "configep2.h"
 #include "e2const.h"
-#include "tinyfiledialogs.h"
+
+#include <wx/msgdlg.h>
 
 #include <SDL.h>
 
@@ -482,6 +483,16 @@ void Emulator::processCommand() {
     cmdline.erase(cmdline.begin(), cmdline.end());
 }
 
+static int askSave() {
+    wxMessageDialog *dlg = new wxMessageDialog{
+        nullptr,
+        "You have unsaved changes to your floppy disk images.\nDo you want to SAVE them?",
+        "Save changes",
+        wxYES_NO|wxCANCEL|wxCANCEL_DEFAULT};
+
+    return dlg->ShowModal();
+}
+
 bool Emulator::isSafeToQuit() {
     if (!this->apple2.cassetteOut.eject()) {
         return false;
@@ -491,18 +502,13 @@ bool Emulator::isSafeToQuit() {
         return true;
     }
 
-    const int resp = tinyfd_messageBox(
-        "Save changes",
-        "You have unsaved changes to your floppy disk images.\nDo you want to SAVE them?",
-        "yesnocancel",
-        "warning",
-        0);
+    const int resp = askSave();
 
-    if (resp == 0) { // cancel
+    if (resp == wxID_CANCEL) {
         return false;
     }
 
-    if (resp == 1) { // yes (save)
+    if (resp == wxID_YES) {
         this->apple2.slts.save(0);
         this->apple2.slts.save(1);
     }

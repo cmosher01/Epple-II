@@ -10,7 +10,7 @@ Copyright © 2008–2022, Christopher Alan Mosher, Shelton, Connecticut, USA, <c
 
 See file [`LICENSE.other`](LICENSE.other) for additional copyright notices.
 
-Please note this project is released with a Contributor  Code of Conduct. By
+Please note this project is released with a Contributor Code of Conduct. By
 participating in this project you agree to abide by its terms.
 
 ---

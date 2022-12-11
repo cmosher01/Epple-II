@@ -30,7 +30,7 @@
 #include <system_error>
 
 static void log_ec(const std::error_code& ec) {
-    BOOST_LOG_TRIVIAL(error) << "error: " << ec.value() << " " << ec.message();
+    BOOST_LOG_TRIVIAL(warning) << "error from native file-system: " << ec.value() << " " << ec.message();
 }
 
 std::filesystem::path valid_input_file(const std::filesystem::path path, const std::filesystem::path base) {
@@ -69,11 +69,11 @@ std::filesystem::path valid_input_file(const std::filesystem::path path, const s
     }
 
     if (!exists) {
-        BOOST_LOG_TRIVIAL(error) << "can't find file: " << p.c_str();
+        BOOST_LOG_TRIVIAL(warning) << "can't find file: " << p.c_str();
         p = std::filesystem::weakly_canonical(p, ec);
         if (ec) {
             log_ec(ec);
-            BOOST_LOG_TRIVIAL(error) << "can't determine canonical path.";
+            BOOST_LOG_TRIVIAL(warning) << "can't determine canonical path.";
         } else {
             BOOST_LOG_TRIVIAL(info) << "...canonical file path was: " << p.c_str();
         }
@@ -88,7 +88,7 @@ std::filesystem::path valid_input_file(const std::filesystem::path path, const s
     std::filesystem::path cp = std::filesystem::canonical(p, ec);
     if (ec) {
         log_ec(ec);
-        BOOST_LOG_TRIVIAL(error) << "can't determine canonical path, continuing anyway...";
+        BOOST_LOG_TRIVIAL(warning) << "can't determine canonical path, continuing anyway...";
     } else {
         BOOST_LOG_TRIVIAL(info) << "...canonical file path was: " << cp;
     }
@@ -102,7 +102,7 @@ std::filesystem::path valid_input_file(const std::filesystem::path path, const s
     }
 
     if (!regular) {
-        BOOST_LOG_TRIVIAL(error) << "not a regular file";
+        BOOST_LOG_TRIVIAL(warning) << "not a regular file";
         p.clear();
         return p;
     }

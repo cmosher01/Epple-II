@@ -16,12 +16,16 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+#include "cassette.h"
+#include "e2const.h"
+
+#include <wx/msgdlg.h>
+
 #include <fstream>
 #include <iostream>
 #include <cstdlib>
-#include "tinyfiledialogs.h"
-#include "cassette.h"
-#include "e2const.h"
+
+
 
 Cassette::Cassette(ScreenImage& gui):
     gui(gui),
@@ -56,25 +60,25 @@ void Cassette::tick() {
 
 
 
-// 0=cancel(abort), 1=yes(save), 2=no(discard)
 static int askSave() {
-    return tinyfd_messageBox(
-        "Save changes",
+    wxMessageDialog *dlg = new wxMessageDialog{
+        nullptr,
         "You have unsaved changes to your tape image.\nDo you want to SAVE them?",
-        "yesnocancel",
-        "warning",
-        0);
+        "Save changes",
+        wxYES_NO|wxCANCEL|wxCANCEL_DEFAULT};
+
+    return dlg->ShowModal();
 }
 
 bool Cassette::eject() {
     if (isLoaded()) {
         if (isModified()) {
             const int resp = askSave();
-            if (resp == 0) { // cancel
+            if (resp == wxID_CANCEL) {
                 return false;
             }
 
-            if (resp == 1) { // yes (save)
+            if (resp == wxID_YES) {
                 if (!write()) {
                     return false;
                 }
@@ -97,6 +101,8 @@ void Cassette::save() {
             if (write()) {
                 this->modified = false;
                 this->gui.setCassetteDirty(false);
+            } else {
+                // TODO show error messsage
             }
         }
     }

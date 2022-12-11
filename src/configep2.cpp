@@ -31,7 +31,6 @@
 #include "clockcard.h"
 #include "cassettein.h"
 #include "cassetteout.h"
-#include "tinyfiledialogs.h"
 
 #include <wx/filedlg.h>
 #include <wx/config.h>
@@ -217,11 +216,12 @@ std::ifstream *Config::openFile() {
         const bool stored_prefs_found = wxConfigBase::Get()->Read("/ActivePreferences/name", &cname, DEFAULT_CONFIG_NAME);
 
         if (stored_prefs_found) {
+            BOOST_LOG_TRIVIAL(info) << "Will use config file name currently marked as active by the user: " << cname.wc_str();
             ret = openFilePref(cname);
             if (ret != nullptr) {
                 return ret;
             }
-            BOOST_LOG_TRIVIAL(warning) << "Could not find the previously chosen active config file: " << cname.wc_str();
+            BOOST_LOG_TRIVIAL(warning) << "Could not find the config file currently marked as active by the user: " << cname.wc_str();
 
             if (!this->prefs_only) {
                 ret = openFileLegacy();
@@ -505,10 +505,9 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
             trim(fn_optional);
             if (fn_optional.length() == 0) {
                 gui.exitFullScreen();
-                char const *ft[1] = {"*.wav"};
-                char const *fn = tinyfd_openFileDialog("Load cassette audio", "", 1, ft, "WAVE cassette images", 0);
-                if (fn) {
-                    fn_optional = std::string(fn);
+                wxFileDialog dlg{nullptr, "Load cassette (audio)", "", "", "WAVE cassette images (*.wav)|*.wav", wxFD_OPEN|wxFD_FILE_MUST_EXIST};
+                if (dlg.ShowModal() == wxID_OK) {
+                    fn_optional = dlg.GetPath().c_str();
                 }
             }
             if (fn_optional.length() > 0) {

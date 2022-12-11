@@ -152,7 +152,7 @@ bool E2wxApp::OnInit() {
     BOOST_LOG_TRIVIAL(info) << "User document directory path: " << this->docsdir;
 
     const std::filesystem::path exe = path_from_string(stdpaths.GetExecutablePath());
-    std::cout << "Executable         file path: " << exe << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "Executable         file path: " << exe;
     std::filesystem::path res = exe.parent_path();
     if (res.filename() == "bin" || res.filename() == "MacOS") {
         res = res.parent_path();
@@ -164,7 +164,7 @@ bool E2wxApp::OnInit() {
         res /= "Resources";
     }
     this->resdir = res;
-    std::cout << "Resource      directory path: " << this->resdir.c_str() << std::endl;
+    BOOST_LOG_TRIVIAL(info) << "Resource      directory path: " << this->resdir;
 
     wxXmlResource::Get()->InitAllHandlers();
     if (!wxXmlResource::Get()->LoadAllFiles(this->resdir.c_str())) {
@@ -179,12 +179,7 @@ bool E2wxApp::OnInit() {
 
 
 
-    this->emu = new Emulator();
-    Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
-    this->emu->config(cfg);
-    this->emu->init();
-    this->emu_timer = new EmuTimer(this->emu);
-    this->emu_timer->begin();
+    StartEmulator();
 
 
 
@@ -237,11 +232,11 @@ bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
 
     const int n = parser.GetParamCount();
 
-    if (n <= 0) {
-        std::cout << "no config file specified on the command line; will use config file specified in user-preferences" << std::endl;
-    } else {
+    if (n == 1) {
         this->arg_configfile = path_from_string(parser.GetParam(0));
-        std::cout << "using config file specified on the command line: " << this->arg_configfile.c_str() << std::endl;
+    } else if (1 < n) {
+        // should never happen, anyway
+        return false;
     }
 
     return true;
@@ -297,7 +292,7 @@ const std::filesystem::path E2wxApp::BuildLogFilePath() const {
 void E2wxApp::InitBoostLog() {
     this->logfile = BuildLogFilePath();
 
-    std::cout << "log file: " << this->logfile << std::endl;
+    std::cerr << "log file: " << this->logfile << std::endl;
 
 
 
@@ -312,4 +307,15 @@ void E2wxApp::InitBoostLog() {
             ));
 
     boost::log::add_common_attributes();
+}
+
+
+
+void E2wxApp::StartEmulator() {
+    this->emu = new Emulator();
+    Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
+    this->emu->config(cfg);
+    this->emu->init();
+    this->emu_timer = new EmuTimer(this->emu);
+    this->emu_timer->begin();
 }

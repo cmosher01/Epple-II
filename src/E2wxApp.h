@@ -65,6 +65,7 @@ class E2wxApp : public wxApp {
 
     const std::filesystem::path BuildLogFilePath() const;
     void InitBoostLog();
+    void StartEmulator();
 
 public:
     E2wxApp();
