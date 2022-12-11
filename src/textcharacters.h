@@ -30,7 +30,7 @@ public:
     ~TextCharacters() {}
     unsigned char get(unsigned int iRow)
     {
-        return this->rows[iRow];
+        return this->rows.at(iRow);
     }
 };
 

@@ -20,22 +20,22 @@
 #ifndef LSS_H
 #define LSS_H
 
+#include <stdexcept>
+#include <array>
 #include <cstdint>
 
-class LSS
-{
+class LSS {
 private:
-    bool use13Sector;
-    std::uint8_t lssrom[0x100];
-    std::uint8_t lss13rom[0x100];
+    const bool use13Sector;
+    std::array<std::uint8_t, 0x100> lss13rom;
+    std::array<std::uint8_t, 0x100> lssrom;
 
 public:
     LSS(bool use13SectorDos32LSS);
     ~LSS();
 
-    std::uint8_t read(const std::uint8_t addr) {
-        return use13Sector ? lss13rom[addr] : lssrom[addr];
-    }
+    std::uint8_t read(const std::uint8_t addr);
+    void dump() const;
 };
 
 #endif

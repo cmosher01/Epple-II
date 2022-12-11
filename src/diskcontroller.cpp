@@ -26,8 +26,11 @@ DiskController::DiskController(ScreenImage& gui, int slot, bool lss13, double ra
     load(false),
     write(false),
     ioStepped(false),
+    dataBusReadOnlyCopy(0),
     lssp6rom(lss13),
+    dataRegister(0),
     seq(0x20), // gotta start somewhere
+    prev_seq(seq),
     t(0) {
 }
 
@@ -125,6 +128,8 @@ void DiskController::rotateCurrentDisk() {
     }
 }
 
+enum lss_cmd { NOP, SL, SR, LD };
+
 void DiskController::stepLss() {
     std::uint8_t adr = this->write<<3 | this->load<<2 | (this->dataRegister>>7)<<1 | this->currentDrive->readPulse();
     std::uint8_t cmd = this->lssp6rom.read(this->seq|adr);
@@ -140,14 +145,14 @@ void DiskController::stepLss() {
             }
         }
         switch (cmd & 3u) {
-        case 3:
+        case LD:
             this->dataRegister = this->dataBusReadOnlyCopy;
             break;
-        case 2:
+        case SR:
             this->dataRegister >>= 1;
             this->dataRegister |= (isWriteProtected() << 7);
             break;
-        case 1:
+        case SL:
             this->dataRegister <<= 1;
             this->dataRegister |= ((cmd & 4u) >> 2);
             break;

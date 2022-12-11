@@ -24,7 +24,14 @@
 
 
 CPU::CPU(AddressBus& addressBus):
-    addressBus(addressBus)
+    addressBus(addressBus),
+    started(false),
+    pendingReset(false),
+    pendingIRQ(false),
+    pendingNMI(false),
+    p(PMASK_M),
+    t(0),
+    data(0)
 {
 }
 

@@ -47,6 +47,9 @@ class AddressBus {
 
         unsigned char data; // this emulates the (floating) data bus
 
+        int debugoutpos;
+        bool debugfirst;
+
         void setD7(const bool set);
         void readSwitch(unsigned short address);
         void writeSwitch(unsigned short address);

@@ -45,7 +45,7 @@ struct trk_t {
     std::uint32_t bitCount;
 };
 
-WozFile::WozFile() : tmap(0) {
+WozFile::WozFile() : tmap(0), lastQuarterTrack(C_QTRACK) {
     for (int i(0); i < C_QTRACK; ++i) {
         this->trk[i] = 0;
     }
@@ -162,6 +162,11 @@ bool WozFile::load(const std::filesystem::path& orig_file) {
             case 0x4F464E49: { // INFO
                 std::uint8_t* buf = new std::uint8_t[chunk_size];
                 in->read((char*)buf, chunk_size);
+                const std::streamsize n_actual = in->gcount();
+                printf("read INFO chuck of size: %ld\n", n_actual);
+                if (n_actual < chunk_size) {
+                    printf("WARNING: read less than expected bytes from woz file: %ld < %u\n", n_actual, chunk_size);
+                }
                 printf("INFO version %d\n", *buf);
                 if (*buf != 2) {
                     printf("File is not WOZ2 version.\n");
@@ -185,7 +190,7 @@ bool WozFile::load(const std::filesystem::path& orig_file) {
                 printf("Creator: \"%.32s\"\n", buf+5);
                 this->timing = buf[39];
                 printf("Timing: %d/8 microseconds per bit\n", this->timing);
-                std::uint16_t compat = *((std::uint16_t*)buf+40);
+                std::uint16_t compat = *((std::uint16_t*)(buf+40));
                 printf("Compatible hardware: ");
                 if (!compat) {
                     printf("unknown\n");
@@ -527,20 +532,29 @@ void WozFile::rotateOneBit(std::uint8_t currentQuarterTrack) {
         return;
     }
 
+    // this is the case where we are here for the first time,
+    // and lastQuarterTrack has not been set to any valid prior track
+    if (this->lastQuarterTrack == C_QTRACK) {
+        this->lastQuarterTrack = currentQuarterTrack;
+    }
+
     // If we changed tracks since the last time we were called,
     // we may need to adjust the rotational position. The new
     // position will be at the same relative position as the
     // previous, based on each track's length (tracks can be of
     // different lengths in the WOZ image).
     if (currentQuarterTrack != this->lastQuarterTrack) {
-//        printf("switching from tmap[%02x] --> [%02x]\n", this->lastQuarterTrack, currentQuarterTrack);
+        printf("\nswitching from tmap[%02x] --> [%02x]\n", this->lastQuarterTrack, currentQuarterTrack);
         const double oldLen = this->trk_bits[this->tmap[this->lastQuarterTrack]];
         const double newLen = this->trk_bits[this->tmap[currentQuarterTrack]];
         const double ratio = newLen/oldLen;
         if (!(fabs(1-ratio) < 0.0001)) {
             const std::uint16_t newBit = static_cast<std::uint16_t>(round((this->byt*8+bc(this->bit)) * ratio));
+            printf("... detected non 1:1 ratio: %f\n", ratio);
+            printf("... old byt/bit: %hu/%hu\n", this->byt, this->bit);
             this->byt = newBit / 8;
             this->bit = cb(newBit % 8);
+            printf("... new byt/bit: %hu/%hu\n", this->byt, this->bit);
         }
         this->lastQuarterTrack = currentQuarterTrack;
     }

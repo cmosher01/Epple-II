@@ -23,6 +23,7 @@ Keyboard::Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buff
     keys(q),
     fhyper(fhyper),
     buffered(buffered),
+    latch(0xC1u), // TODO: randomize this a little
     cGet(0)
 {
 }

@@ -78,7 +78,7 @@ unsigned char Video::getDataByte()
 {
     // TODO should fix the mixed-mode scanning during VBL (see U.A.][, p. 5-13)
 
-    std::vector<unsigned short>& lut = 
+    std::vector<unsigned short>& lut =
     (this->mode.isDisplayingText(this->t) || !this->mode.isHiRes())
     ?
         this->lutTEXT[this->mode.getPage()]
@@ -107,7 +107,7 @@ bool Video::inverseChar(const unsigned char d)
 {
     bool inverse;
 
-    const int cs = (d >> 6) & 3;
+    const unsigned char cs = (d >> 6) & 3;
     if (cs == 0)
     {
         inverse = true;

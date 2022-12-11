@@ -152,4 +152,8 @@ public:
     virtual std::string getName() {
         return "disk][  drive 1                         drive 2                      ";
     }
+
+    void dumpLss() {
+        this->lssp6rom.dump();
+    }
 };

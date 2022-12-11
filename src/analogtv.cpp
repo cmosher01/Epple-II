@@ -44,6 +44,7 @@ AnalogTV::AnalogTV(ScreenImage& image):
     image(image),
     on(false),
     noise(false),
+    type(TV_OLD_COLOR),
     bleed_down(true)
 {
     hirescolor.push_back(colors.c()[A2ColorsObserved::HIRES_GREEN]);
@@ -115,7 +116,7 @@ void AnalogTV::toggleBleedDown()
 // 			int i = ((yiqv>>8)&0xFF)-IQINTOFF;
 // 			int q = ((yiqv>>16)&0xFF)-IQINTOFF;
 // 			System.out.printf("(%+04d,%+04d,%+04d)",y,i,q);
-// 
+//
 // 			const int rgb = yiq2rgb(yiqv);
 // 			const int r = (rgb >> 16) & 0xff;
 // 			const int g = (rgb >> 8) & 0xff;
@@ -124,7 +125,7 @@ void AnalogTV::toggleBleedDown()
 // 		}
 // 		System.out.println();
 // 	}
-// 
+//
 // }
 
 
@@ -461,8 +462,8 @@ int inline AnalogTV::yiq2rgb(const int yiq)
     double b = (((yiq)&0xFF)-IQINTOFF) - 1.105 * (((yiq>>8)&0xFF)-IQINTOFF) + 1.702 * (((yiq>>16)&0xFF)-IQINTOFF);
 
     const int rgb =
-        (calc_color(r) << 16)| 
-        (calc_color(g) <<  8)| 
+        (calc_color(r) << 16)|
+        (calc_color(g) <<  8)|
         (calc_color(b) <<  0);
 
     return rgb;

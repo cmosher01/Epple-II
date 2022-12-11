@@ -136,6 +136,8 @@ bool E2wxApp::OnInit() {
 
     InitBoostLog();
 
+    BOOST_LOG_TRIVIAL(info) << "Application ID: " << this->GetID();
+    BOOST_LOG_TRIVIAL(info) << "Application version: " << this->GetVersion();
 
 
     this->confdir = dirConfig() / path_from_string(GetID()+".d");

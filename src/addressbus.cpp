@@ -25,10 +25,11 @@
 #include "speakerclicker.h"
 #include "cassettein.h"
 #include "cassetteout.h"
+#include "diskcontroller.h"
 #include "slots.h"
 
 AddressBus::AddressBus(ScreenImage& gui, int& revision, MemoryRandomAccess& ram, Memory& rom, Keyboard& kbd, VideoMode& vid, Paddles& paddles, PaddleButtonStates& paddleButtonStates, SpeakerClicker& speaker, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Slots& slts):
-    gui(gui), revision(revision), ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts) {
+    gui(gui), revision(revision), ram(ram), rom(rom), kbd(kbd), vid(vid), paddles(paddles), paddleButtonStates(paddleButtonStates), speaker(speaker), cassetteIn(cassetteIn), cassetteOut(cassetteOut), slts(slts), debugoutpos(0), debugfirst(true) {
 }
 
 
@@ -153,6 +154,26 @@ void AddressBus::readSwitch(unsigned short address) {
         const int islot = (address >> 4) & 0xF;
         const int iswch = (address & 0xF);
         this->data = this->slts.io(islot, iswch, this->data, false);
+        ///////////////////////////////////////////////
+        // debug raw nibble disk reads
+        if (islot==6 && ((this->data & 0x80u) != 0u)) {
+            if (debugfirst) {
+                debugfirst = false;
+                for (int i = 0; i < 128; ++i) {
+                    printf("%02X", i);
+                }
+                printf("\n");
+            }
+            printf("%02X", this->data);
+            ++debugoutpos;
+            if (128 <= debugoutpos) {
+                debugoutpos = 0;
+                printf("\n");
+//                DiskController* dsk = (DiskController*)(this->slts.get(6));
+//                dsk->dumpLss();
+            }
+        }
+        ///////////////////////////////////////////////
     }
 }
 
