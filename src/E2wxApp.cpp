@@ -23,7 +23,7 @@
 #include "E2wxFrame.h"
 #include "emulator.h"
 #include "gui.h"
-#include "configep2.h"
+#include "e2config.h"
 #include "e2filesystem.h"
 #include <wx/app.h>
 #include <wx/xrc/xmlres.h>
@@ -103,10 +103,6 @@ static std::filesystem::path dirConfig() {
 
 static std::filesystem::path dirDocuments() {
     return path_from_string(wxStandardPaths::Get().GetAppDocumentsDir());
-}
-
-static std::filesystem::path dirResources() {
-    return path_from_string(wxStandardPaths::Get().GetResourcesDir());
 }
 
 
@@ -313,7 +309,7 @@ void E2wxApp::InitBoostLog() {
 
 void E2wxApp::StartEmulator() {
     this->emu = new Emulator();
-    Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
+    E2Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
     this->emu->config(cfg);
     this->emu->init();
     this->emu_timer = new EmuTimer(this->emu);

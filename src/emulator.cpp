@@ -16,7 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "emulator.h"
-#include "configep2.h"
+#include "e2config.h"
 #include "e2const.h"
 
 #include <wx/msgdlg.h>
@@ -74,7 +74,7 @@ void Emulator::powerOffComputer() {
     this->timable = &this->videoStatic;
 }
 
-void Emulator::config(Config& cfg) {
+void Emulator::config(E2Config& cfg) {
     cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, &this->apple2);
     this->apple2.ram.dump_config();
 }
@@ -479,7 +479,7 @@ void Emulator::processCommand() {
         return;
     }
 
-    Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, NULL);
+    E2Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, NULL);
     cmdline.erase(cmdline.begin(), cmdline.end());
 }
 

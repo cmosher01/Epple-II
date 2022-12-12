@@ -38,7 +38,7 @@ public:
 // TODO split out all static things into their own class (and don't make them static)
 // Remember that, besides config, also command line entry calls parseLine
 // This will also help with adding menu items in place of commands
-class Config {
+class E2Config {
 private:
     const std::filesystem::path file_path;
     const bool prefs_only;
@@ -55,8 +55,8 @@ private:
     static void tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 
 public:
-    Config(const std::filesystem::path& f, bool p);
-    ~Config();
+    E2Config(const std::filesystem::path& f, bool p);
+    ~E2Config();
 
     void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
     static void parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);

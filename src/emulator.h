@@ -30,7 +30,7 @@
 #include <SDL.h>
 
 class Timable;
-class Config;
+class E2Config;
 
 class Emulator
 {
@@ -73,7 +73,7 @@ public:
     Emulator();
     virtual ~Emulator();
 
-    void config(Config& cfg);
+    void config(E2Config& cfg);
 
     virtual void init();
 

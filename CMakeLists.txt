@@ -66,7 +66,6 @@ Circuit.cpp
 clipboardhandler.cpp
 clockcard.cpp
 Common.cpp
-configep2.cpp
 Cpu6502.cpp
 Cpu6502Helper.cpp
 cpu.cpp
@@ -77,6 +76,7 @@ disk2steppermotorrotor.cpp
 diskcontroller.cpp
 drive.cpp
 drivemotor.cpp
+e2config.cpp
 e2filesystem.cpp
 e2string.cpp
 E2wxApp.cpp

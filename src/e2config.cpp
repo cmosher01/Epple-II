@@ -15,7 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-#include "configep2.h"
+#include "e2config.h"
 
 #include "E2wxApp.h"
 #include "e2filesystem.h"
@@ -68,10 +68,10 @@ static std::uint16_t memory_block_size(const std::string &block_size) {
 
 
 
-Config::Config(const std::filesystem::path& f, bool p): file_path {f}, prefs_only {p} {
+E2Config::E2Config(const std::filesystem::path& f, bool p): file_path {f}, prefs_only {p} {
 }
 
-Config::~Config() {
+E2Config::~E2Config() {
 }
 
 static void strip_comment(std::string& str)
@@ -114,7 +114,7 @@ static void trim(std::string& str)
  * If successful, returns an open stream, caller is responsible for deleting it
  * Otherwise, returns null
  */
-std::ifstream *Config::openFilePref(const wxString& s_name) {
+std::ifstream *E2Config::openFilePref(const wxString& s_name) {
     std::ifstream *ret = nullptr;
 
 
@@ -163,7 +163,7 @@ std::ifstream *Config::openFilePref(const wxString& s_name) {
     return ret;
 }
 
-std::ifstream *Config::openFileExternal(const std::filesystem::path& path) {
+std::ifstream *E2Config::openFileExternal(const std::filesystem::path& path) {
     std::ifstream *ret = nullptr;
 
     const std::filesystem::path p = valid_input_file(path);
@@ -187,7 +187,7 @@ static const std::array rs_path_legacy{
     "./epple2.conf",
 };
 
-std::ifstream *Config::openFileLegacy() {
+std::ifstream *E2Config::openFileLegacy() {
     std::ifstream *ret = nullptr;
 
     BOOST_LOG_TRIVIAL(warning) << "Searching for config file in legacy locations...";
@@ -206,7 +206,7 @@ std::ifstream *Config::openFileLegacy() {
  * the user, either on command line, or via preferences, allowing for
  * backward compatibility with legacy file locations.
  */
-std::ifstream *Config::openFile() {
+std::ifstream *E2Config::openFile() {
     std::ifstream *ret = nullptr;
 
     if (this->file_path.empty()) {
@@ -266,7 +266,7 @@ std::ifstream *Config::openFile() {
 
 
 
-void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
+void E2Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
     std::ifstream *p_ifstream_config = openFile();
 
     if (p_ifstream_config == nullptr) {
@@ -316,7 +316,7 @@ void Config::parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revis
 
 
 
-void Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
+void E2Config::parseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
     try {
         tryParseLine(line, ram, rom, slts, revision, gui, cassetteIn, cassetteOut, apple2);
     }    catch (const ConfigException& err) {
@@ -331,7 +331,7 @@ static std::string filter_row(const std::string &row) {
     return std::string(1, static_cast<char> (std::toupper(row[0])));
 }
 
-void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
+void E2Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2) {
     std::istringstream tok(line);
 
     std::string cmd;
@@ -551,9 +551,9 @@ void Config::tryParseLine(const std::string& line, MemoryRandomAccess& ram, Memo
 
 
 
-unsigned char Config::disk_mask(0);
+unsigned char E2Config::disk_mask(0);
 
-void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib) {
+void E2Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib) {
     if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
@@ -569,7 +569,7 @@ void Config::loadDisk(Slots& slts, int slot, int drive, const std::string& fnib)
     controller->loadDisk(drive - 1, fnib);
 }
 
-void Config::unloadDisk(Slots& slts, int slot, int drive) {
+void E2Config::unloadDisk(Slots& slts, int slot, int drive) {
     if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
@@ -584,14 +584,14 @@ void Config::unloadDisk(Slots& slts, int slot, int drive) {
     controller->unloadDisk(drive - 1);
 }
 
-void Config::saveDisk(Slots& slts, int slot, int drive) {
+void E2Config::saveDisk(Slots& slts, int slot, int drive) {
     if (drive < 1 || 2 < drive) {
         throw ConfigException("Invalid drive; must be 1 or 2");
     }
     slts.get(slot)->save(drive - 1);
 }
 
-void Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok) {
+void E2Config::insertCard(const std::string& cardType, int slot, Slots& slts, ScreenImage& gui, std::istringstream& tok) {
     if (slot < 0 || 8 <= slot) {
         throw ConfigException("Invalid slot number");
     }
