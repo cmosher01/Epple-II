@@ -384,15 +384,7 @@ void ScreenImage::setDiskFile(int slot, int drive, const std::filesystem::path &
 }
 
 std::string ScreenImage::truncateFilePath(const std::filesystem::path& filepath) {
-    std::string f(filepath.c_str());
-    size_t slash = f.find_last_of("/\\");
-    if (slash != std::string::npos) {
-        f = f.substr(slash + 1);
-    }
-    if (f.length() > 12) {
-        f = f.substr(0, 12);
-    }
-    return f;
+    return filepath.stem().string().substr(0, 12);
 }
 
 void ScreenImage::clearCurrentDrive(int slot, int drive) {
