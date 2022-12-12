@@ -25,10 +25,15 @@
 #include "gui.h"
 #include "e2config.h"
 #include "e2filesystem.h"
+#include "e2const.h"
+
 #include <wx/app.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
+#include <wx/log.h>
 #include <wx/stdpaths.h>
+#include <wx/debugrpt.h>
+
 #include <boost/log/core.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/utility/setup/file.hpp>
@@ -38,7 +43,7 @@
 #include <boost/log/expressions/formatters/stream.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <wx/debugrpt.h>
+
 #include <iostream>
 #include <string>
 #include <memory>
@@ -136,6 +141,14 @@ bool E2wxApp::OnInit() {
 
     InitBoostLog();
 
+//    TODO investigate redirecting wxLogs to boost
+//    wxLog* logger = new wxLogStream(&std::cerr);
+//    wxLog::SetActiveTarget(logger);
+//    wxLogWarning("%s", "a warning has occurred");
+//    wxLogInfo("%s", "informational");
+//    wxLogVerbose("%s", "verbose");
+//    wxFile().Open("foobar.txt");
+
     BOOST_LOG_TRIVIAL(info) << "Application ID: " << this->GetID();
     BOOST_LOG_TRIVIAL(info) << "Application version: " << this->GetVersion();
 
@@ -228,6 +241,7 @@ void E2wxApp::OnFatalException() {
 
 static const wxCmdLineEntryDesc cmdLineDesc[] = {
     { wxCMD_LINE_SWITCH, "p", "prefs", "Read config only from preferences, never an external file.", wxCMD_LINE_VAL_NONE },
+    { wxCMD_LINE_SWITCH, "t", "test", "Run internal tests.", wxCMD_LINE_VAL_NONE },
     { wxCMD_LINE_PARAM,  NULL, NULL, "config-file", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL },
     wxCMD_LINE_DESC_END
 };
@@ -239,6 +253,16 @@ void E2wxApp::OnInitCmdLine(wxCmdLineParser& parser) {
 
 bool E2wxApp::OnCmdLineParsed(wxCmdLineParser& parser) {
     if (!wxApp::OnCmdLineParsed(parser)) {
+        return false;
+    }
+
+    if (parser.Found("t")) {
+        const int x = E2Const::test();
+        if (x != -1) {
+            std::cerr << x << std::endl;
+            throw std::runtime_error("bad constant in e2const.h" );
+        }
+        std::cerr << "pass" << std::endl;
         return false;
     }
 

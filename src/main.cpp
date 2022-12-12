@@ -18,16 +18,8 @@
 */
 
 #include "gui.h"
-#include "e2const.h"
-
 #include <SDL.h>
-
 #include <wx/app.h>
-
-#include <iostream>
-#include <ostream>
-#include <stdexcept>
-
 #include <cstdio>
 
 
@@ -37,12 +29,6 @@ extern "C"
 int main(int argc, char *argv[]) {
     ::setbuf(stdout, nullptr);
     ::setbuf(stderr, nullptr);
-
-    const int x = E2Const::test();
-    if (x != -1) {
-        std::cerr << x << std::endl;
-        throw std::runtime_error("bad constant in e2const.h" );
-    }
 
     GUI gui;
 

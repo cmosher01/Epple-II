@@ -471,9 +471,6 @@ bool Emulator::isSafeToQuit() {
     return true;
 }
 
-// we come here due to F9 or SQL_Quit event
 void Emulator::handleUserQuitRequest() {
     wxGetApp().CloseMainFrame();
-    // wxWidgets will then call us back with isSafeToQuit, and if so will exit the application
-    // (note wxWidgets will also need to call us back when it gets it's own quit requests)
 }
