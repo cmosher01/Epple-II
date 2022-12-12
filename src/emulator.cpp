@@ -17,6 +17,7 @@
  */
 #include "emulator.h"
 #include "e2config.h"
+#include "e2command.h"
 #include "e2const.h"
 
 #include <wx/msgdlg.h>
@@ -479,7 +480,7 @@ void Emulator::processCommand() {
         return;
     }
 
-    E2Config::parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, NULL);
+    E2Command{}.parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, NULL);
     cmdline.erase(cmdline.begin(), cmdline.end());
 }
 

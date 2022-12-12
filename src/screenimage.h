@@ -19,6 +19,7 @@
 #define SCREENIMAGE_H
 
 #include "analogtv.h"
+#include <filesystem>
 #include <vector>
 #include <string>
 
@@ -45,7 +46,7 @@ private:
     std::string cassInName;
     std::string cassOutName;
 
-    static std::string truncateFilePath(const std::string& filepath);
+    static std::string truncateFilePath(const std::filesystem::path& filepath);
 
     // TODO some of these methods should be private
 public:
@@ -80,7 +81,7 @@ public:
     void addkeyCommand(unsigned char key);
     void backspaceCommand();
 
-    void setDiskFile(int slot, int drive, const std::string& filename);
+    void setDiskFile(int slot, int drive, const std::filesystem::path& filename);
 
     void setAnnunciator(int ann, bool on);
 
@@ -90,8 +91,8 @@ public:
     void setIO(int slot, int drive, bool on);
     void setDirty(int slot, int drive, bool dirty);
 
-    void setCassetteInFile(const std::string& filepath);
-    void setCassetteOutFile(const std::string& filepath);
+    void setCassetteInFile(const std::filesystem::path& filepath);
+    void setCassetteOutFile(const std::filesystem::path& filepath);
     void setCassetteDirty(bool dirty); // cassette out only
     void setCassettePos(unsigned int pos, unsigned int siz); // cassette in only
 

@@ -21,6 +21,7 @@
 #include "wozfile.h"
 #include "lss.h"
 #include "screenimage.h"
+#include <filesystem>
 #include <string>
 #include <iostream>
 #include <cstdint>
@@ -94,21 +95,25 @@ public:
         this->gui.setCurrentDrive(this->slot,getCurrentDriveNumber(),getTrack(),false);
     }
 
-    void loadDisk(unsigned char drive, const std::string& fnib) {
-        if (!this->getDrive(drive).loadDisk(fnib)) {
+    virtual bool hasMedia() override {
+        return true;
+    }
+
+    virtual void loadMedia(int unit, const std::filesystem::path &media) override {
+        if (!this->getDrive(unit).loadDisk(media)) {
             return;
         }
-        this->gui.setDiskFile(this->slot,drive,fnib);
+        this->gui.setDiskFile(this->slot,unit,media);
         this->gui.setDirty(this->slot,getCurrentDriveNumber(),false);
     }
 
-    void unloadDisk(unsigned char drive) {
-        this->getDrive(drive).unloadDisk();
-        this->gui.setDiskFile(this->slot,drive,"");
+    virtual void unloadMedia(int unit) override {
+        this->getDrive(unit).unloadDisk();
+        this->gui.setDiskFile(this->slot,unit,std::filesystem::path{});
         this->gui.setDirty(this->slot,getCurrentDriveNumber(),false);
     }
 
-    void save(int drive) {
+    virtual void saveMedia(int drive) override {
         this->getDrive(drive).saveDisk();
         this->gui.setDirty(this->slot,getCurrentDriveNumber(),false);
     }
@@ -137,7 +142,7 @@ public:
         return this->currentDrive->isWriteProtected();
     }
 
-    bool isDirty() {
+    bool isMediaDirty() {
         return isModified() || isModifiedOther();
     }
 

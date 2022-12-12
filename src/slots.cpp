@@ -134,8 +134,8 @@ void Slots::forceGuiUpdate()
 }
 
 void Slots::save(int unit) {
-    for (std::vector<Card*>::iterator i = this->cards.begin(); i != this->cards.end(); ++i) {
-        (*i)->save(unit);
+    for (auto &i : this->cards) {
+        i->saveMedia(unit);
     }
 }
 
@@ -154,14 +154,12 @@ bool isAnyDiskDriveMotorOn()
     return on.inhibit;
 }
 */
-struct Slots_Card_isDirty
-{
-    bool dirty;
-    Slots_Card_isDirty():dirty(false) {}
-    void operator() (Card* p) { if (p->isDirty()) dirty = true; }
-};
 
-bool Slots::isDirty()
-{
-    return std::for_each(this->cards.begin(),this->cards.end(),Slots_Card_isDirty()).dirty;
+bool Slots::isDirty() {
+    for (auto &i : this->cards) {
+        if (i->isMediaDirty()) {
+            return true;
+        }
+    }
+    return false;
 }

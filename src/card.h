@@ -14,19 +14,19 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #ifndef CARD_H
 #define CARD_H
 
 #include "memory.h"
 
+#include <filesystem>
 #include <istream>
 #include <string>
 
-class Card
-{
-private:
+class Card {
     bool activeSeventhRom;
+
 protected:
     Memory rom;
     Memory seventhRom;
@@ -34,20 +34,27 @@ protected:
 public:
     Card();
     virtual ~Card();
-        virtual void tick();
-        virtual void reset();
+
+    virtual std::string getName();
+
+    virtual void tick();
+    virtual void reset();
     virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
     virtual unsigned char readRom(const unsigned short address, const unsigned char data);
-    virtual bool hasSeventhRom() { return false; }
+
+    virtual bool hasSeventhRom();
     virtual void readSeventhRom(const unsigned short address, unsigned char* const pb);
     virtual void loadRom(const unsigned short base, std::istream& in);
     virtual void loadSeventhRom(const unsigned short base, std::istream& in);
     virtual bool inhibitMotherboardRom();
     virtual void ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write);
     virtual void loadBankRom(const unsigned short base, std::istream& in);
-    virtual bool isDirty();
-        virtual void save(int unit);
-    virtual std::string getName();
+    virtual bool isMediaDirty();
+
+    virtual bool hasMedia();
+    virtual void loadMedia(int unit, const std::filesystem::path &media);
+    virtual void unloadMedia(int unit);
+    virtual void saveMedia(int unit);
 };
 
 #endif

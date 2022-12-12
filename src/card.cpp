@@ -14,96 +14,89 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #include "card.h"
-#include "e2config.h"
 
-Card::Card():
-    rom(0x0100),
-    seventhRom(0x0800)
-{
+
+
+Card::Card() : rom(0x0100), seventhRom(0x0800) {
+}
+
+Card::~Card() {
 }
 
 
-Card::~Card()
-{
+
+std::string Card::getName() {
+    return "";
 }
 
 
-void Card::reset()
-{
+
+void Card::tick() {
 }
 
-void Card::tick()
-{
+void Card::reset() {
 }
 
-
-unsigned char Card::io(const unsigned short /*address*/, const unsigned char data, const bool /*writing*/)
-{
+unsigned char Card::io(const unsigned short address, const unsigned char data, const bool writing) {
     return data;
 }
 
-
-
-unsigned char Card::readRom(const unsigned short address, const unsigned char data)
-{
+unsigned char Card::readRom(const unsigned short address, const unsigned char data) {
     this->activeSeventhRom = true;
     return this->rom.read(address, data);
 }
 
-void Card::readSeventhRom(const unsigned short address, unsigned char* const pb)
-{
-    if (address == 0x7FF)
-    {
+
+
+bool Card::hasSeventhRom() {
+    return false;
+}
+
+void Card::readSeventhRom(const unsigned short address, unsigned char* const pb) {
+    if (address == 0x7FF) {
         this->activeSeventhRom = false;
-    }
-    else if (this->activeSeventhRom && hasSeventhRom())
-    {
+    } else if (this->activeSeventhRom && hasSeventhRom()) {
         *pb = this->seventhRom.read(address, *pb);
     }
 }
 
-void Card::loadRom(const unsigned short base, std::istream& in)
-{
-    this->rom.load(base,in);
+void Card::loadRom(const unsigned short base, std::istream& in) {
+    this->rom.load(base, in);
 }
 
-void Card::loadSeventhRom(const unsigned short base, std::istream& in)
-{
-    this->seventhRom.load(base,in);
+void Card::loadSeventhRom(const unsigned short base, std::istream& in) {
+    this->seventhRom.load(base, in);
 }
 
-
-
-bool Card::inhibitMotherboardRom()
-{
+bool Card::inhibitMotherboardRom() {
     return false;
 }
 
+void Card::ioBankRom(const unsigned short addr, unsigned char* const pb, const bool write) {
+}
 
-
-void Card::ioBankRom(const unsigned short /*addr*/, unsigned char* const /*pb*/, const bool /*write*/)
-{
+void Card::loadBankRom(const unsigned short base, std::istream& in) {
+    // TODO? maybe just do nothing
+    //    throw ConfigException("This card has no $D000 ROM");
 }
 
 
 
-void Card::loadBankRom(const unsigned short /*base*/, std::istream& /*in*/)
-{
-    throw ConfigException("This card has no $D000 ROM");
-}
-
-std::string Card::getName()
-{
-    return "";
-}
-
-bool Card::isDirty()
-{
+bool Card::isMediaDirty() {
     return false;
 }
 
-void Card::save(int unit)
-{
+bool Card::hasMedia() {
+    return false;
+}
+
+void Card::loadMedia(int unit, const std::filesystem::path &media) {
+}
+
+void Card::unloadMedia(int unit) {
+}
+
+void Card::saveMedia(int unit) {
 }

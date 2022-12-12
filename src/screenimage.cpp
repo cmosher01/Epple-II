@@ -21,6 +21,7 @@
 #include "card.h"
 #include "util.h"
 #include <SDL.h>
+#include <filesystem>
 #include <iostream>
 #include <ctime>
 #include <sstream>
@@ -366,7 +367,7 @@ void ScreenImage::removeCard(const int slot, Card* card /* empty */) {
 789012345678901234567890123456789012345678901234567890123456789012345
 6: disk][  drive 1M*filename.nib T$FF      drive 2M*filename.nib T$FF
  */
-void ScreenImage::setDiskFile(int slot, int drive, const std::string& filepath) {
+void ScreenImage::setDiskFile(int slot, int drive, const std::filesystem::path &filepath) {
     std::string f = truncateFilePath(filepath);
     int r(R_SLOT + slot);
     int c(37 + 32 * drive);
@@ -382,8 +383,8 @@ void ScreenImage::setDiskFile(int slot, int drive, const std::string& filepath) 
     this->slotnames[slot].replace(c - 20, f.length(), f);
 }
 
-std::string ScreenImage::truncateFilePath(const std::string& filepath) {
-    std::string f(filepath);
+std::string ScreenImage::truncateFilePath(const std::filesystem::path& filepath) {
+    std::string f(filepath.c_str());
     size_t slash = f.find_last_of("/\\");
     if (slash != std::string::npos) {
         f = f.substr(slash + 1);
@@ -453,7 +454,7 @@ void ScreenImage::setDirty(int slot, int drive, bool dirty) {
     this->slotnames[slot][c - 20] = dirty ? '*' : ' ';
 }
 
-void ScreenImage::setCassetteInFile(const std::string& filepath) {
+void ScreenImage::setCassetteInFile(const std::filesystem::path& filepath) {
     std::string f = truncateFilePath(filepath);
     int r(65);
     int c(85 + 11);
@@ -469,7 +470,7 @@ void ScreenImage::setCassetteInFile(const std::string& filepath) {
     this->cassInName.replace(c - 94, f.length(), f);
 }
 
-void ScreenImage::setCassetteOutFile(const std::string& filepath) {
+void ScreenImage::setCassetteOutFile(const std::filesystem::path& filepath) {
     std::string f = truncateFilePath(filepath);
     int r(66);
     int c(85 + 11);

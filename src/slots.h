@@ -24,9 +24,7 @@
 
 class ScreenImage;
 
-class Slots
-{
-private:
+class Slots {
     ScreenImage& gui;
     EmptySlot empty;
     std::vector<Card*> cards;
@@ -35,7 +33,7 @@ public:
     Slots(ScreenImage& gui);
     ~Slots();
 
-        void tick();
+    void tick();
     unsigned char io(const int islot, const int iswch, const unsigned char b, const bool writing);
     void reset();
     unsigned char readRom(const int islot, const unsigned short addr, const unsigned char data);
@@ -46,8 +44,8 @@ public:
     Card* get(const int slot);
     void remove(const int slot);
     bool isDirty();
-        void save(int unit);
-        void forceGuiUpdate();
+    void save(int unit);
+    void forceGuiUpdate();
 };
 
 #endif
