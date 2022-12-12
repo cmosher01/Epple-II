@@ -37,6 +37,7 @@ private:
     void OnPreferences(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnTogglePower(wxCommandEvent& event);
+    void HandleUserQuitRequest(wxCloseEvent& event);
 
     void InitMenuBar();
     void InitStatusBar();

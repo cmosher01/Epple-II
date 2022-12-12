@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "emulator.h"
+#include "E2wxApp.h"
 #include "e2config.h"
 #include "e2command.h"
 #include "e2const.h"
@@ -65,7 +66,6 @@ void Emulator::powerOnComputer() {
 }
 
 void Emulator::powerOffComputer() {
-    // TODO Need to ask user if OK to lose any unsaved changes to disks
     this->apple2.powerOff();
     this->screenImage.drawPower(false);
     this->display.setNoise(true);
@@ -85,25 +85,9 @@ void Emulator::init() {
     this->display.powerOn(true);
 }
 
-// How many emulation ticks between asking SDL if there is any new input
-// from the user or other GUI events.
-// This is also how often we shall update the estimate of the emulator's
-// actual speed performance
-// When the CPU is the object being ticked (each tick is a CPU cycle), then
-// this is 20.04378892 Hz in emulated seconds time
-#define CHECK_EVERY_CYCLE 51024
-#define CHECK_CYCLES_K 51024000
-#define EXPECTED_MS 50
 
 // U.A.2 p. 7-13: REPT key repeats at 10Hz.
 static const int CYCLES_PER_REPT(E2Const::AVG_CPU_HZ / 10);
-
-
-
-
-
-
-
 
 // If the Apple ][ keyboard repeat is on (the REPT key is
 // down)...
@@ -134,7 +118,9 @@ void Emulator::handleAnyPendingEvents() {
         switch (event.type) {
             case SDL_QUIT:
                 // If SDL is going away...
-                quitIfSafe();
+                // could be due to user closing the SDL window, pressing cmd-Q on Mac,
+                // ctrl-C from the command line on Linux, process being killed, etc.
+                handleUserQuitRequest();
             break;
             case SDL_KEYDOWN:
                 // If we're collecting a command line for changing any
@@ -145,6 +131,7 @@ void Emulator::handleAnyPendingEvents() {
                     // ...else we're collecting keypresses for the keyboard
                     // emulation (and thus the Apple ][ emulation itself)
                     dispatchKeypress(event.key);
+                    // People who have too many press-releases should be referred to as "keyboards"
             break;
             case SDL_KEYUP:
                 // If we're collecting a command line for changing any
@@ -166,54 +153,15 @@ void Emulator::handleAnyPendingEvents() {
 
 
 
+// How many emulation ticks between asking SDL if there is any new input
+// from the user or other GUI events.
+// This is also how often we shall update the estimate of the emulator's
+// actual speed performance
+// When the CPU is the object being ticked (each tick is a CPU cycle), then
+// this is 20.04378892 Hz in emulated seconds time
+#define CHECK_EVERY_CYCLE 51024
+
 // The core of this Apple
-int Emulator::run() {
-    // While the user still wants to run this emulation...
-    while (!this->quit) {
-        tick();
-    }
-    return 0;
-}
-
-
-
-
-void Emulator::tick() {
-    if (this->timable) {
-        this->timable->tick(); // this runs the emulator!
-        handleRepeatKey();
-    }
-
-    // People who have too many press releases should be referred to as
-    // keyboards
-
-    if (CHECK_EVERY_CYCLE <= ++this->skip) {
-        // ...then it's time to drain away any piled-up user interaction
-        // events that SDL has stored up for us
-        // Reload the skip quantity
-        this->skip = 0;
-
-        handleAnyPendingEvents();
-
-        // If we're trying to run as slow as a real Apple ][...
-        if (!this->fhyper.isHyper()) {
-            const int delta_ms = EXPECTED_MS - (SDL_GetTicks() - this->prev_ms);
-            if (0 < delta_ms && delta_ms <= EXPECTED_MS) {
-                SDL_Delay(delta_ms);
-            }
-
-        }
-
-        // Display the current estimate of the emulator's actual speed
-        // performance
-        this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - this->prev_ms));
-
-        this->prev_ms = SDL_GetTicks();
-    }
-}
-
-
-
 void Emulator::tick50ms() {
     if (this->timable) {
         for (int i = 0; i < CHECK_EVERY_CYCLE; ++i) {
@@ -222,7 +170,7 @@ void Emulator::tick50ms() {
         }
     }
     handleAnyPendingEvents();
-    this->screenImage.displayHz(CHECK_CYCLES_K / (SDL_GetTicks() - this->prev_ms));
+    this->screenImage.displayHz((1000*CHECK_EVERY_CYCLE)/(SDL_GetTicks() - this->prev_ms));
     this->prev_ms = SDL_GetTicks();
     // TODO: how to check this->quit ?
 }
@@ -413,7 +361,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else exit the entire emulation
     else if (sym == SDLK_F9) {
-        quitIfSafe();
+        handleUserQuitRequest();
         return;
     }// ...else save a screen shot
     else if (sym == SDLK_F8) {
@@ -495,7 +443,10 @@ static int askSave() {
 }
 
 bool Emulator::isSafeToQuit() {
+    this->screenImage.exitFullScreen();
+
     if (!this->apple2.cassetteOut.eject()) {
+        // TODO does this handle the case where we fail to save?
         return false;
     }
 
@@ -512,14 +463,17 @@ bool Emulator::isSafeToQuit() {
     if (resp == wxID_YES) {
         this->apple2.slts.save(0);
         this->apple2.slts.save(1);
+        // TODO handle case where we fail to save,
+        // in which case we should alert the user,
+        // and return false
     }
 
     return true;
 }
 
-void Emulator::quitIfSafe() {
-    this->screenImage.exitFullScreen();
-    if (isSafeToQuit()) {
-        this->quit = true;
-    }
+// we come here due to F9 or SQL_Quit event
+void Emulator::handleUserQuitRequest() {
+    wxGetApp().CloseMainFrame();
+    // wxWidgets will then call us back with isSafeToQuit, and if so will exit the application
+    // (note wxWidgets will also need to call us back when it gets it's own quit requests)
 }

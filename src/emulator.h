@@ -32,8 +32,7 @@
 class Timable;
 class E2Config;
 
-class Emulator
-{
+class Emulator {
     PaddleButtonStates paddleButtonStates;
     KeypressQueue keypresses;
 
@@ -58,16 +57,14 @@ class Emulator
     bool pendingCommandExit;
     std::string cmdline;
 
-    void tick();
-
     void dispatchKeypress(const SDL_KeyboardEvent& keyEvent);
     void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
     void cmdKey(const SDL_KeyboardEvent& keyEvent);
     void processCommand();
-    bool isSafeToQuit();
 
     void handleRepeatKey();
     void handleAnyPendingEvents();
+    void handleUserQuitRequest();
 
 public:
     Emulator();
@@ -75,15 +72,14 @@ public:
 
     void config(E2Config& cfg);
 
-    virtual void init();
+    void init();
 
     void powerOnComputer();
     void powerOffComputer();
     void toggleComputerPower();
     void cycleDisplayType();
-    void quitIfSafe();
+    bool isSafeToQuit();
 
-    virtual int run();
     void tick50ms();
 };
 

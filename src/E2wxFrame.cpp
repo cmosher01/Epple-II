@@ -24,7 +24,10 @@
 #include "gui.h"
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
+#include <wx/event.h>
 #include <wx/persist/toplevel.h>
+
+
 
 enum E2MenuID {
     ID_MENUITEM_POWER = wxID_HIGHEST+1
@@ -35,6 +38,7 @@ wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_MENU(wxID_PREFERENCES, E2wxFrame::OnPreferences)
     EVT_MENU(wxID_ABOUT, E2wxFrame::OnAbout)
     EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
+    EVT_CLOSE(E2wxFrame::HandleUserQuitRequest)
 wxEND_EVENT_TABLE()
 
 
@@ -84,7 +88,7 @@ void E2wxFrame::InitStatusBar() {
 
 
 void E2wxFrame::OnExit(wxCommandEvent& event) {
-    Close(true);
+    Close(false);
 }
 
 void E2wxFrame::OnAbout(wxCommandEvent& event) {
@@ -108,4 +112,13 @@ void E2wxFrame::OnPreferences(wxCommandEvent& event) {
 
 void E2wxFrame::OnTogglePower(wxCommandEvent& event) {
     GUI::queueTogglePower();
+}
+
+void E2wxFrame::HandleUserQuitRequest(wxCloseEvent& event) {
+    // TODO how to handle event.CanVeto() ? I'd like to auto-save everything
+    if (wxGetApp().EnsureCanQuit()) {
+        event.Skip();
+    } else {
+        event.Veto();
+    }
 }

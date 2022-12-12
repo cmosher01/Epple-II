@@ -70,8 +70,9 @@ EmuTimer::EmuTimer(Emulator *e) : wxTimer(), emu(e) {
 EmuTimer::~EmuTimer() {
 }
 
+#define EXPECTED_MS 50 // see CHECK_EVERY_CYCLE in Emulator.cpp
 void EmuTimer::begin() {
-    this->Start(50); // TODO: EXPECTED_MS from Emulator
+    this->Start(EXPECTED_MS);
 }
 
 void EmuTimer::Notify() {
@@ -83,7 +84,10 @@ void EmuTimer::Notify() {
 
 E2wxApp::E2wxApp() :
     id(wxSTRINGIZE(PROJECT_VENDOR) "." wxSTRINGIZE(PROJECT_NAME)),
-    version(wxSTRINGIZE(PROJECT_VERSION)) {
+    version(wxSTRINGIZE(PROJECT_VERSION)),
+    frame(nullptr),
+    emu(nullptr),
+    emu_timer(nullptr) {
 }
 
 E2wxApp::~E2wxApp() {
@@ -169,7 +173,7 @@ bool E2wxApp::OnInit() {
 
 
 
-    E2wxFrame *frame = new E2wxFrame();
+    frame = new E2wxFrame();
     frame->DoInit();
     frame->Show();
 
@@ -184,12 +188,26 @@ bool E2wxApp::OnInit() {
 
 
 
+bool E2wxApp::CloseMainFrame() {
+    bool r = false;
+    if (this->frame) {
+        if (this->frame->Close(false)) {
+            delete this->frame;
+            this->frame = nullptr;
+            r = true;
+        }
+    }
+    return r;
+}
+
 int E2wxApp::OnExit() {
     if (this->emu_timer) {
         delete this->emu_timer;
+        this->emu_timer = nullptr;
     }
     if (this->emu) {
         delete this->emu;
+        this->emu = nullptr;
     }
     return 0;
 }
@@ -308,10 +326,26 @@ void E2wxApp::InitBoostLog() {
 
 
 void E2wxApp::StartEmulator() {
+    if (this->emu_timer) {
+        delete this->emu_timer;
+    }
+    if (this->emu) {
+        delete this->emu;
+    }
+
     this->emu = new Emulator();
-    E2Config cfg(this->arg_configfile, this->opt_config_from_prefs_only);
+    E2Config cfg{this->arg_configfile, this->opt_config_from_prefs_only};
     this->emu->config(cfg);
     this->emu->init();
-    this->emu_timer = new EmuTimer(this->emu);
+
+    this->emu_timer = new EmuTimer{this->emu};
     this->emu_timer->begin();
+}
+
+bool E2wxApp::EnsureCanQuit() {
+    bool ok = true;
+    if (this->emu) {
+        ok = this->emu->isSafeToQuit();
+    }
+    return ok;
 }

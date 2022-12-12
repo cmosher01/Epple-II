@@ -32,6 +32,7 @@
 
 
 
+class E2wxFrame;
 class Emulator;
 
 
@@ -60,6 +61,7 @@ class E2wxApp : public wxApp {
     std::filesystem::path docsdir;
     std::filesystem::path arg_configfile;
     bool opt_config_from_prefs_only;
+    E2wxFrame *frame;
     EmuTimer *emu_timer;
     Emulator *emu;
 
@@ -78,6 +80,9 @@ public:
     const std::filesystem::path GetConfigFile() const;
     const std::filesystem::path GetConfigDir() const;
     const std::filesystem::path GetDocumentsDir() const;
+
+    bool CloseMainFrame();
+    bool EnsureCanQuit();
 
     virtual bool OnInit() override;
     virtual int OnExit() override;
