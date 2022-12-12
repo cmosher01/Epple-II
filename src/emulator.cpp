@@ -52,11 +52,6 @@ void Emulator::toggleComputerPower() {
 }
 
 void Emulator::powerOnComputer() {
-    if (this->apple2.revision == 0) {
-        unsigned char key = 33u + rand()%94;
-        this->keypresses.push(key);
-        this->lastKeyDown = key;
-    }
     this->apple2.powerOn();
     this->screenImage.drawPower(true);
     this->display.setNoise(false);
@@ -78,9 +73,6 @@ void Emulator::powerOffComputer() {
 void Emulator::config(E2Config& cfg) {
     cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, &this->apple2);
     this->apple2.ram.dump_config();
-}
-
-void Emulator::init() {
     powerOffComputer();
     this->display.powerOn(true);
 }
@@ -299,23 +291,15 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
      * First handle the key presses that are for commands, as opposed to
      * simple key-presses that we send to the apple.
      */
-
+    // TODO remove all function key handling from here, and
+    // instead redirect them to the main frame, which will call back
+    // our appropriate handler functions
+    // Note: REPT key is special (need to track key-up event)
     if (sym == SDLK_F6) {
         this->apple2.reset();
         return;
     } else if (sym == SDLK_F7) {
-        // Feed input from the clipboard to the Apple keyboard
-        std::string s = this->clip.getText();
-        for (unsigned int i = 0; i < s.length(); ++i) {
-            unsigned char key = s[i];
-            // TODO fix pasting line-endings
-            if (key == '\n')
-                key = '\r';
-            if ('a' <= key && key <= 'z') {
-                key -= 32;
-            }
-            this->keypresses.push(key);
-        }
+        handlePaste();
         return;
     }// ...else if this is the emulated REPT key on the Apple keyboard...
     else if (sym == SDLK_F10) {
@@ -325,7 +309,7 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else if the user wants to run at full speed instead of emulating
         // the Apple's speed...
-    else if (sym == SDLK_F11) {
+    else if (sym == SDLK_F11) { // TODO remove hyper
         this->fhyper.toggleHyper();
         this->screenImage.toggleHyperLabel();
         return;
@@ -350,12 +334,12 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
         return;
     }// ...else if the user wants to switch between the interlaced extension
         // of the display and the non-interlaced historically correct display...
-    else if (sym == SDLK_F4) {
+    else if (sym == SDLK_F4) { // TODO remove bleed-down
         this->display.toggleBleedDown();
         this->screenImage.toggleFillLinesLabel();
         return;
     }// ...else initiate command line entry at the bottom of the emulator window
-    else if (sym == SDLK_F5) {
+    else if (sym == SDLK_F5) { // TODO re-do user-entered command line
         this->command = true;
         this->screenImage.enterCommandMode();
         return;
@@ -473,4 +457,19 @@ bool Emulator::isSafeToQuit() {
 
 void Emulator::handleUserQuitRequest() {
     wxGetApp().CloseMainFrame();
+}
+
+void Emulator::handlePaste() {
+    // Feed input from the clipboard to the Apple keyboard
+    std::string s = this->clip.getText();
+    for (unsigned int i = 0; i < s.length(); ++i) {
+        unsigned char key = s[i];
+        // TODO fix pasting line-endings
+        if (key == '\n')
+            key = '\r';
+        if ('a' <= key && key <= 'z') {
+            key -= 32;
+        }
+        this->keypresses.push(key);
+    }
 }

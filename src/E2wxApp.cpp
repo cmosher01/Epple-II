@@ -360,7 +360,6 @@ void E2wxApp::StartEmulator() {
     this->emu = new Emulator();
     E2Config cfg{this->arg_configfile, this->opt_config_from_prefs_only};
     this->emu->config(cfg);
-    this->emu->init();
 
     this->emu_timer = new EmuTimer{this->emu};
     this->emu_timer->begin();
@@ -372,4 +371,10 @@ bool E2wxApp::EnsureCanQuit() {
         ok = this->emu->isSafeToQuit();
     }
     return ok;
+}
+
+void E2wxApp::Paste() {
+    if (this->emu) {
+        this->emu->handlePaste();
+    }
 }

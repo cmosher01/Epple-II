@@ -14,32 +14,34 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #include "keyboard.h"
 #include "hypermode.h"
 #include "keyboardbuffermode.h"
+#include <cstdlib>
 
-Keyboard::Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered):
+
+
+Keyboard::Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered) :
     keys(q),
     fhyper(fhyper),
     buffered(buffered),
-    latch(0xC1u), // TODO: randomize this a little
-    cGet(0)
-{
+    latch(0),
+    cGet(0) {
 }
 
-void Keyboard::clear()
-{
+void Keyboard::powerOn() {
+    this->latch = 0xA1u + std::rand() % (0xFEu-0xA1+1u);
+}
+
+void Keyboard::clear() {
     this->latch &= 0x7F;
 }
 
-unsigned char Keyboard::get()
-{
+unsigned char Keyboard::get() {
     waitIfTooFast();
-    if (!this->buffered.isBuffered() || !(this->latch & 0x80))
-    {
-        if (!this->keys.empty())
-        {
+    if (!this->buffered.isBuffered() || !(this->latch & 0x80)) {
+        if (!this->keys.empty()) {
             this->latch = this->keys.front() | 0x80;
             this->keys.pop();
         }
@@ -47,28 +49,27 @@ unsigned char Keyboard::get()
     return this->latch;
 }
 
-void Keyboard::waitIfTooFast()
-{
-    if (this->fhyper.isHyper())
-    {
-        return;
-    }
+void Keyboard::waitIfTooFast() {
+    // TODO remove all hyper stuff; it doesn't do anything anymore,
+    // since the new architecture with wxTimer
 
-    ++this->cGet;
-    if (!this->cGet)
-    {
-        if (SDL_GetTicks() - this->lastGet <= 1000)
-        {
-            /*
-            * Check every 256 gets to see if they are
-            * happening too fast (within one second).
-            * If so, it means we are probably just
-            * looping waiting for a keypress, so
-            * wait a millisecond (or so) just to
-            * prevent us from using 100% of CPU time.
-            */
-            SDL_Delay(1);
-        }
-    }
-    this->lastGet = SDL_GetTicks();
+//    if (this->fhyper.isHyper()) {
+//        return;
+//    }
+//
+//    ++this->cGet;
+//    if (!this->cGet) {
+//        if (SDL_GetTicks() - this->lastGet <= 1000) {
+//            /*
+//             * Check every 256 gets to see if they are
+//             * happening too fast (within one second).
+//             * If so, it means we are probably just
+//             * looping waiting for a keypress, so
+//             * wait a millisecond (or so) just to
+//             * prevent us from using 100% of CPU time.
+//             */
+//            SDL_Delay(1);
+//        }
+//    }
+//    this->lastGet = SDL_GetTicks();
 }

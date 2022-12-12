@@ -94,6 +94,7 @@ void Apple2::powerOn() {
     this->video.powerOn();
     this->picgen.powerOn();
     this->powerUpReset.powerOn();
+    this->kbd.powerOn();
 }
 
 void Apple2::powerOff() {

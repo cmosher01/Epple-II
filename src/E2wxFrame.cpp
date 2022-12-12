@@ -23,10 +23,10 @@
 #include "PreferencesDialog.h"
 #include "gui.h"
 #include <wx/menu.h>
+#include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/event.h>
 #include <wx/persist/toplevel.h>
-
 
 
 enum E2MenuID {
@@ -35,6 +35,7 @@ enum E2MenuID {
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_MENU(wxID_EXIT, E2wxFrame::OnExit)
+    EVT_MENU(wxID_PASTE, E2wxFrame::OnPaste)
     EVT_MENU(wxID_PREFERENCES, E2wxFrame::OnPreferences)
     EVT_MENU(wxID_ABOUT, E2wxFrame::OnAbout)
     EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
@@ -65,15 +66,20 @@ void E2wxFrame::InitMenuBar() {
 
     wxMenu *menuFile = new wxMenu();
     menuBar->Append(menuFile, "&File");
-    menuFile->Append(wxID_EXIT);
+    wxMenuItem *miExit = menuFile->Append(wxID_EXIT);
+    miExit->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F9));
 
     wxMenu *menuEdit = new wxMenu();
     menuBar->Append(menuEdit, "&Edit");
+    wxMenuItem *miPaste = menuEdit->Append(wxID_PASTE);
+    miPaste->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F7));
+    menuEdit->AppendSeparator();
     menuEdit->Append(wxID_PREFERENCES);
 
     wxMenu *menuMachine = new wxMenu();
     menuBar->Append(menuMachine, "&Machine");
-    menuMachine->Append(ID_MENUITEM_POWER, "Toggle Power");
+    wxMenuItem *miPower = menuMachine->Append(ID_MENUITEM_POWER, "Toggle Power");
+    miPower->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F1));
 
     wxMenu *menuHelp = new wxMenu();
     menuBar->Append(menuHelp, "&Help");
@@ -102,6 +108,10 @@ void E2wxFrame::OnAbout(wxCommandEvent& event) {
     msg += wxGetApp().GetLogFile().c_str();
 
     wxMessageBox(msg, "About "+wxGetApp().GetID(), wxOK | wxICON_INFORMATION);
+}
+
+void E2wxFrame::OnPaste(wxCommandEvent& event) {
+    wxGetApp().Paste();
 }
 
 void E2wxFrame::OnPreferences(wxCommandEvent& event) {

@@ -61,6 +61,8 @@ class Emulator {
     void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
     void cmdKey(const SDL_KeyboardEvent& keyEvent);
     void processCommand();
+    void powerOnComputer();
+    void powerOffComputer();
 
     void handleRepeatKey();
     void handleAnyPendingEvents();
@@ -72,15 +74,11 @@ public:
 
     void config(E2Config& cfg);
 
-    void init();
-
-    void powerOnComputer();
-    void powerOffComputer();
-    void toggleComputerPower();
-    void cycleDisplayType();
-    bool isSafeToQuit();
-
     void tick50ms();
+
+    void toggleComputerPower();
+    void handlePaste();
+    bool isSafeToQuit();
 };
 
 #endif

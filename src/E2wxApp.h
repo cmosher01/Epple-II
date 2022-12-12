@@ -83,6 +83,7 @@ public:
 
     bool CloseMainFrame();
     bool EnsureCanQuit();
+    void Paste();
 
     virtual bool OnInit() override;
     virtual int OnExit() override;

@@ -14,7 +14,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
@@ -26,9 +26,7 @@ typedef std::queue<unsigned char> KeypressQueue;
 class HyperMode;
 class KeyboardBufferMode;
 
-class Keyboard
-{
-private:
+class Keyboard {
     KeypressQueue& keys;
     HyperMode& fhyper;
     KeyboardBufferMode& buffered;
@@ -41,6 +39,7 @@ private:
 
 public:
     Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered);
+    void powerOn();
     void clear();
     unsigned char get();
 };

@@ -34,6 +34,7 @@ public:
 
 private:
     void OnExit(wxCommandEvent& event);
+    void OnPaste(wxCommandEvent& event);
     void OnPreferences(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnTogglePower(wxCommandEvent& event);
