@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 #include "drive.h"
+
 Disk2Drive::Disk2Drive(double p_random_ones_rate):
     stepper(head),
     pulse(false),
@@ -25,7 +26,7 @@ Disk2Drive::Disk2Drive(double p_random_ones_rate):
     distribution(0.0,1.0) {
 }
 
-bool Disk2Drive::loadDisk(const std::string& fnib) {
+bool Disk2Drive::loadDisk(const std::filesystem::path& fnib) {
     return this->disk.load(fnib);
 }
 

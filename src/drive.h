@@ -18,6 +18,7 @@
 #ifndef DRIVE_H
 #define DRIVE_H
 
+#include <filesystem>
 #include <random>
 #include <chrono>
 #include <string>
@@ -48,7 +49,7 @@ private:
 
 public:
     Disk2Drive(double p_random_ones_rate);
-    bool loadDisk(const std::string& fnib);
+    bool loadDisk(const std::filesystem::path& fnib);
     void unloadDisk();
     bool isLoaded() const;
     void saveDisk();
