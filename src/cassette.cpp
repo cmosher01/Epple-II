@@ -65,7 +65,7 @@ static int askSave() {
         nullptr,
         "You have unsaved changes to your tape image.\nDo you want to SAVE them?",
         "Save changes",
-        wxYES_NO|wxCANCEL|wxCANCEL_DEFAULT};
+        (long)(wxYES_NO|wxCANCEL|wxCANCEL_DEFAULT)};
 
     return dlg->ShowModal();
 }
