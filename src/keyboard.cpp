@@ -16,15 +16,13 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "keyboard.h"
-#include "hypermode.h"
 #include "keyboardbuffermode.h"
 #include <cstdlib>
 
 
 
-Keyboard::Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered) :
+Keyboard::Keyboard(KeypressQueue& q, KeyboardBufferMode& buffered) :
     keys(q),
-    fhyper(fhyper),
     buffered(buffered),
     latch(0),
     cGet(0) {
@@ -39,7 +37,6 @@ void Keyboard::clear() {
 }
 
 unsigned char Keyboard::get() {
-    waitIfTooFast();
     if (!this->buffered.isBuffered() || !(this->latch & 0x80)) {
         if (!this->keys.empty()) {
             this->latch = this->keys.front() | 0x80;
@@ -47,29 +44,4 @@ unsigned char Keyboard::get() {
         }
     }
     return this->latch;
-}
-
-void Keyboard::waitIfTooFast() {
-    // TODO remove all hyper stuff; it doesn't do anything anymore,
-    // since the new architecture with wxTimer
-
-//    if (this->fhyper.isHyper()) {
-//        return;
-//    }
-//
-//    ++this->cGet;
-//    if (!this->cGet) {
-//        if (SDL_GetTicks() - this->lastGet <= 1000) {
-//            /*
-//             * Check every 256 gets to see if they are
-//             * happening too fast (within one second).
-//             * If so, it means we are probably just
-//             * looping waiting for a keypress, so
-//             * wait a millisecond (or so) just to
-//             * prevent us from using 100% of CPU time.
-//             */
-//            SDL_Delay(1);
-//        }
-//    }
-//    this->lastGet = SDL_GetTicks();
 }

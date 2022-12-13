@@ -23,22 +23,18 @@
 
 typedef std::queue<unsigned char> KeypressQueue;
 
-class HyperMode;
 class KeyboardBufferMode;
 
 class Keyboard {
     KeypressQueue& keys;
-    HyperMode& fhyper;
     KeyboardBufferMode& buffered;
 
     unsigned char latch;
     unsigned char cGet;
     Uint32 lastGet;
 
-    void waitIfTooFast();
-
 public:
-    Keyboard(KeypressQueue& q, HyperMode& fhyper, KeyboardBufferMode& buffered);
+    Keyboard(KeypressQueue& q, KeyboardBufferMode& buffered);
     void powerOn();
     void clear();
     unsigned char get();

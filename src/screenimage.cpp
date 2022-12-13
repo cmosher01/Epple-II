@@ -56,7 +56,6 @@ class ScreenException {
 
 ScreenImage::ScreenImage() :
 fullscreen(false),
-hyper_a2_speed(false),
 buffer(true),
 fillLines(true),
 display(AnalogTV::TV_OLD_COLOR),
@@ -167,9 +166,9 @@ void ScreenImage::drawFnKeys() {
     drawText(
             "                               FULLSCRN    SCAN-LINES                                                        KEYBOARD", r++, c);
     drawText(
-            "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT   HYPER   BUFFER   ", r++, c);
+            "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT           BUFFER   ", r++, c);
     drawText(
-            "       F1             F2          F3          F4       F5    F6       F7        F8       F9    F10     F11     F12     ", r++, c);
+            "       F1             F2          F3          F4       F5    F6       F7        F8       F9    F10             F12     ", r++, c);
 
     if (this->fullscreen)
         invertText(76, 32, 42); // FULLSCRN
@@ -180,9 +179,6 @@ void ScreenImage::drawFnKeys() {
         invertText(77, 43, 55); // FILL-LINES
     else
         invertText(76, 43, 55); // SCAN-LINES
-
-    if (this->hyper_a2_speed)
-        invertText(77, 102, 109); // HYPER
 
     if (this->buffer)
         invertText(77, 110, 118); // BUFFER
@@ -204,11 +200,6 @@ void ScreenImage::drawDisplayLabel() {
 void ScreenImage::cycleDisplayLabel() {
     this->display = (AnalogTV::DisplayType)((((int) this->display) + 1) % AnalogTV::NUM_DISPLAY_TYPES);
     drawDisplayLabel();
-}
-
-void ScreenImage::toggleHyperLabel() {
-    this->hyper_a2_speed = !this->hyper_a2_speed;
-    invertText(77, 102, 109); // HYPER
 }
 
 void ScreenImage::toggleKdbBufferLabel() {

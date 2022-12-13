@@ -36,7 +36,6 @@ private:
     unsigned int* pixels;
     int screen_pitch;
     bool fullscreen;
-    bool hyper_a2_speed;
     bool buffer;
     bool fillLines;
     AnalogTV::DisplayType display;
@@ -66,7 +65,6 @@ public:
     void drawSlot(int slot, int r, int c);
     void drawCassette();
     void drawFnKeys();
-    void toggleHyperLabel();
     void toggleKdbBufferLabel();
     void cycleDisplayLabel();
     void displayHz(int hz);

@@ -47,7 +47,7 @@ static bool isKeyDown(const SDL_Keycode sym, const SDL_Keymod mod) {
 Emulator::Emulator() :
     display(screenImage),
     videoStatic(display),
-    apple2(keypresses, paddleButtonStates, display, fhyper, buffered, screenImage),
+    apple2(keypresses, paddleButtonStates, display, buffered, screenImage),
     timable(nullptr), // No ticked object (NULL pointer)
     repeat(false),
     keysDown(0),

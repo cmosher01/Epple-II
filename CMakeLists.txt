@@ -89,7 +89,6 @@ filterchroma.cpp
 filterluma.cpp
 firmwarecard.cpp
 gui.cpp
-hypermode.cpp
 keyboardbuffermode.cpp
 keyboard.cpp
 languagecard.cpp

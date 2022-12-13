@@ -25,7 +25,6 @@
 #include "screenimage.h"
 #include "analogtv.h"
 #include "keyboardbuffermode.h"
-#include "hypermode.h"
 #include "clipboardhandler.h"
 #include <SDL.h>
 #include <wx/string.h>
@@ -37,7 +36,6 @@ class Emulator {
     PaddleButtonStates paddleButtonStates;
     KeypressQueue keypresses;
 
-    HyperMode fhyper;
     KeyboardBufferMode buffered;
     ScreenImage screenImage;
     AnalogTV display;

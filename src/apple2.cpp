@@ -38,9 +38,9 @@
 #include <istream>
 #include <fstream>
 
-Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, HyperMode& fhyper, KeyboardBufferMode& buffered, ScreenImage& gui) :
+Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, KeyboardBufferMode& buffered, ScreenImage& gui) :
 slts(gui),
-kbd(keypresses, fhyper, buffered),
+kbd(keypresses, buffered),
 rom(AddressBus::MOTHERBOARD_ROM_SIZ),
 ram(revision),
 cassetteIn(gui),
