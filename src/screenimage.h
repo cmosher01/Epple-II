@@ -38,7 +38,6 @@ private:
     bool fullscreen;
     bool buffer;
     AnalogTV::DisplayType display;
-    unsigned int cmdpos;
     void createScreen();
     std::vector<std::string> slotnames;
     std::string cassInName;
@@ -72,11 +71,6 @@ public:
     void drawDisplayLabel();
     void updateSlotName(const int slot, Card* card);
     void removeCard(const int slot, Card* card /* empty */);
-
-    void enterCommandMode();
-    void exitCommandMode();
-    void addkeyCommand(unsigned char key);
-    void backspaceCommand();
 
     void setDiskFile(int slot, int drive, const std::filesystem::path& filename);
 

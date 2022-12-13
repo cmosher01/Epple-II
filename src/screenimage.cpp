@@ -301,35 +301,6 @@ void ScreenImage::blank() {
     }
 }
 
-void ScreenImage::enterCommandMode() {
-    int r(76);
-    int c(1);
-    unsigned int* pn = this->pixels;
-    pn += r * FONTH * SCRW + c*FONTW;
-
-    memset((char*) pn, 0, SCRW * 4 * FONTH * 3);
-
-    drawText("command: ", 78, 1);
-    this->cmdpos = 9;
-
-    notifyObservers();
-}
-
-void ScreenImage::exitCommandMode() {
-    drawFnKeys();
-    notifyObservers();
-}
-
-void ScreenImage::addkeyCommand(unsigned char key) {
-    ++this->cmdpos;
-    drawChar((char) key, 78, this->cmdpos);
-}
-
-void ScreenImage::backspaceCommand() {
-    drawChar(' ', 78, this->cmdpos);
-    --this->cmdpos;
-}
-
 void ScreenImage::updateSlotName(const int slot, Card* card) {
     int r(R_SLOT + slot);
     int c(20);
