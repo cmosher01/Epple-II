@@ -30,16 +30,26 @@
 
 
 enum E2MenuID {
-    ID_MENUITEM_POWER = wxID_HIGHEST+1
+    ID_MENUITEM_POWER = wxID_HIGHEST+1,
+    ID_MENUITEM_CYCLE_MONITOR,
+    ID_MENUITEM_TOGGLE_FULL_SCREEN,
+    ID_MENUITEM_RESET,
+    ID_MENUITEM_SCREEN_SHOT,
+    ID_MENUITEM_TOGGLE_BUFFERED,
 };
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
+    EVT_CLOSE(E2wxFrame::HandleUserQuitRequest)
     EVT_MENU(wxID_EXIT, E2wxFrame::OnExit)
-    EVT_MENU(wxID_PASTE, E2wxFrame::OnPaste)
     EVT_MENU(wxID_PREFERENCES, E2wxFrame::OnPreferences)
     EVT_MENU(wxID_ABOUT, E2wxFrame::OnAbout)
     EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
-    EVT_CLOSE(E2wxFrame::HandleUserQuitRequest)
+    EVT_MENU(ID_MENUITEM_CYCLE_MONITOR, E2wxFrame::OnCycleMonitor)
+    EVT_MENU(ID_MENUITEM_TOGGLE_FULL_SCREEN, E2wxFrame::OnToggleFullScreen)
+    EVT_MENU(ID_MENUITEM_RESET, E2wxFrame::OnReset)
+    EVT_MENU(wxID_PASTE, E2wxFrame::OnPaste)
+    EVT_MENU(ID_MENUITEM_SCREEN_SHOT, E2wxFrame::OnScreenShot)
+    EVT_MENU(ID_MENUITEM_TOGGLE_BUFFERED, E2wxFrame::OnToggleBuffered)
 wxEND_EVENT_TABLE()
 
 
@@ -49,6 +59,8 @@ E2wxFrame::E2wxFrame() : wxFrame(nullptr, wxID_ANY, "epple2") {
 
 E2wxFrame::~E2wxFrame() {
 }
+
+
 
 void E2wxFrame::DoInit() {
     InitMenuBar();
@@ -74,12 +86,29 @@ void E2wxFrame::InitMenuBar() {
     wxMenuItem *miPaste = menuEdit->Append(wxID_PASTE);
     miPaste->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F7));
     menuEdit->AppendSeparator();
-    menuEdit->Append(wxID_PREFERENCES);
+    wxMenuItem *miPrefs = menuEdit->Append(wxID_PREFERENCES);
+    miPrefs->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, ','));
+
 
     wxMenu *menuMachine = new wxMenu();
     menuBar->Append(menuMachine, "&Machine");
     wxMenuItem *miPower = menuMachine->Append(ID_MENUITEM_POWER, "Toggle Power");
     miPower->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F1));
+    wxMenuItem *miReset = menuMachine->Append(ID_MENUITEM_RESET, "Reset");
+    miReset->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F6));
+    menuMachine->AppendSeparator();
+    wxMenuItem *miBuffered = menuMachine->Append(ID_MENUITEM_TOGGLE_BUFFERED, "Toggle Keyboard Buffer");
+    miBuffered->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F12));
+
+    wxMenu *menuMonitor = new wxMenu();
+    menuBar->Append(menuMonitor, "Mo&nitor");
+    wxMenuItem *miCycleMonitor = menuMonitor->Append(ID_MENUITEM_CYCLE_MONITOR, "Cycle Type");
+    miCycleMonitor->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F2));
+    wxMenuItem *miToggleFullScreen = menuMonitor->Append(ID_MENUITEM_TOGGLE_FULL_SCREEN, "Toggle Full Screen");
+    miToggleFullScreen->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F3));
+    menuMonitor->AppendSeparator();
+    wxMenuItem *miScreenShot = menuMonitor->Append(ID_MENUITEM_SCREEN_SHOT, "Screen Shot!");
+    miScreenShot->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F8));
 
     wxMenu *menuHelp = new wxMenu();
     menuBar->Append(menuHelp, "&Help");
@@ -93,8 +122,25 @@ void E2wxFrame::InitStatusBar() {
 
 
 
+void E2wxFrame::HandleUserQuitRequest(wxCloseEvent& event) {
+    // TODO how to handle event.CanVeto() ? I'd like to auto-save everything
+    if (wxGetApp().EnsureCanQuit()) {
+        event.Skip();
+    } else {
+        event.Veto();
+    }
+}
+
+
+
 void E2wxFrame::OnExit(wxCommandEvent& event) {
     Close(false);
+}
+
+void E2wxFrame::OnPreferences(wxCommandEvent& event) {
+    PreferencesDialog *dlg = new PreferencesDialog(this);
+    dlg->OnInit();
+    dlg->ShowModal();
 }
 
 void E2wxFrame::OnAbout(wxCommandEvent& event) {
@@ -110,25 +156,34 @@ void E2wxFrame::OnAbout(wxCommandEvent& event) {
     wxMessageBox(msg, "About "+wxGetApp().GetID(), wxOK | wxICON_INFORMATION);
 }
 
-void E2wxFrame::OnPaste(wxCommandEvent& event) {
-    wxGetApp().Paste();
-}
 
-void E2wxFrame::OnPreferences(wxCommandEvent& event) {
-    PreferencesDialog *dlg = new PreferencesDialog(this);
-    dlg->OnInit();
-    dlg->ShowModal();
-}
 
 void E2wxFrame::OnTogglePower(wxCommandEvent& event) {
     GUI::queueTogglePower();
 }
 
-void E2wxFrame::HandleUserQuitRequest(wxCloseEvent& event) {
-    // TODO how to handle event.CanVeto() ? I'd like to auto-save everything
-    if (wxGetApp().EnsureCanQuit()) {
-        event.Skip();
-    } else {
-        event.Veto();
-    }
+void E2wxFrame::OnCycleMonitor(wxCommandEvent& event) {
+    wxGetApp().CycleMonitor();
 }
+
+void E2wxFrame::OnToggleFullScreen(wxCommandEvent& event) {
+    wxGetApp().ToggleFullScreen();
+}
+
+void E2wxFrame::OnReset(wxCommandEvent& event) {
+    wxGetApp().Reset();
+}
+
+void E2wxFrame::OnPaste(wxCommandEvent& event) {
+    wxGetApp().Paste();
+}
+
+void E2wxFrame::OnScreenShot(wxCommandEvent& event) {
+    wxGetApp().ScreenShot();
+}
+
+void E2wxFrame::OnToggleBuffered(wxCommandEvent& event) {
+    wxGetApp().ToggleBuffered();
+}
+
+

@@ -27,48 +27,39 @@
 
 #include <ctime>
 
+
+
+
+
+
+static bool isKeyDown(const SDL_Keycode sym, const SDL_Keymod mod) {
+    return (
+        (sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
+        !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
+        !(sym == ']' && mod & KMOD_SHIFT)
+    );
+}
+
+
+
+
+
 Emulator::Emulator() :
-display(screenImage),
-videoStatic(display),
-apple2(keypresses, paddleButtonStates, display, fhyper, buffered, screenImage),
-timable(0), // No ticked object (NULL pointer)
-quit(false),
-repeat(false),
-keysDown(0),
-skip(0),
-prev_ms(SDL_GetTicks()),
-command(false),
-pendingCommandExit(false) {
+    display(screenImage),
+    videoStatic(display),
+    apple2(keypresses, paddleButtonStates, display, fhyper, buffered, screenImage),
+    timable(nullptr), // No ticked object (NULL pointer)
+    repeat(false),
+    keysDown(0),
+    prev_ms(SDL_GetTicks()),
+    command(false),
+    pendingCommandExit(false) {
 }
 
 Emulator::~Emulator() {
 }
 
-void Emulator::toggleComputerPower() {
-    if (this->timable == &this->videoStatic)
-        powerOnComputer();
-    else
-        powerOffComputer();
-}
 
-void Emulator::powerOnComputer() {
-    this->apple2.powerOn();
-    this->screenImage.drawPower(true);
-    this->display.setNoise(false);
-
-    // The apple2 becomes the ticked object
-    this->timable = &this->apple2;
-}
-
-void Emulator::powerOffComputer() {
-    this->apple2.powerOff();
-    this->screenImage.drawPower(false);
-    this->display.setNoise(true);
-    this->videoStatic.powerOn();
-
-    // The video static becomes the ticked object
-    this->timable = &this->videoStatic;
-}
 
 void Emulator::config(E2Config& cfg) {
     cfg.parse(this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, &this->apple2);
@@ -112,7 +103,7 @@ void Emulator::handleAnyPendingEvents() {
                 // If SDL is going away...
                 // could be due to user closing the SDL window, pressing cmd-Q on Mac,
                 // ctrl-C from the command line on Linux, process being killed, etc.
-                handleUserQuitRequest();
+                wxGetApp().CloseMainFrame();
             break;
             case SDL_KEYDOWN:
                 // If we're collecting a command line for changing any
@@ -122,7 +113,7 @@ void Emulator::handleAnyPendingEvents() {
                 else
                     // ...else we're collecting keypresses for the keyboard
                     // emulation (and thus the Apple ][ emulation itself)
-                    dispatchKeypress(event.key);
+                    dispatchKeyDown(event.key);
                     // People who have too many press-releases should be referred to as "keyboards"
             break;
             case SDL_KEYUP:
@@ -164,26 +155,9 @@ void Emulator::tick50ms() {
     handleAnyPendingEvents();
     this->screenImage.displayHz((1000*CHECK_EVERY_CYCLE)/(SDL_GetTicks() - this->prev_ms));
     this->prev_ms = SDL_GetTicks();
-    // TODO: how to check this->quit ?
 }
 
 
-
-void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
-    SDL_Keycode sym = keyEvent.keysym.sym;
-    SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
-
-    if ((sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
-            !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
-            !(sym == ']' && mod & KMOD_SHIFT)) {
-        --this->keysDown;
-    }// ...else if this is the emulated REPT key on the Apple keyboard...
-    else if (sym == SDLK_F10) {
-        // ...stop repeating. The key has been released
-        this->repeat = false;
-        this->rept = 0;
-    }
-}
 
 static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modifiers, unsigned char* key) {
     if (keycode == SDLK_LEFT) {
@@ -264,100 +238,37 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
     return true;
 }
 
-
-
-// Take real-world keystrokes from SDL and filter them to emulate the
-// Apple ][ or Apple ][ plus keyboard
-
-void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
+// Take real-world keystrokes from SDL and filter them to emulate the Apple ][ keyboard
+void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     if (keyEvent.repeat) {
         return;
     }
 
-    SDL_Keycode sym = keyEvent.keysym.sym;
-    SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
+    const SDL_Keycode sym = keyEvent.keysym.sym;
+    const SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
 
     //printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
 
-    if ((sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
-            !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
-            !(sym == ']' && mod & KMOD_SHIFT)) {
+    if (isKeyDown(sym, mod)) {
         ++this->keysDown;
     }
 
-
-
-    /*
-     * First handle the key presses that are for commands, as opposed to
-     * simple key-presses that we send to the apple.
-     */
-    // TODO remove all function key handling from here, and
-    // instead redirect them to the main frame, which will call back
-    // our appropriate handler functions
-    // Note: REPT key is special (need to track key-up event)
-    if (sym == SDLK_F6) {
-        this->apple2.reset();
-        return;
-    } else if (sym == SDLK_F7) {
-        handlePaste();
-        return;
-    }// ...else if this is the emulated REPT key on the Apple keyboard...
-    else if (sym == SDLK_F10) {
+    if (sym == SDLK_F10) {
         // ...start auto-repeat
         this->repeat = true;
         this->rept = CYCLES_PER_REPT;
         return;
-    }// ...else if the user wants to run at full speed instead of emulating
-        // the Apple's speed...
-    else if (sym == SDLK_F11) { // TODO remove hyper
-        this->fhyper.toggleHyper();
-        this->screenImage.toggleHyperLabel();
-        return;
-    } else if (sym == SDLK_F12) {
-        this->buffered.toggleBuffered();
-        this->screenImage.toggleKdbBufferLabel();
-        return;
-    }// ...else if the user has hit the rocker switch on the back of the Apple...
-    else if (sym == SDLK_F1) {
-        toggleComputerPower();
-        return;
-    }// ...else if the user wants to look at a different video display medium...
-    else if (sym == SDLK_F2) {
-        this->display.cycleType();
-        this->screenImage.cycleDisplayLabel();
-        return;
-    }// ...else if the user wants to switch to/from full screen and an
-        // individual application window...
-    else if (sym == SDLK_F3) {
-        this->screenImage.toggleFullScreen();
-        this->screenImage.drawPower(this->timable == &this->apple2);
-        return;
-    }// ...else if the user wants to switch between the interlaced extension
-        // of the display and the non-interlaced historically correct display...
-    else if (sym == SDLK_F4) { // TODO remove bleed-down
-        this->display.toggleBleedDown();
-        this->screenImage.toggleFillLinesLabel();
-        return;
-    }// ...else initiate command line entry at the bottom of the emulator window
-    else if (sym == SDLK_F5) { // TODO re-do user-entered command line
+    } else if (sym == SDLK_F5) { // TODO re-do user-entered command line
         this->command = true;
         this->screenImage.enterCommandMode();
         return;
-    }// ...else exit the entire emulation
-    else if (sym == SDLK_F9) {
-        handleUserQuitRequest();
-        return;
-    }// ...else save a screen shot
-    else if (sym == SDLK_F8) {
-        this->screenImage.saveBMP();
+    } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
+        wxGetApp().OnFnKeyPressed(sym);
         return;
     }
 
-
     unsigned char key;
     const bool sendKey = translateKeysToAppleModernized(sym, mod, &key);
-
-
 
     if (sendKey) {
         //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
@@ -366,10 +277,27 @@ void Emulator::dispatchKeypress(const SDL_KeyboardEvent& keyEvent) {
     }
 }
 
+void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
+    const SDL_Keycode sym = keyEvent.keysym.sym;
+    const SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
 
-// Collect and edit a command line typed at the bottom of the emulator
-// window
+    if (isKeyDown(sym, mod)) {
+        --this->keysDown;
+    } else if (sym == SDLK_F10) {
+        // ...else if this is the emulated REPT key on the Apple keyboard...
+        // ...stop repeating. The key has been released
+        this->repeat = false;
+        this->rept = 0;
+    }
+}
 
+
+
+
+
+
+// TODO redo command line handling
+// Collect and edit a command line typed at the bottom of the emulator window
 void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent) {
     SDL_Keycode sym = keyEvent.keysym.sym;
     unsigned char key = (unsigned char) (sym & 0x7F);
@@ -416,6 +344,14 @@ void Emulator::processCommand() {
     cmdline.erase(cmdline.begin(), cmdline.end());
 }
 
+
+
+
+
+
+
+
+
 static int askSave() {
     wxMessageDialog *dlg = new wxMessageDialog{
         nullptr,
@@ -455,11 +391,42 @@ bool Emulator::isSafeToQuit() {
     return true;
 }
 
-void Emulator::handleUserQuitRequest() {
-    wxGetApp().CloseMainFrame();
+
+
+
+
+
+
+
+
+
+void Emulator::toggleComputerPower() {
+    if (this->timable == &this->videoStatic)
+        powerOnComputer();
+    else
+        powerOffComputer();
 }
 
-void Emulator::handlePaste() {
+void Emulator::powerOnComputer() {
+    this->apple2.powerOn();
+    this->screenImage.drawPower(true);
+    this->display.setNoise(false);
+
+    // The apple2 becomes the ticked object
+    this->timable = &this->apple2;
+}
+
+void Emulator::powerOffComputer() {
+    this->apple2.powerOff();
+    this->screenImage.drawPower(false);
+    this->display.setNoise(true);
+    this->videoStatic.powerOn();
+
+    // The video static becomes the ticked object
+    this->timable = &this->videoStatic;
+}
+
+void Emulator::paste() {
     // Feed input from the clipboard to the Apple keyboard
     std::string s = this->clip.getText();
     for (unsigned int i = 0; i < s.length(); ++i) {
@@ -472,4 +439,27 @@ void Emulator::handlePaste() {
         }
         this->keypresses.push(key);
     }
+}
+
+void Emulator::monitorCycle() {
+    this->display.cycleType();
+    this->screenImage.cycleDisplayLabel();
+}
+
+void Emulator::reset() {
+    this->apple2.reset();
+}
+
+void Emulator::toggleBuffered() {
+    this->buffered.toggleBuffered();
+    this->screenImage.toggleKdbBufferLabel();
+}
+
+void Emulator::toggleFullScreen() {
+    this->screenImage.toggleFullScreen();
+    this->screenImage.drawPower(this->timable == &this->apple2);
+}
+
+void Emulator::screenshot() {
+    this->screenImage.saveBMP();
 }

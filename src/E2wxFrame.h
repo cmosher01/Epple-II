@@ -33,15 +33,22 @@ public:
     void DoInit();
 
 private:
-    void OnExit(wxCommandEvent& event);
-    void OnPaste(wxCommandEvent& event);
-    void OnPreferences(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-    void OnTogglePower(wxCommandEvent& event);
-    void HandleUserQuitRequest(wxCloseEvent& event);
-
     void InitMenuBar();
     void InitStatusBar();
+
+    void HandleUserQuitRequest(wxCloseEvent& event);
+
+    void OnExit(wxCommandEvent& event);
+    void OnPreferences(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+
+    void OnTogglePower(wxCommandEvent& event);
+    void OnCycleMonitor(wxCommandEvent& event);
+    void OnToggleFullScreen(wxCommandEvent& event);
+    void OnReset(wxCommandEvent& event);
+    void OnPaste(wxCommandEvent& event);
+    void OnScreenShot(wxCommandEvent& event);
+    void OnToggleBuffered(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };

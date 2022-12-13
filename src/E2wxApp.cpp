@@ -28,6 +28,8 @@
 #include "e2const.h"
 
 #include <wx/app.h>
+#include <wx/uiaction.h>
+#include <wx/window.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
 #include <wx/log.h>
@@ -201,6 +203,34 @@ bool E2wxApp::OnInit() {
 
 
 
+void E2wxApp::OnFnKeyPressed(const SDL_Keycode k) {
+    if (k == SDLK_F1) {
+        this->TogglePower();
+    } else if (k == SDLK_F2) {
+        this->CycleMonitor();
+    } else if (k == SDLK_F3) {
+        this->ToggleFullScreen();
+    } else if (k == SDLK_F4) {
+        //
+    } else if (k == SDLK_F5) {
+        //
+    } else if (k == SDLK_F6) {
+        this->Reset();
+    } else if (k == SDLK_F7) {
+        this->Paste();
+    } else if (k == SDLK_F8) {
+        this->ScreenShot();
+    } else if (k == SDLK_F9) {
+        this->CloseMainFrame();
+    } else if (k == SDLK_F10) {
+        //
+    } else if (k == SDLK_F11) {
+        //
+    } else if (k == SDLK_F12) {
+        this->ToggleBuffered();
+    }
+}
+
 bool E2wxApp::CloseMainFrame() {
     bool r = false;
     if (this->frame) {
@@ -365,6 +395,8 @@ void E2wxApp::StartEmulator() {
     this->emu_timer->begin();
 }
 
+
+
 bool E2wxApp::EnsureCanQuit() {
     bool ok = true;
     if (this->emu) {
@@ -375,6 +407,42 @@ bool E2wxApp::EnsureCanQuit() {
 
 void E2wxApp::Paste() {
     if (this->emu) {
-        this->emu->handlePaste();
+        this->emu->paste();
+    }
+}
+
+void E2wxApp::CycleMonitor() {
+    if (this->emu) {
+        this->emu->monitorCycle();
+    }
+}
+
+void E2wxApp::ScreenShot() {
+    if (this->emu) {
+        this->emu->screenshot();
+    }
+}
+
+void E2wxApp::Reset() {
+    if (this->emu) {
+        this->emu->reset();
+    }
+}
+
+void E2wxApp::TogglePower() {
+    if (this->emu) {
+        this->emu->toggleComputerPower();
+    }
+}
+
+void E2wxApp::ToggleBuffered() {
+    if (this->emu) {
+        this->emu->toggleBuffered();
+    }
+}
+
+void E2wxApp::ToggleFullScreen() {
+    if (this->emu) {
+        this->emu->toggleFullScreen();
     }
 }

@@ -46,18 +46,16 @@ class Emulator {
 
     Timable* timable;
 
-    bool quit;
     bool repeat;
     int keysDown;
     int rept;
     unsigned char lastKeyDown;
-    int skip;
     Uint32 prev_ms;
     bool command;
     bool pendingCommandExit;
     std::string cmdline;
 
-    void dispatchKeypress(const SDL_KeyboardEvent& keyEvent);
+    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
     void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
     void cmdKey(const SDL_KeyboardEvent& keyEvent);
     void processCommand();
@@ -66,19 +64,22 @@ class Emulator {
 
     void handleRepeatKey();
     void handleAnyPendingEvents();
-    void handleUserQuitRequest();
 
 public:
     Emulator();
     virtual ~Emulator();
 
     void config(E2Config& cfg);
-
     void tick50ms();
+    bool isSafeToQuit();
 
     void toggleComputerPower();
-    void handlePaste();
-    bool isSafeToQuit();
+    void monitorCycle();
+    void paste();
+    void reset();
+    void toggleBuffered();
+    void toggleFullScreen();
+    void screenshot();
 };
 
 #endif

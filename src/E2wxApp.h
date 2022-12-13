@@ -23,10 +23,13 @@
 
 
 
+#include <SDL_keycode.h>
+
 #include <wx/app.h>
 #include <wx/cmdline.h>
 #include <wx/timer.h>
 #include <wx/string.h>
+
 #include <filesystem>
 #include <string>
 
@@ -81,9 +84,17 @@ public:
     const std::filesystem::path GetConfigDir() const;
     const std::filesystem::path GetDocumentsDir() const;
 
+    void OnFnKeyPressed(const SDL_Keycode k);
+
     bool CloseMainFrame();
     bool EnsureCanQuit();
     void Paste();
+    void CycleMonitor();
+    void ScreenShot();
+    void Reset();
+    void TogglePower();
+    void ToggleBuffered();
+    void ToggleFullScreen();
 
     virtual bool OnInit() override;
     virtual int OnExit() override;
