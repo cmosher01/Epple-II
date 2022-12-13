@@ -45,6 +45,7 @@ private:
     void OnTogglePower(wxCommandEvent& event);
     void OnCycleMonitor(wxCommandEvent& event);
     void OnToggleFullScreen(wxCommandEvent& event);
+    void OnEmulatorCommand(wxCommandEvent& event);
     void OnReset(wxCommandEvent& event);
     void OnPaste(wxCommandEvent& event);
     void OnScreenShot(wxCommandEvent& event);

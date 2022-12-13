@@ -33,6 +33,7 @@ enum E2MenuID {
     ID_MENUITEM_POWER = wxID_HIGHEST+1,
     ID_MENUITEM_CYCLE_MONITOR,
     ID_MENUITEM_TOGGLE_FULL_SCREEN,
+    ID_MENUITEM_EMULATOR_COMMAND,
     ID_MENUITEM_RESET,
     ID_MENUITEM_SCREEN_SHOT,
     ID_MENUITEM_TOGGLE_BUFFERED,
@@ -46,6 +47,7 @@ wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
     EVT_MENU(ID_MENUITEM_CYCLE_MONITOR, E2wxFrame::OnCycleMonitor)
     EVT_MENU(ID_MENUITEM_TOGGLE_FULL_SCREEN, E2wxFrame::OnToggleFullScreen)
+    EVT_MENU(ID_MENUITEM_EMULATOR_COMMAND, E2wxFrame::OnEmulatorCommand)
     EVT_MENU(ID_MENUITEM_RESET, E2wxFrame::OnReset)
     EVT_MENU(wxID_PASTE, E2wxFrame::OnPaste)
     EVT_MENU(ID_MENUITEM_SCREEN_SHOT, E2wxFrame::OnScreenShot)
@@ -96,6 +98,9 @@ void E2wxFrame::InitMenuBar() {
     miPower->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F1));
     wxMenuItem *miReset = menuMachine->Append(ID_MENUITEM_RESET, "Reset");
     miReset->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F6));
+    menuMachine->AppendSeparator();
+    wxMenuItem *miCmd = menuMachine->Append(ID_MENUITEM_EMULATOR_COMMAND, "Command...");
+    miCmd->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F5));
     menuMachine->AppendSeparator();
     wxMenuItem *miBuffered = menuMachine->Append(ID_MENUITEM_TOGGLE_BUFFERED, "Toggle Keyboard Buffer");
     miBuffered->SetAccel(new wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F12));
@@ -170,6 +175,10 @@ void E2wxFrame::OnToggleFullScreen(wxCommandEvent& event) {
     wxGetApp().ToggleFullScreen();
 }
 
+void E2wxFrame::OnEmulatorCommand(wxCommandEvent& event) {
+    wxGetApp().EmulatorCommand();
+}
+
 void E2wxFrame::OnReset(wxCommandEvent& event) {
     wxGetApp().Reset();
 }
@@ -185,5 +194,3 @@ void E2wxFrame::OnScreenShot(wxCommandEvent& event) {
 void E2wxFrame::OnToggleBuffered(wxCommandEvent& event) {
     wxGetApp().ToggleBuffered();
 }
-
-

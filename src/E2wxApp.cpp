@@ -28,7 +28,7 @@
 #include "e2const.h"
 
 #include <wx/app.h>
-#include <wx/uiaction.h>
+#include <wx/textdlg.h>
 #include <wx/window.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fileconf.h>
@@ -213,7 +213,7 @@ void E2wxApp::OnFnKeyPressed(const SDL_Keycode k) {
     } else if (k == SDLK_F4) {
         //
     } else if (k == SDLK_F5) {
-        //
+        this->EmulatorCommand();
     } else if (k == SDLK_F6) {
         this->Reset();
     } else if (k == SDLK_F7) {
@@ -444,5 +444,16 @@ void E2wxApp::ToggleBuffered() {
 void E2wxApp::ToggleFullScreen() {
     if (this->emu) {
         this->emu->toggleFullScreen();
+    }
+}
+
+static const wxString message = "Enter a command for the emulator. See https://cmosher01.github.io/Epple-II/usermanual.html";
+static const wxString title = "Emulator command";
+void E2wxApp::EmulatorCommand() {
+    if (this->emu) {
+        wxTextEntryDialog dlg(this->frame, message, title);
+        if (dlg.ShowModal() == wxID_OK) {
+            this->emu->cmd(dlg.GetValue());
+        }
     }
 }

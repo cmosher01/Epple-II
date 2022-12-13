@@ -95,6 +95,7 @@ public:
     void TogglePower();
     void ToggleBuffered();
     void ToggleFullScreen();
+    void EmulatorCommand();
 
     virtual bool OnInit() override;
     virtual int OnExit() override;

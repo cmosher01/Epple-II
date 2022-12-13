@@ -51,9 +51,7 @@ Emulator::Emulator() :
     timable(nullptr), // No ticked object (NULL pointer)
     repeat(false),
     keysDown(0),
-    prev_ms(SDL_GetTicks()),
-    command(false),
-    pendingCommandExit(false) {
+    prev_ms(SDL_GetTicks()) {
 }
 
 Emulator::~Emulator() {
@@ -106,29 +104,13 @@ void Emulator::handleAnyPendingEvents() {
                 wxGetApp().CloseMainFrame();
             break;
             case SDL_KEYDOWN:
-                // If we're collecting a command line for changing any
-                // of the configurables of the emulator...
-                if (this->command)
-                    cmdKey(event.key);
-                else
-                    // ...else we're collecting keypresses for the keyboard
-                    // emulation (and thus the Apple ][ emulation itself)
-                    dispatchKeyDown(event.key);
-                    // People who have too many press-releases should be referred to as "keyboards"
+                // we're collecting keypresses for the keyboard
+                // emulation (and thus the Apple ][ emulation itself)
+                dispatchKeyDown(event.key);
+                // People who have too many press-releases should be referred to as "keyboards"
             break;
             case SDL_KEYUP:
-                // If we're collecting a command line for changing any
-                // of the configurables of the emulator...
-                if (this->command) {
-                    if (this->pendingCommandExit) {
-                        this->command = false;
-                        this->pendingCommandExit = false;
-                    }
-                } else {
-                    // ...else we're collecting keypresses for the keyboard
-                    // emulation (and thus the Apple ][ emulation itself)
-                    dispatchKeyUp(event.key);
-                }
+                dispatchKeyUp(event.key);
             break;
         }
     }
@@ -234,7 +216,6 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
         return false;
     }
 
-
     return true;
 }
 
@@ -257,10 +238,6 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
         // ...start auto-repeat
         this->repeat = true;
         this->rept = CYCLES_PER_REPT;
-        return;
-    } else if (sym == SDLK_F5) { // TODO re-do user-entered command line
-        this->command = true;
-        this->screenImage.enterCommandMode();
         return;
     } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
         wxGetApp().OnFnKeyPressed(sym);
@@ -295,58 +272,14 @@ void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
 
 
 
-
-// TODO redo command line handling
-// Collect and edit a command line typed at the bottom of the emulator window
-void Emulator::cmdKey(const SDL_KeyboardEvent& keyEvent) {
-    SDL_Keycode sym = keyEvent.keysym.sym;
-    unsigned char key = (unsigned char) (sym & 0x7F);
-
-    if (sym == SDLK_RETURN) {
-        processCommand();
-    } else if (sym == SDLK_ESCAPE) {
-        cmdline.erase(cmdline.begin(), cmdline.end());
-        processCommand();
-    } else if (sym == SDLK_BACKSPACE) {
-        if (cmdline.length()) {
-            cmdline.erase(cmdline.end() - 1);
-            this->screenImage.backspaceCommand();
-        }
-    } else if (sym == SDLK_INSERT) {
-        std::string s = this->clip.getText();
-        for (unsigned int i = 0; i < s.length(); ++i) {
-            key = s[i];
-            if (key == '\n' || key == '\r') {
-                processCommand();
-                break;
-            } else {
-                cmdline += key;
-                this->screenImage.addkeyCommand(key);
-            }
-        }
-    } else if (key) {
-        cmdline += key;
-        this->screenImage.addkeyCommand(key);
-    }
-}
-
-// Process a command line typed at the bottom of the emulator window
-void Emulator::processCommand() {
-    this->screenImage.exitCommandMode();
-    this->screenImage.drawPower(this->timable == &this->apple2);
-    this->pendingCommandExit = true;
-
-    if (cmdline.empty()) {
+void Emulator::cmd(const wxString& c) {
+    if (c.empty()) {
         return;
     }
-
-    E2Command{}.parseLine(cmdline, this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, NULL);
-    cmdline.erase(cmdline.begin(), cmdline.end());
+    E2Command{}.parseLine(
+        c.c_str().AsChar(),
+        this->apple2.ram, this->apple2.rom, this->apple2.slts, this->apple2.revision, this->screenImage, this->apple2.cassetteIn, this->apple2.cassetteOut, nullptr);
 }
-
-
-
-
 
 
 

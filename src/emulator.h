@@ -28,6 +28,7 @@
 #include "hypermode.h"
 #include "clipboardhandler.h"
 #include <SDL.h>
+#include <wx/string.h>
 
 class Timable;
 class E2Config;
@@ -51,14 +52,9 @@ class Emulator {
     int rept;
     unsigned char lastKeyDown;
     Uint32 prev_ms;
-    bool command;
-    bool pendingCommandExit;
-    std::string cmdline;
 
     void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
     void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
-    void cmdKey(const SDL_KeyboardEvent& keyEvent);
-    void processCommand();
     void powerOnComputer();
     void powerOffComputer();
 
@@ -71,6 +67,7 @@ public:
 
     void config(E2Config& cfg);
     void tick50ms();
+    void cmd(const wxString& c);
     bool isSafeToQuit();
 
     void toggleComputerPower();
