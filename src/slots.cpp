@@ -29,6 +29,9 @@ Slots::Slots(ScreenImage& gui):
 
 Slots::~Slots()
 {
+    for (Card *card : this->cards) {
+        delete card;
+    }
 }
 
 unsigned char Slots::io(const int islot, const int iswch, const unsigned char b, const bool writing)

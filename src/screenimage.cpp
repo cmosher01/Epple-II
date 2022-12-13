@@ -57,13 +57,17 @@ class ScreenException {
 };
 
 ScreenImage::ScreenImage() :
-fullscreen(false),
-buffer(true),
-display(AnalogTV::TV_OLD_COLOR),
-slotnames(8),
-cassInName(32, ' '),
-cassOutName(32, ' ') {
+    fullscreen(false),
+    buffer(true),
+    display(AnalogTV::TV_OLD_COLOR),
+    slotnames(8),
+    cassInName(32, ' '),
+    cassOutName(32, ' ') {
     createScreen();
+}
+
+ScreenImage::~ScreenImage() {
+    destroyScreen();
 }
 
 void ScreenImage::exitFullScreen() {
@@ -104,6 +108,12 @@ void ScreenImage::createScreen() {
 
     drawLabels();
     notifyObservers();
+}
+
+void ScreenImage::destroyScreen() {
+    SDL_DestroyTexture(this->texture);
+    SDL_DestroyRenderer(this->renderer);
+    SDL_DestroyWindow(this->window);
 }
 
 void ScreenImage::drawLabels() {
@@ -273,9 +283,6 @@ void ScreenImage::drawPower(bool on) {
         pn += SCRW;
     }
     notifyObservers();
-}
-
-ScreenImage::~ScreenImage() {
 }
 
 void ScreenImage::notifyObservers() {

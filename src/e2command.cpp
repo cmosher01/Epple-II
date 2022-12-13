@@ -186,6 +186,7 @@ void E2Command::tryParseLine(const std::string& line, MemoryRandomAccess& ram, M
         trim(file);
         std::ifstream *memfile = new std::ifstream(file.c_str(), std::ios::binary);
         if (!memfile->is_open()) {
+            delete memfile;
             std::filesystem::path f = wxGetApp().GetResDir();
             f /= file;
             memfile = new std::ifstream(f, std::ios::binary);
@@ -216,6 +217,7 @@ void E2Command::tryParseLine(const std::string& line, MemoryRandomAccess& ram, M
                 throw ConfigException("error at \"" + romtype + "\"; expected rom, rom7, or rombank");
         }
         memfile->close();
+        delete memfile;
     } else if (cmd == "load" || cmd == "save" || cmd == "unload") {
         std::string slotk;
         tok >> slotk;

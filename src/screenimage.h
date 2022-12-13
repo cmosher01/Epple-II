@@ -39,6 +39,7 @@ private:
     bool buffer;
     AnalogTV::DisplayType display;
     void createScreen();
+    void destroyScreen();
     std::vector<std::string> slotnames;
     std::string cassInName;
     std::string cassOutName;

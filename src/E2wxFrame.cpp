@@ -56,10 +56,14 @@ wxEND_EVENT_TABLE()
 
 
 
-E2wxFrame::E2wxFrame() : wxFrame(nullptr, wxID_ANY, "epple2") {
+E2wxFrame::E2wxFrame() : wxFrame(nullptr, wxID_ANY, "epple2"), statusBar(nullptr) {
 }
 
 E2wxFrame::~E2wxFrame() {
+    if (this->statusBar) {
+        delete this->statusBar;
+        this->statusBar = nullptr;
+    }
 }
 
 
@@ -89,7 +93,7 @@ void E2wxFrame::InitMenuBar() {
     miPaste->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F7));
     menuEdit->AppendSeparator();
     wxMenuItem *miPrefs = menuEdit->Append(wxID_PREFERENCES);
-    miPrefs->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, ','));
+    miPrefs->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, 44));
 
 
     wxMenu *menuMachine = new wxMenu();
@@ -121,7 +125,7 @@ void E2wxFrame::InitMenuBar() {
 }
 
 void E2wxFrame::InitStatusBar() {
-    CreateStatusBar();
+    this->statusBar = CreateStatusBar();
     SetStatusText("Welcome to "+wxGetApp().GetID());
 }
 
