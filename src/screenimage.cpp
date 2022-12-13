@@ -28,6 +28,8 @@
 #include <cstdio>
 #include <cstring>
 
+// TODO For screen image in general, remove items from this SDL window to the wx frame as appropriate
+
 static const char* power =
         " @@@@    @@@   @    @    @  @@@@@  @@@@ "
         " @   @  @   @  @   @ @   @  @      @   @"
@@ -57,7 +59,6 @@ class ScreenException {
 ScreenImage::ScreenImage() :
 fullscreen(false),
 buffer(true),
-fillLines(true),
 display(AnalogTV::TV_OLD_COLOR),
 slotnames(8),
 cassInName(32, ' '),
@@ -164,32 +165,21 @@ void ScreenImage::drawFnKeys() {
     int r(76);
     int c(1);
     drawText(
-            "                               FULLSCRN    SCAN-LINES                                                        KEYBOARD", r++, c);
+            "                               FULLSCRN                                                                      KEYBOARD", r++, c);
     drawText(
-            "                XXXXXXXXXXXXXX  WINDOW     FILL-LINES  CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT           BUFFER   ", r++, c);
+            "                XXXXXXXXXXXXXX  WINDOW                 CMD  RESET    PASTE   SAVE BMP   QUIT!  REPT           BUFFER   ", r++, c);
     drawText(
-            "       F1             F2          F3          F4       F5    F6       F7        F8       F9    F10             F12     ", r++, c);
+            "       F1             F2          F3                   F5    F6       F7        F8       F9    F10             F12     ", r++, c);
 
     if (this->fullscreen)
         invertText(76, 32, 42); // FULLSCRN
     else
         invertText(77, 32, 40); // WINDOW
 
-    if (this->fillLines)
-        invertText(77, 43, 55); // FILL-LINES
-    else
-        invertText(76, 43, 55); // SCAN-LINES
-
     if (this->buffer)
         invertText(77, 110, 118); // BUFFER
 
     drawDisplayLabel();
-}
-
-void ScreenImage::toggleFillLinesLabel() {
-    this->fillLines = !this->fillLines;
-    invertText(76, 43, 55); // SCAN-LINES
-    invertText(77, 43, 55); // FILL-LINES
 }
 
 void ScreenImage::drawDisplayLabel() {

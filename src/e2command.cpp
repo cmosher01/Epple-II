@@ -326,7 +326,6 @@ void E2Command::tryParseLine(const std::string& line, MemoryRandomAccess& ram, M
 void E2Command::loadDisk(Slots& slts, int slot, int drive, const std::filesystem::path &media) {
     Card* card = slts.get(slot);
     if (!card->hasMedia()) {
-        // TODO if file doesn't exist, name still gets displayed, and there's no error message
         // TODO error message
         // std::cerr << "Slot " << slot << " doesn't have a disk controller card" << std::endl;
         return;

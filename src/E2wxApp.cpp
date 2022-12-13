@@ -151,6 +151,10 @@ bool E2wxApp::OnInit() {
 //    wxLogVerbose("%s", "verbose");
 //    wxFile().Open("foobar.txt");
 
+//    TODO wx log file window?
+//    TODO remove all logging from stdout/err to log file
+//    TODO define components to turn on/off for trace level logging (disk, cassette, woz, keyboard, ram, lss, audio, etc.)
+
     BOOST_LOG_TRIVIAL(info) << "Application ID: " << this->GetID();
     BOOST_LOG_TRIVIAL(info) << "Application version: " << this->GetVersion();
 

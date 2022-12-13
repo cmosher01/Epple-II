@@ -18,9 +18,12 @@
 #ifndef CONFIGEP2_H
 #define CONFIGEP2_H
 
+
+
 #include <wx/string.h>
 #include <filesystem>
 #include <string>
+
 class Memory;
 class MemoryRandomAccess;
 class Slots;
@@ -30,9 +33,7 @@ class CassetteOut;
 class Apple2;
 
 
-// TODO split out all static things into their own class (and don't make them static)
-// Remember that, besides config, also command line entry calls parseLine
-// This will also help with adding menu items in place of commands
+
 class E2Config {
 private:
     const std::filesystem::path file_path;
@@ -49,5 +50,7 @@ public:
 
     void parse(MemoryRandomAccess& ram, Memory& rom, Slots& slts, int& revision, ScreenImage& gui, CassetteIn& cassetteIn, CassetteOut& cassetteOut, Apple2* apple2);
 };
+
+
 
 #endif

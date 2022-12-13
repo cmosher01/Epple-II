@@ -37,7 +37,6 @@ private:
     int screen_pitch;
     bool fullscreen;
     bool buffer;
-    bool fillLines;
     AnalogTV::DisplayType display;
     unsigned int cmdpos;
     void createScreen();

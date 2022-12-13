@@ -46,7 +46,6 @@ private:
     bool on;
     bool noise;
     DisplayType type;
-    bool bleed_down;
 
     static int* rcb;
 
@@ -95,7 +94,6 @@ public:
     }
 
     void powerOn(bool b);
-    void toggleBleedDown();
     void restartSignal();
     void setType(DisplayType type);
     void cycleType();
