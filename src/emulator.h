@@ -51,13 +51,15 @@ class Emulator {
     unsigned char lastKeyDown;
     Uint32 prev_ms;
 
-    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
-    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
     void powerOnComputer();
     void powerOffComputer();
 
-    void handleRepeatKey();
     void handleAnyPendingEvents();
+
+    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
+    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
+
+    void handleRepeatKey();
 
 public:
     Emulator();

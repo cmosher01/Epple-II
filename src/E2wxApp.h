@@ -70,7 +70,6 @@ class E2wxApp : public wxApp {
 
     const std::filesystem::path BuildLogFilePath() const;
     void InitBoostLog();
-    void StartEmulator();
 
 public:
     E2wxApp();
@@ -83,6 +82,8 @@ public:
     const std::filesystem::path GetConfigFile() const;
     const std::filesystem::path GetConfigDir() const;
     const std::filesystem::path GetDocumentsDir() const;
+
+    void StartEmulator();
 
     void OnFnKeyPressed(const SDL_Keycode k);
 

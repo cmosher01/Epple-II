@@ -23,7 +23,6 @@
 
 #include <wx/frame.h>
 #include <wx/event.h>
-#include <wx/statusbr.h>
 #include <string>
 
 class E2wxFrame : public wxFrame {
@@ -39,7 +38,7 @@ private:
 
     void HandleUserQuitRequest(wxCloseEvent& event);
 
-    void OnExit(wxCommandEvent& event);
+    void OnFileExitCommand(wxCommandEvent& event);
     void OnPreferences(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
 
@@ -53,8 +52,6 @@ private:
     void OnToggleBuffered(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
-
-    wxStatusBar *statusBar;
 };
 
 #endif /* E2WXFRAME_H */

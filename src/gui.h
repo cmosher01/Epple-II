@@ -25,9 +25,6 @@ public:
     GUI();
     virtual ~GUI();
 
-    static void queueQuit();
-    static void queueTogglePower();
-
     class NotInitException : public std::runtime_error {
     public:
         NotInitException();

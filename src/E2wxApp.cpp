@@ -144,8 +144,8 @@ bool E2wxApp::OnInit() {
     InitBoostLog();
 
 //    TODO investigate redirecting wxLogs to boost
-//    wxLog* logger = new wxLogStream(&std::cerr);
-//    wxLog::SetActiveTarget(logger);
+    wxLog* logger = new wxLogStream(&std::cerr);
+    wxLog::SetActiveTarget(logger);
 //    wxLogWarning("%s", "a warning has occurred");
 //    wxLogInfo("%s", "informational");
 //    wxLogVerbose("%s", "verbose");
@@ -186,12 +186,11 @@ bool E2wxApp::OnInit() {
     BOOST_LOG_TRIVIAL(info) << "Resource      directory path: " << this->resdir;
 
     wxXmlResource::Get()->InitAllHandlers();
-    if (!wxXmlResource::Get()->LoadAllFiles(this->resdir.c_str())) {
-        return false;
-    }
+    wxXmlResource::Get()->LoadAllFiles(this->resdir.c_str());
 
 
 
+    // note: the frame is responsible for deleting itself (via Destroy())
     frame = new E2wxFrame();
     frame->DoInit();
     frame->Show();
@@ -237,17 +236,28 @@ void E2wxApp::OnFnKeyPressed(const SDL_Keycode k) {
 
 bool E2wxApp::CloseMainFrame() {
     bool r = false;
+    BOOST_LOG_TRIVIAL(info) << "Received request to close main frame.";
     if (this->frame) {
         if (this->frame->Close(false)) {
-            delete this->frame;
+            BOOST_LOG_TRIVIAL(info) << "Main frame successfully deleted.";
             this->frame = nullptr;
+            wxApp::ExitMainLoop();
             r = true;
+        } else {
+            BOOST_LOG_TRIVIAL(info) << "User cancelled application shutdown.";
         }
+    } else {
+        BOOST_LOG_TRIVIAL(warning) << "No main frame found.";
     }
     return r;
 }
 
 int E2wxApp::OnExit() {
+    BOOST_LOG_TRIVIAL(info) << "Begin application OnExit...";
+
+    delete wxXmlResource::Set(nullptr);
+
+    BOOST_LOG_TRIVIAL(info) << "Deleting emulator instance...";
     if (this->emu_timer) {
         delete this->emu_timer;
         this->emu_timer = nullptr;
@@ -256,12 +266,16 @@ int E2wxApp::OnExit() {
         delete this->emu;
         this->emu = nullptr;
     }
+
+    BOOST_LOG_TRIVIAL(info) << "Application OnExit complete.";
     return 0;
 }
 
 
 
 void E2wxApp::OnFatalException() {
+    BOOST_LOG_TRIVIAL(info) << "Application will handle fatal exception...";
+
     wxDebugReport report;
     report.AddAll();
 

@@ -22,11 +22,15 @@
 #include "E2wxApp.h"
 #include "PreferencesDialog.h"
 #include "gui.h"
+
 #include <wx/menu.h>
 #include <wx/accel.h>
 #include <wx/msgdlg.h>
 #include <wx/event.h>
 #include <wx/persist/toplevel.h>
+
+#include <boost/log/trivial.hpp>
+
 
 
 enum E2MenuID {
@@ -41,7 +45,7 @@ enum E2MenuID {
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_CLOSE(E2wxFrame::HandleUserQuitRequest)
-    EVT_MENU(wxID_EXIT, E2wxFrame::OnExit)
+    EVT_MENU(wxID_EXIT, E2wxFrame::OnFileExitCommand)
     EVT_MENU(wxID_PREFERENCES, E2wxFrame::OnPreferences)
     EVT_MENU(wxID_ABOUT, E2wxFrame::OnAbout)
     EVT_MENU(ID_MENUITEM_POWER, E2wxFrame::OnTogglePower)
@@ -56,14 +60,10 @@ wxEND_EVENT_TABLE()
 
 
 
-E2wxFrame::E2wxFrame() : wxFrame(nullptr, wxID_ANY, "epple2"), statusBar(nullptr) {
+E2wxFrame::E2wxFrame() : wxFrame(nullptr, wxID_ANY, "epple2") {
 }
 
 E2wxFrame::~E2wxFrame() {
-    if (this->statusBar) {
-        delete this->statusBar;
-        this->statusBar = nullptr;
-    }
 }
 
 
@@ -125,31 +125,42 @@ void E2wxFrame::InitMenuBar() {
 }
 
 void E2wxFrame::InitStatusBar() {
-    this->statusBar = CreateStatusBar();
+    CreateStatusBar();
     SetStatusText("Welcome to "+wxGetApp().GetID());
 }
 
 
 
 void E2wxFrame::HandleUserQuitRequest(wxCloseEvent& event) {
-    // TODO how to handle event.CanVeto() ? I'd like to auto-save everything
-    if (wxGetApp().EnsureCanQuit()) {
-        event.Skip();
+    BOOST_LOG_TRIVIAL(info) << "Main frame will handle request to close application...";
+    if (!event.CanVeto()) {
+        BOOST_LOG_TRIVIAL(warning) << "Application is being forced to quit; any unsaved changes will be discarded.";
+        // TODO how to handle !event.CanVeto() ?
+        // I'd like to auto-save everything
+        Destroy();
+    } else if (wxGetApp().EnsureCanQuit()) {
+        BOOST_LOG_TRIVIAL(info) << "Destroying main frame now...";
+        Destroy();
     } else {
+        BOOST_LOG_TRIVIAL(info) << "User cancelled closing main frame.";
         event.Veto();
     }
 }
 
 
 
-void E2wxFrame::OnExit(wxCommandEvent& event) {
+void E2wxFrame::OnFileExitCommand(wxCommandEvent& event) {
     Close(false);
 }
 
 void E2wxFrame::OnPreferences(wxCommandEvent& event) {
     PreferencesDialog *dlg = new PreferencesDialog(this);
-    dlg->OnInit();
-    dlg->ShowModal();
+    if (dlg->OnInit()) {
+        dlg->ShowModal();
+        dlg->Destroy();
+    }
+    // TODO re-configure emulator here
+    wxGetApp().StartEmulator();
 }
 
 void E2wxFrame::OnAbout(wxCommandEvent& event) {
@@ -168,7 +179,7 @@ void E2wxFrame::OnAbout(wxCommandEvent& event) {
 
 
 void E2wxFrame::OnTogglePower(wxCommandEvent& event) {
-    GUI::queueTogglePower();
+    wxGetApp().TogglePower();
 }
 
 void E2wxFrame::OnCycleMonitor(wxCommandEvent& event) {

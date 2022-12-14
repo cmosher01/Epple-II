@@ -34,6 +34,9 @@ LanguageCard::LanguageCard(ScreenImage& gui, int slot):
 
 LanguageCard::~LanguageCard()
 {
+    for (Memory* m : this->ramBank) {
+        delete m;
+    }
 }
 
 

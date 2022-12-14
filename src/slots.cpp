@@ -30,7 +30,9 @@ Slots::Slots(ScreenImage& gui):
 Slots::~Slots()
 {
     for (Card *card : this->cards) {
-        delete card;
+        if (card != &this->empty) {
+            delete card;
+        }
     }
 }
 

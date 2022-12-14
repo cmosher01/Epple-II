@@ -25,6 +25,8 @@
 
 #include <SDL.h>
 
+#include <boost/log/trivial.hpp>
+
 #include <ctime>
 
 
@@ -222,6 +224,7 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
 // Take real-world keystrokes from SDL and filter them to emulate the Apple ][ keyboard
 void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     if (keyEvent.repeat) {
+        // To repeat on the real Apple ][, you need to use the REPT key (emulated below by F10)
         return;
     }
 
@@ -235,22 +238,19 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     }
 
     if (sym == SDLK_F10) {
-        // ...start auto-repeat
+        // handle REPT key
         this->repeat = true;
         this->rept = CYCLES_PER_REPT;
-        return;
     } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
         wxGetApp().OnFnKeyPressed(sym);
-        return;
-    }
-
-    unsigned char key;
-    const bool sendKey = translateKeysToAppleModernized(sym, mod, &key);
-
-    if (sendKey) {
-        //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
-        this->keypresses.push(key);
-        this->lastKeyDown = key;
+    } else {
+        unsigned char key;
+        const bool sendKey = translateKeysToAppleModernized(sym, mod, &key);
+        if (sendKey) {
+            //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
+            this->keypresses.push(key);
+            this->lastKeyDown = key;
+        }
     }
 }
 
@@ -296,6 +296,8 @@ static int askSave() {
 }
 
 bool Emulator::isSafeToQuit() {
+    BOOST_LOG_TRIVIAL(info) << "Checking for any unsaved changes...";
+
     this->screenImage.exitFullScreen();
 
     if (!this->apple2.cassetteOut.eject()) {

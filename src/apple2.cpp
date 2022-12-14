@@ -49,23 +49,26 @@ addressBus(gui, revision, ram, rom, kbd, videoMode, paddles, paddleButtonStates,
 picgen(tv, videoMode, revision),
 video(videoMode, addressBus, picgen, textRows),
 transistors("transistors"), // TODO load file from resources
-cpu(NULL),
+cpu(nullptr),
 powerUpReset(*this),
 revision(1) {
 }
 
 Apple2::~Apple2() {
+    if (this->cpu) {
+        delete this->cpu;
+    }
 }
 
 void Apple2::useEpple2Cpu() {
-    if (this->cpu == NULL) {
+    if (this->cpu == nullptr) {
         std::cout << "Using fast Epple2 CPU emulator" << std::endl;
         this->cpu = new CPU(this->addressBus);
     }
 }
 
 void Apple2::useVisual6502Cpu() {
-    if (this->cpu == NULL) {
+    if (this->cpu == nullptr) {
         std::cout << "Using http://www.visual6502.org/ CPU emulation (which will be slow)." << std::endl;
         this->cpu = new Emu6502(this->transistors, this->addressBus);
     }

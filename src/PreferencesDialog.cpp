@@ -132,10 +132,14 @@ void PreferencesDialog::BuildItemTree() {
     this->GetSizer()->Layout();
 }
 
-void PreferencesDialog::OnInit() {
+bool PreferencesDialog::OnInit() {
     wxConfigBase::Get()->Read("/ActivePreferences/name", &this->active, "");
 
-    wxXmlResource::Get()->LoadDialog(this, this->parent, "Preferences");
+    const bool loaded = wxXmlResource::Get()->LoadDialog(this, this->parent, "Preferences");
+    if (!loaded) {
+        BOOST_LOG_TRIVIAL(error) << "Could not load Preferences dialog resources.";
+        return false;
+    }
 
     SetSize(SIZ_DLG);
 
@@ -144,6 +148,8 @@ void PreferencesDialog::OnInit() {
     CTRL(wxTreeCtrl, treItems);
     treItems->SetFocus();
     treItems->SelectItem(treItems->GetRootItem());
+
+    return true;
 }
 
 void PreferencesDialog::Save(const std::filesystem::path& to) {

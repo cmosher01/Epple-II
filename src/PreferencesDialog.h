@@ -29,7 +29,7 @@ public:
     PreferencesDialog(wxWindow *parent);
     ~PreferencesDialog();
 
-    void OnInit();
+    bool OnInit();
 };
 
 #endif /* PREFERENCESDIALOG_H */
