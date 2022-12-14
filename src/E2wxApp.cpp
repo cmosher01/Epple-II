@@ -197,7 +197,7 @@ bool E2wxApp::OnInit() {
 
 
 
-    StartEmulator();
+// TODO option? or use last-state?    StartEmulator();
 
 
 
@@ -258,14 +258,7 @@ int E2wxApp::OnExit() {
     delete wxXmlResource::Set(nullptr);
 
     BOOST_LOG_TRIVIAL(info) << "Deleting emulator instance...";
-    if (this->emu_timer) {
-        delete this->emu_timer;
-        this->emu_timer = nullptr;
-    }
-    if (this->emu) {
-        delete this->emu;
-        this->emu = nullptr;
-    }
+    StopEmulator();
 
     BOOST_LOG_TRIVIAL(info) << "Application OnExit complete.";
     return 0;
@@ -397,13 +390,21 @@ void E2wxApp::InitBoostLog() {
 
 
 
+void E2wxApp::StopEmulator() {
+    if (EnsureCanQuit()) {
+        if (this->emu_timer) {
+            delete this->emu_timer;
+            this->emu_timer = nullptr;
+        }
+        if (this->emu) {
+            delete this->emu;
+            this->emu = nullptr;
+        }
+    }
+}
+
 void E2wxApp::StartEmulator() {
-    if (this->emu_timer) {
-        delete this->emu_timer;
-    }
-    if (this->emu) {
-        delete this->emu;
-    }
+    StopEmulator();
 
     this->emu = new Emulator();
     E2Config cfg{this->arg_configfile, this->opt_config_from_prefs_only};

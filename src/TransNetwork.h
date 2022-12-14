@@ -8,7 +8,7 @@
 #ifndef TRANSNETWORK_H
 #define	TRANSNETWORK_H
 
-#include <istream>
+#include <filesystem>
 #include <set>
 #include <memory>
 
@@ -20,7 +20,7 @@ class Trans;
 class TransNetwork final {
 public:
 
-    TransNetwork(std::istream& readFromHere, SegmentCache& segs, TransCache& transes);
+    TransNetwork(std::filesystem::path& readFromHere, SegmentCache& segs, TransCache& transes);
 
 private:
 

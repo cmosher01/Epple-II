@@ -50,6 +50,8 @@ private:
     void OnPaste(wxCommandEvent& event);
     void OnScreenShot(wxCommandEvent& event);
     void OnToggleBuffered(wxCommandEvent& event);
+    void OnStartEmulator(wxCommandEvent& event);
+    void OnStopEmulator(wxCommandEvent& event);
 
     wxDECLARE_EVENT_TABLE();
 };

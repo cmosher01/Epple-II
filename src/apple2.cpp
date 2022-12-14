@@ -48,7 +48,7 @@ cassetteOut(gui),
 addressBus(gui, revision, ram, rom, kbd, videoMode, paddles, paddleButtonStates, speaker, cassetteIn, cassetteOut, slts),
 picgen(tv, videoMode, revision),
 video(videoMode, addressBus, picgen, textRows),
-transistors("transistors"), // TODO load file from resources
+transistors("transistors"),
 cpu(nullptr),
 powerUpReset(*this),
 revision(1) {

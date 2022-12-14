@@ -38,7 +38,9 @@
 #include "cassettein.h"
 #include "cassetteout.h"
 #include "Emu6502.h"
-#include <fstream>
+
+#include <filesystem>
+
 class Emulator;
 class ScreenImage;
 
@@ -57,7 +59,7 @@ class Apple2 : public Timable
     PictureGenerator picgen;
     TextCharacters textRows;
     Video video;
-    std::ifstream transistors;
+    std::filesystem::path transistors;
     AbstractCpu* cpu;
     PowerUpReset powerUpReset;
     int revision;

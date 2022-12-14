@@ -84,6 +84,7 @@ public:
     const std::filesystem::path GetDocumentsDir() const;
 
     void StartEmulator();
+    void StopEmulator();
 
     void OnFnKeyPressed(const SDL_Keycode k);
 

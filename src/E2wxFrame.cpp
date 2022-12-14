@@ -41,6 +41,8 @@ enum E2MenuID {
     ID_MENUITEM_RESET,
     ID_MENUITEM_SCREEN_SHOT,
     ID_MENUITEM_TOGGLE_BUFFERED,
+    ID_MENUITEM_START_EMULATOR,
+    ID_MENUITEM_STOP_EMULATOR,
 };
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
@@ -56,6 +58,8 @@ wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_MENU(wxID_PASTE, E2wxFrame::OnPaste)
     EVT_MENU(ID_MENUITEM_SCREEN_SHOT, E2wxFrame::OnScreenShot)
     EVT_MENU(ID_MENUITEM_TOGGLE_BUFFERED, E2wxFrame::OnToggleBuffered)
+    EVT_MENU(ID_MENUITEM_START_EMULATOR, E2wxFrame::OnStartEmulator)
+    EVT_MENU(ID_MENUITEM_STOP_EMULATOR, E2wxFrame::OnStopEmulator)
 wxEND_EVENT_TABLE()
 
 
@@ -84,6 +88,11 @@ void E2wxFrame::InitMenuBar() {
 
     wxMenu *menuFile = new wxMenu();
     menuBar->Append(menuFile, "&File");
+    wxMenuItem *miStart = menuFile->Append(ID_MENUITEM_START_EMULATOR, "Open Emulator");
+    miStart->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, 'O'));
+    wxMenuItem *miStop = menuFile->Append(ID_MENUITEM_STOP_EMULATOR, "Close Emulator");
+    miStop->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, 'W'));
+    menuFile->AppendSeparator();
     wxMenuItem *miExit = menuFile->Append(wxID_EXIT);
     miExit->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F9));
 
@@ -93,7 +102,7 @@ void E2wxFrame::InitMenuBar() {
     miPaste->AddExtraAccel(wxAcceleratorEntry(wxACCEL_NORMAL, WXK_F7));
     menuEdit->AppendSeparator();
     wxMenuItem *miPrefs = menuEdit->Append(wxID_PREFERENCES);
-    miPrefs->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, 44));
+    miPrefs->SetAccel(new wxAcceleratorEntry(wxACCEL_CTRL, ','));
 
 
     wxMenu *menuMachine = new wxMenu();
@@ -208,4 +217,12 @@ void E2wxFrame::OnScreenShot(wxCommandEvent& event) {
 
 void E2wxFrame::OnToggleBuffered(wxCommandEvent& event) {
     wxGetApp().ToggleBuffered();
+}
+
+void E2wxFrame::OnStartEmulator(wxCommandEvent& event) {
+    wxGetApp().StartEmulator();
+}
+
+void E2wxFrame::OnStopEmulator(wxCommandEvent& event){
+    wxGetApp().StopEmulator();
 }
