@@ -82,10 +82,10 @@ public:
     DiskController(ScreenImage& gui, int slot, bool lss13, double random_ones_rate);
     ~DiskController();
 
-    void tick();
-    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing);
+    void tick() override;
+    virtual unsigned char io(const unsigned short address, const unsigned char data, const bool writing) override;
 
-    void reset() {
+    void reset() override {
         this->gui.setIO(this->slot,getCurrentDriveNumber(),false);
         this->gui.clearCurrentDrive(this->slot,getCurrentDriveNumber());
 
@@ -142,7 +142,7 @@ public:
         return this->currentDrive->isWriteProtected();
     }
 
-    bool isMediaDirty() {
+    bool isMediaDirty() override {
         return isModified() || isModifiedOther();
     }
 
@@ -154,7 +154,7 @@ public:
         return 1-getCurrentDriveNumber();
     }
 
-    virtual std::string getName() {
+    virtual std::string getName() override {
         return "disk][  drive 1                         drive 2                      ";
     }
 
