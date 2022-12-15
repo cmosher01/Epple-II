@@ -17,22 +17,25 @@
 */
 #include "clipboardhandler.h"
 
-#include <SDL.h>
-#include <limits.h>
+#include <wx/clipbrd.h>
 
-ClipboardHandler::ClipboardHandler()
-{
+
+ClipboardHandler::ClipboardHandler() {
 }
 
-ClipboardHandler::~ClipboardHandler()
-{
+ClipboardHandler::~ClipboardHandler() {
 }
 
-std::string ClipboardHandler::getText()
-{
-    std::string ret;
-        char* sdlAllocatedText = SDL_GetClipboardText();
-        ret.assign(sdlAllocatedText);
-        SDL_free(sdlAllocatedText);
+wxString ClipboardHandler::getText() {
+    wxString ret;
+    if (wxTheClipboard->Open())
+    {
+        if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+            wxTextDataObject data;
+            wxTheClipboard->GetData(data);
+            ret = data.GetText();
+        }
+        wxTheClipboard->Close();
+    }
     return ret;
 }

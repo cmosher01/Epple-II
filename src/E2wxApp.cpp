@@ -149,11 +149,12 @@ bool E2wxApp::OnInit() {
 //    wxLogWarning("%s", "a warning has occurred");
 //    wxLogInfo("%s", "informational");
 //    wxLogVerbose("%s", "verbose");
-//    wxFile().Open("foobar.txt");
+//    wxFile().Open("foobar.txt"); // <-- example of generating wx log message
 
 //    TODO wx log file window?
 //    TODO remove all logging from stdout/err to log file
 //    TODO define components to turn on/off for trace level logging (disk, cassette, woz, keyboard, ram, lss, audio, etc.)
+//    TODO why are log messages getting buffered? (It ruins the timestamp.)
 
     BOOST_LOG_TRIVIAL(info) << "Application ID: " << this->GetID();
     BOOST_LOG_TRIVIAL(info) << "Application version: " << this->GetVersion();

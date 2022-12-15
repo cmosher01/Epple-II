@@ -22,6 +22,7 @@
 #include "e2const.h"
 
 #include <wx/msgdlg.h>
+#include <wx/string.h>
 
 #include <SDL.h>
 
@@ -363,16 +364,13 @@ void Emulator::powerOffComputer() {
 
 void Emulator::paste() {
     // Feed input from the clipboard to the Apple keyboard
-    std::string s = this->clip.getText();
-    for (unsigned int i = 0; i < s.length(); ++i) {
-        unsigned char key = s[i];
-        // TODO fix pasting line-endings
-        if (key == '\n')
-            key = '\r';
-        if ('a' <= key && key <= 'z') {
-            key -= 32;
-        }
-        this->keypresses.push(key);
+    wxString s = this->clip.getText();
+    s.Replace("\n\r", "\r\n");
+    s.Replace("\r\n", "\r");
+    s.Replace("\n", "\r");
+    s.MakeUpper();
+    for (auto c : s) {
+        this->keypresses.push(c);
     }
 }
 

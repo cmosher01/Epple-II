@@ -1,7 +1,7 @@
-/* 
+/*
  * File:   Cpu6502.cpp
  * Author: Christopher
- * 
+ *
  * Created on December 12, 2013, 10:14 PM
  */
 
@@ -33,6 +33,7 @@ void Cpu6502::clock(bool phase) {
     setPins(PinSettings{std::make_pair(common.CLK0,phase)});
     rw();
 
+    // TODO turn these into trace log settings
 #ifdef TRACEREG
     this->trace.dumpRegisters();
 #endif

@@ -33,7 +33,7 @@ wxBEGIN_EVENT_TABLE(PreferencesDialog, wxDialog)
     EVT_BUTTON(XRCID("btnDelete"), PreferencesDialog::OnDelete)
     EVT_BUTTON(XRCID("btnRename"), PreferencesDialog::OnRename)
 wxEND_EVENT_TABLE()
-
+// TODO import external config file
 
 
 

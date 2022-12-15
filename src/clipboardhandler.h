@@ -18,16 +18,14 @@
 #ifndef CLIPBOARDHANDLER_H
 #define CLIPBOARDHANDLER_H
 
-#include <string>
+#include <wx/string.h>
 
-
-class ClipboardHandler
-{
+class ClipboardHandler {
 public:
     ClipboardHandler();
     ~ClipboardHandler();
 
-    std::string getText();
+    wxString getText();
 };
 
 #endif

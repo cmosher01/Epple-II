@@ -18,8 +18,8 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include <SDL.h>
 #include <queue>
+#include <cstdint>
 
 typedef std::queue<unsigned char> KeypressQueue;
 
@@ -31,7 +31,7 @@ class Keyboard {
 
     unsigned char latch;
     unsigned char cGet;
-    Uint32 lastGet;
+    uint32_t lastGet;
 
 public:
     Keyboard(KeypressQueue& q, KeyboardBufferMode& buffered);
