@@ -19,7 +19,6 @@
 
 #include <wx/clipbrd.h>
 
-
 ClipboardHandler::ClipboardHandler() {
 }
 
@@ -30,7 +29,7 @@ wxString ClipboardHandler::getText() {
     wxString ret;
     if (wxTheClipboard->Open())
     {
-        if (wxTheClipboard->IsSupported(wxDF_TEXT)) {
+        if (wxTheClipboard->IsSupported(wxDF_UNICODETEXT)) {
             wxTextDataObject data;
             wxTheClipboard->GetData(data);
             ret = data.GetText();
