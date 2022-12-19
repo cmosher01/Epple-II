@@ -33,6 +33,7 @@
 #include "diskcontroller.h"
 #include "languagecard.h"
 #include "screenimage.h"
+#include "KeyRepeatHandler.h"
 
 #include <iostream>
 #include <istream>
@@ -41,6 +42,7 @@
 Apple2::Apple2(KeypressQueue& keypresses, PaddleButtonStates& paddleButtonStates, AnalogTV& tv, KeyboardBufferMode& buffered, ScreenImage& gui) :
 slts(gui),
 kbd(keypresses, buffered),
+keyrepeater(keypresses),
 rom(AddressBus::MOTHERBOARD_ROM_SIZ),
 ram(revision),
 cassetteIn(gui),
@@ -83,6 +85,7 @@ void Apple2::tick() {
     this->speaker.tick();
     this->cassetteIn.tick();
     this->cassetteOut.tick();
+    this->keyrepeater.tick();
 
     if (this->revision > 0) {
         this->powerUpReset.tick();

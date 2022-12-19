@@ -22,6 +22,7 @@
 #include "slots.h"
 #include "videomode.h"
 #include "keyboard.h"
+#include "KeyRepeatHandler.h"
 #include "addressbus.h"
 #include "memory.h"
 #include "memoryrandomaccess.h"
@@ -49,6 +50,7 @@ class Apple2 : public Timable
     Slots slts;
     VideoMode videoMode;
     Keyboard kbd;
+    KeyRepeatHandler keyrepeater;
     Paddles paddles;
     SpeakerClicker speaker;
     Memory rom;
@@ -76,6 +78,8 @@ public:
     void reset();
 
     virtual void tick();
+
+    KeyRepeatHandler &rept() { return this->keyrepeater; }
 
     friend class Emulator;
 };

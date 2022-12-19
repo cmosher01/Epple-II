@@ -36,7 +36,6 @@ class E2Config;
 class Emulator {
     PaddleButtonStates paddleButtonStates;
     KeypressQueue keypresses;
-    KeyRepeatHandler keyrepeater;
 
     KeyboardBufferMode buffered;
     ScreenImage screenImage;

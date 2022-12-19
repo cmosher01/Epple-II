@@ -53,7 +53,6 @@ Emulator::Emulator() :
     videoStatic(display),
     apple2(keypresses, paddleButtonStates, display, buffered, screenImage),
     timable(nullptr), // No ticked object (NULL pointer)
-    keyrepeater(keypresses),
     keysDown(0),
     prev_ms(SDL_GetTicks()) {
 }
@@ -110,7 +109,6 @@ void Emulator::tick50ms() {
     if (this->timable) {
         for (int i = 0; i < CHECK_EVERY_CYCLE; ++i) {
             this->timable->tick(); // this runs the emulator!
-            this->keyrepeater.tick(); // TODO move into Apple2
         }
     }
 
@@ -208,7 +206,7 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     }
 
     const SDL_Keycode sym = keyEvent.keysym.sym;
-    const SDL_Keymod mod = (SDL_Keymod) keyEvent.keysym.mod;
+    const SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
 
     //printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
 
@@ -217,7 +215,7 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     }
 
     if (sym == SDLK_F10) {
-        this->keyrepeater.press();
+        this->apple2.rept().press();
 //    } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
 //        wxGetApp().OnFnKeyPressed(sym);
     } else {
@@ -226,7 +224,7 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
         if (sendKey) {
             //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
             this->keypresses.push(key);
-            this->keyrepeater.setKey(key);
+            this->apple2.rept().setKey(key);
         }
     }
 }
@@ -238,12 +236,12 @@ void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
     if (isKeyDown(sym, mod)) {
         --this->keysDown;
         if (this->keysDown <= 0) {
-            this->keyrepeater.clearKey();
+            this->apple2.rept().clearKey();
         }
     }
 
     if (sym == SDLK_F10) {
-        this->keyrepeater.release();
+        this->apple2.rept().release();
     }
 }
 
