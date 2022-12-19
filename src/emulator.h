@@ -25,6 +25,7 @@
 #include "screenimage.h"
 #include "analogtv.h"
 #include "keyboardbuffermode.h"
+#include "KeyRepeatHandler.h"
 #include "clipboardhandler.h"
 #include <SDL.h>
 #include <wx/string.h>
@@ -35,6 +36,7 @@ class E2Config;
 class Emulator {
     PaddleButtonStates paddleButtonStates;
     KeypressQueue keypresses;
+    KeyRepeatHandler keyrepeater;
 
     KeyboardBufferMode buffered;
     ScreenImage screenImage;
@@ -45,10 +47,7 @@ class Emulator {
 
     Timable* timable;
 
-    bool repeat;
-    int keysDown;
-    int rept;
-    unsigned char lastKeyDown;
+    int keysDown; // TODO move to KeyEventHandler
     Uint32 prev_ms;
 
     void powerOnComputer();

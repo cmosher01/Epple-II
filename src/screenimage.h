@@ -19,6 +19,10 @@
 #define SCREENIMAGE_H
 
 #include "analogtv.h"
+
+#include <wx/frame.h>
+#include <wx/panel.h>
+
 #include <filesystem>
 #include <vector>
 #include <string>
@@ -28,8 +32,9 @@ struct SDL_Texture;
 struct SDL_Renderer;
 struct SDL_Window;
 
-class ScreenImage {
+class ScreenImage : public wxFrame {
 private:
+    wxPanel *panelTop;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* texture;
@@ -39,12 +44,15 @@ private:
     bool buffer;
     AnalogTV::DisplayType display;
     void createScreen();
+    void createSdlTexture(wxPanel *panelSdl);
     void destroyScreen();
     std::vector<std::string> slotnames;
     std::string cassInName;
     std::string cassOutName;
 
     static std::string truncateFilePath(const std::filesystem::path& filepath);
+
+    wxDECLARE_EVENT_TABLE();
 
     // TODO some of these methods should be private
 public:

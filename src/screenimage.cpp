@@ -16,11 +16,19 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 #include "screenimage.h"
+#include "E2wxApp.h"
+#include "E2wxFrame.h"
 #include "e2const.h"
 #include "applentsc.h"
 #include "card.h"
 #include "util.h"
+
+#include <wx/panel.h>
+#include <wx/sizer.h>
+#include <wx/gdicmn.h>
+
 #include <SDL.h>
+
 #include <filesystem>
 #include <iostream>
 #include <ctime>
@@ -57,6 +65,8 @@ class ScreenException {
 };
 
 ScreenImage::ScreenImage() :
+    wxFrame(nullptr/*wxGetApp().GetFrame()*/, wxID_ANY, "Emulator", wxDefaultPosition, wxDefaultSize,
+        wxSYSTEM_MENU | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN),
     fullscreen(false),
     buffer(true),
     display(AnalogTV::TV_OLD_COLOR),
@@ -64,11 +74,15 @@ ScreenImage::ScreenImage() :
     cassInName(32, ' '),
     cassOutName(32, ' ') {
     createScreen();
+    Show();
 }
 
 ScreenImage::~ScreenImage() {
     destroyScreen();
 }
+
+wxBEGIN_EVENT_TABLE(ScreenImage, wxFrame)
+wxEND_EVENT_TABLE()
 
 void ScreenImage::exitFullScreen() {
     if (this->fullscreen) {
@@ -83,7 +97,30 @@ void ScreenImage::toggleFullScreen() {
 }
 
 void ScreenImage::createScreen() {
-    this->window = SDL_CreateWindow("Epple ][", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCRW, SCRH*ASPECT_RATIO, SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN);
+    wxSizer *pszr = new wxBoxSizer(wxVERTICAL);
+
+    this->panelTop = new wxPanel(this);
+    // TODO why won't shaped work? (Disabled frame resize as a workaround, for now.)
+    pszr->Add(this->panelTop, wxSizerFlags(0).Expand().Shaped().Center());
+
+    wxPanel *panelSdl = new wxPanel(this->panelTop, wxID_ANY, wxDefaultPosition, wxSize(SCRW,SCRH*ASPECT_RATIO));
+    createSdlTexture(panelSdl);
+
+    drawLabels();
+    notifyObservers();
+
+    SetSizer(pszr);
+    pszr->SetSizeHints(this);
+
+}
+
+void ScreenImage::createSdlTexture(wxPanel *panelSdl) {
+    WXWidget nativeSdl = panelSdl->GetHandle();
+    // TODO: do we need special gtk handling here, to get xid using:
+//    GtkWidget* widget = panel->GetHandle();
+//    gtk_widget_realize(widget);
+//    Window xid = GDK_WINDOW_XWINDOW(widget->window);
+    this->window = SDL_CreateWindowFrom(static_cast<void*>(nativeSdl));
     if (this->window == NULL) {
         printf("Unable to create window: %s\n", SDL_GetError());
         throw ScreenException();
@@ -105,9 +142,6 @@ void ScreenImage::createScreen() {
 
     this->pixels = (unsigned int*) calloc(SCRW * SCRH, sizeof (unsigned int));
     this->screen_pitch = SCRW;
-
-    drawLabels();
-    notifyObservers();
 }
 
 void ScreenImage::destroyScreen() {

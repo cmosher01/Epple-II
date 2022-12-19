@@ -91,6 +91,8 @@ firmwarecard.cpp
 gui.cpp
 keyboardbuffermode.cpp
 keyboard.cpp
+KeyEventHandler.cpp
+KeyRepeatHandler.cpp
 languagecard.cpp
 lss.cpp
 magneticfield.cpp
@@ -201,7 +203,10 @@ include_directories(${PROJECT_BINARY_DIR})
 # TODO: can we remove this without being too backwardly incompatible?
 target_compile_definitions(${APP_NAME} PRIVATE ETCDIR="${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_SYSCONFDIR}")
 
-
+if(WIN32)
+else()
+    target_compile_options(${APP_NAME} PRIVATE -ggdb3)
+endif()
 
 set_target_properties(${APP_NAME} PROPERTIES RESOURCE "${resources}")
 

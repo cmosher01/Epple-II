@@ -20,6 +20,7 @@
 #include "e2config.h"
 #include "e2command.h"
 #include "e2const.h"
+#include "KeyRepeatHandler.h"
 
 #include <wx/msgdlg.h>
 #include <wx/string.h>
@@ -52,7 +53,7 @@ Emulator::Emulator() :
     videoStatic(display),
     apple2(keypresses, paddleButtonStates, display, buffered, screenImage),
     timable(nullptr), // No ticked object (NULL pointer)
-    repeat(false),
+    keyrepeater(keypresses),
     keysDown(0),
     prev_ms(SDL_GetTicks()) {
 }
@@ -70,31 +71,6 @@ void Emulator::config(E2Config& cfg) {
 }
 
 
-// U.A.2 p. 7-13: REPT key repeats at 10Hz.
-static const int CYCLES_PER_REPT(E2Const::AVG_CPU_HZ / 10);
-
-// If the Apple ][ keyboard repeat is on (the REPT key is
-// down)...
-void Emulator::handleRepeatKey() {
-    if (this->repeat) {
-        // Count our way down to when the timer for the REPT key
-        // fires off: 10Hz in terms of how many CPU cycles have gone
-        // by
-        --this->rept;
-        // If it's time for the REPT key timer to fire (at long
-        // last)...
-        if (this->rept <= 0) {
-            // ...reload the timer for the next firing 1/10 second from
-            // now ( *reset* the timer )
-            this->rept = CYCLES_PER_REPT;
-            // If any other keys are actually being held down...
-            if (this->keysDown > 0) {
-                // ...REPEAT the most recent one that was pressed
-                this->keypresses.push(this->lastKeyDown);
-            }
-        }
-    }
-}
 
 void Emulator::handleAnyPendingEvents() {
     SDL_Event event;
@@ -134,10 +110,12 @@ void Emulator::tick50ms() {
     if (this->timable) {
         for (int i = 0; i < CHECK_EVERY_CYCLE; ++i) {
             this->timable->tick(); // this runs the emulator!
-            handleRepeatKey();
+            this->keyrepeater.tick(); // TODO move into Apple2
         }
     }
+
     handleAnyPendingEvents();
+
     this->screenImage.displayHz((1000*CHECK_EVERY_CYCLE)/(SDL_GetTicks() - this->prev_ms));
     this->prev_ms = SDL_GetTicks();
 }
@@ -225,7 +203,7 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
 // Take real-world keystrokes from SDL and filter them to emulate the Apple ][ keyboard
 void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     if (keyEvent.repeat) {
-        // To repeat on the real Apple ][, you need to use the REPT key (emulated below by F10)
+        // To repeat on the real Apple ][, you need to use the REPT key (emulated by F10)
         return;
     }
 
@@ -239,18 +217,16 @@ void Emulator::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     }
 
     if (sym == SDLK_F10) {
-        // handle REPT key
-        this->repeat = true;
-        this->rept = CYCLES_PER_REPT;
-    } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
-        wxGetApp().OnFnKeyPressed(sym);
+        this->keyrepeater.press();
+//    } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
+//        wxGetApp().OnFnKeyPressed(sym);
     } else {
         unsigned char key;
         const bool sendKey = translateKeysToAppleModernized(sym, mod, &key);
         if (sendKey) {
             //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
             this->keypresses.push(key);
-            this->lastKeyDown = key;
+            this->keyrepeater.setKey(key);
         }
     }
 }
@@ -261,11 +237,13 @@ void Emulator::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
 
     if (isKeyDown(sym, mod)) {
         --this->keysDown;
-    } else if (sym == SDLK_F10) {
-        // ...else if this is the emulated REPT key on the Apple keyboard...
-        // ...stop repeating. The key has been released
-        this->repeat = false;
-        this->rept = 0;
+        if (this->keysDown <= 0) {
+            this->keyrepeater.clearKey();
+        }
+    }
+
+    if (sym == SDLK_F10) {
+        this->keyrepeater.release();
     }
 }
 
@@ -337,10 +315,11 @@ bool Emulator::isSafeToQuit() {
 
 
 void Emulator::toggleComputerPower() {
-    if (this->timable == &this->videoStatic)
+    if (this->timable == &this->videoStatic) {
         powerOnComputer();
-    else
+    } else {
         powerOffComputer();
+    }
 }
 
 void Emulator::powerOnComputer() {

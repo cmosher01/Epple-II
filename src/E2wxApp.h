@@ -83,6 +83,8 @@ public:
     const std::filesystem::path GetConfigDir() const;
     const std::filesystem::path GetDocumentsDir() const;
 
+    E2wxFrame *GetFrame() { return this->frame; }
+
     void StartEmulator();
     void StopEmulator();
 
