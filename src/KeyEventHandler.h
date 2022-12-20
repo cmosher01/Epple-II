@@ -26,14 +26,22 @@
 #ifndef KEYEVENTHANDLER_H
 #define KEYEVENTHANDLER_H
 
-class KeyEventHandler {
-public:
-    KeyEventHandler();
-    KeyEventHandler(const KeyEventHandler& orig);
-    virtual ~KeyEventHandler();
-private:
+#include "KeyRepeatHandler.h"
+#include "keyboard.h"
+#include <SDL.h>
 
+class KeyEventHandler {
+    int keysDown;
+
+    KeypressQueue &keypresses;
+    KeyRepeatHandler &repeater;
+
+public:
+    KeyEventHandler(KeypressQueue &keypresses, KeyRepeatHandler &repeater);
+    virtual ~KeyEventHandler();
+
+    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
+    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
 };
 
 #endif /* KEYEVENTHANDLER_H */
-

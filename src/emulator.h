@@ -26,6 +26,7 @@
 #include "analogtv.h"
 #include "keyboardbuffermode.h"
 #include "KeyRepeatHandler.h"
+#include "KeyEventHandler.h"
 #include "clipboardhandler.h"
 #include <SDL.h>
 #include <wx/string.h>
@@ -36,26 +37,22 @@ class E2Config;
 class Emulator {
     PaddleButtonStates paddleButtonStates;
     KeypressQueue keypresses;
-
     KeyboardBufferMode buffered;
     ScreenImage screenImage;
     AnalogTV display;
     VideoStaticGenerator videoStatic;
     Apple2 apple2;
     ClipboardHandler clip;
+    KeyEventHandler keyEventHandler;
 
     Timable* timable;
 
-    int keysDown; // TODO move to KeyEventHandler
     Uint32 prev_ms;
 
     void powerOnComputer();
     void powerOffComputer();
 
     void handleAnyPendingEvents();
-
-    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
-    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
 
     void handleRepeatKey();
 
