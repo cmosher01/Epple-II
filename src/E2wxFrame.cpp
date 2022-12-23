@@ -169,7 +169,6 @@ void E2wxFrame::OnPreferences(wxCommandEvent& event) {
         dlg->ShowModal();
         dlg->Destroy();
     }
-    // TODO re-configure emulator here
     wxGetApp().StartEmulator();
 }
 

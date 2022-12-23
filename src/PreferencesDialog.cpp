@@ -327,6 +327,7 @@ void PreferencesDialog::OnRename(wxCommandEvent& evt) {
     }
 }
 
+// TODO make two buttons: "Close & Restart" and just "Close"
 void PreferencesDialog::OnCloseButton(wxCommandEvent& evt) {
     CTRL(wxTreeCtrl, treItems);
     const TreeItemData *data = (TreeItemData*)treItems->GetItemData(treItems->GetSelection());

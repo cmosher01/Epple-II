@@ -28,7 +28,7 @@
 
 #include "KeyRepeatHandler.h"
 #include "keyboard.h"
-#include <SDL.h>
+#include <wx/event.h>
 
 class KeyEventHandler {
     int keysDown;
@@ -40,8 +40,8 @@ public:
     KeyEventHandler(KeypressQueue &keypresses, KeyRepeatHandler &repeater);
     virtual ~KeyEventHandler();
 
-    void dispatchKeyDown(const SDL_KeyboardEvent& keyEvent);
-    void dispatchKeyUp(const SDL_KeyboardEvent& keyEvent);
+    void dispatchKeyDown(const wxKeyEvent& keyEvent);
+    void dispatchKeyUp(const wxKeyEvent& keyEvent);
 };
 
 #endif /* KEYEVENTHANDLER_H */

@@ -18,10 +18,13 @@
 #ifndef SCREENIMAGE_H
 #define SCREENIMAGE_H
 
+#include "keyboard.h"
 #include "analogtv.h"
+#include "KeyEventHandler.h"
 
 #include <wx/frame.h>
 #include <wx/panel.h>
+#include <wx/event.h>
 
 #include <filesystem>
 #include <vector>
@@ -34,7 +37,7 @@ struct SDL_Window;
 
 class ScreenImage : public wxFrame {
 private:
-    wxPanel *panelTop;
+    wxPanel *sdl;
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* texture;
@@ -44,19 +47,23 @@ private:
     bool buffer;
     AnalogTV::DisplayType display;
     void createScreen();
-    void createSdlTexture(wxPanel *panelSdl);
+    void createSdlTexture();
     void destroyScreen();
     std::vector<std::string> slotnames;
     std::string cassInName;
     std::string cassOutName;
 
+    KeyEventHandler &keyEventHandler;
+
     static std::string truncateFilePath(const std::filesystem::path& filepath);
 
-    wxDECLARE_EVENT_TABLE();
+    void OnIdle(wxIdleEvent &evt);
+    void OnKeyDown(wxKeyEvent &evt);
+    void OnKeyUp(wxKeyEvent &evt);
 
     // TODO some of these methods should be private
 public:
-    ScreenImage();
+    ScreenImage(KeyEventHandler &keyEventHandler);
     ~ScreenImage();
 
     void exitFullScreen();

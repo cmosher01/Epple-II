@@ -38,6 +38,7 @@
 
 
 Emulator::Emulator() :
+    screenImage(keyEventHandler),
     display(screenImage),
     videoStatic(display),
     apple2(keypresses, paddleButtonStates, display, buffered, screenImage),
@@ -60,31 +61,6 @@ void Emulator::config(E2Config& cfg) {
 
 
 
-void Emulator::handleAnyPendingEvents() {
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-            case SDL_QUIT:
-                // If SDL is going away...
-                // could be due to user closing the SDL window, pressing cmd-Q on Mac,
-                // ctrl-C from the command line on Linux, process being killed, etc.
-                wxGetApp().CloseMainFrame();
-            break;
-            case SDL_KEYDOWN:
-                // we're collecting keypresses for the keyboard
-                // emulation (and thus the Apple ][ emulation itself)
-                this->keyEventHandler.dispatchKeyDown(event.key);
-                // People who have too many press-releases should be referred to as "keyboards"
-            break;
-            case SDL_KEYUP:
-                this->keyEventHandler.dispatchKeyUp(event.key);
-            break;
-        }
-    }
-}
-
-
-
 // How many emulation ticks between asking SDL if there is any new input
 // from the user or other GUI events.
 // This is also how often we shall update the estimate of the emulator's
@@ -100,8 +76,6 @@ void Emulator::tick50ms() {
             this->timable->tick(); // this runs the emulator!
         }
     }
-
-    handleAnyPendingEvents();
 
     this->screenImage.displayHz((1000*CHECK_EVERY_CYCLE)/(SDL_GetTicks() - this->prev_ms));
     this->prev_ms = SDL_GetTicks();
@@ -228,8 +202,8 @@ void Emulator::toggleBuffered() {
 }
 
 void Emulator::toggleFullScreen() {
-    this->screenImage.toggleFullScreen();
-    this->screenImage.drawPower(this->timable == &this->apple2);
+//    this->screenImage.toggleFullScreen();
+//    this->screenImage.drawPower(this->timable == &this->apple2);
 }
 
 void Emulator::screenshot() {

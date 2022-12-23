@@ -64,62 +64,69 @@ static const int WIDTH = AppleNTSC::H - AppleNTSC::PIC_START - 2;
 class ScreenException {
 };
 
-ScreenImage::ScreenImage() :
-    wxFrame(nullptr/*wxGetApp().GetFrame()*/, wxID_ANY, "Emulator", wxDefaultPosition, wxDefaultSize,
-        wxSYSTEM_MENU | wxCLOSE_BOX | wxCAPTION | wxCLIP_CHILDREN),
+ScreenImage::ScreenImage(KeyEventHandler &k) :
+    wxFrame(nullptr, wxID_ANY, "Emulator"),
     fullscreen(false),
     buffer(true),
     display(AnalogTV::TV_OLD_COLOR),
     slotnames(8),
     cassInName(32, ' '),
-    cassOutName(32, ' ') {
+    cassOutName(32, ' '),
+    keyEventHandler(k) {
     createScreen();
     Show();
+    Bind(wxEVT_IDLE, &ScreenImage::OnIdle, this);
 }
 
 ScreenImage::~ScreenImage() {
     destroyScreen();
 }
 
-wxBEGIN_EVENT_TABLE(ScreenImage, wxFrame)
-wxEND_EVENT_TABLE()
 
-void ScreenImage::exitFullScreen() {
-    if (this->fullscreen) {
-        toggleFullScreen();
+
+void ScreenImage::OnIdle(wxIdleEvent &evt) {
+    if (!this->FindFocus() || !this->sdl->HasFocus()) {
+        this->sdl->SetFocus();
     }
 }
 
+void ScreenImage::exitFullScreen() {
+//    if (this->fullscreen) {
+//        toggleFullScreen();
+//    }
+}
+
 void ScreenImage::toggleFullScreen() {
-    this->fullscreen = !this->fullscreen;
-    const int flags = this->fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
-    SDL_SetWindowFullscreen(this->window, flags);
+//    this->fullscreen = !this->fullscreen;
+//    const int flags = this->fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
+//    SDL_SetWindowFullscreen(this->window, flags);
 }
 
 void ScreenImage::createScreen() {
+    this->sdl = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxSize(SCRW,SCRH*ASPECT_RATIO));
+    createSdlTexture();
+    this->sdl->Bind(wxEVT_KEY_DOWN, &ScreenImage::OnKeyDown, this);
+    this->sdl->Bind(wxEVT_KEY_UP, &ScreenImage::OnKeyUp, this);
+
     wxSizer *pszr = new wxBoxSizer(wxVERTICAL);
-
-    this->panelTop = new wxPanel(this);
-    // TODO why won't shaped work? (Disabled frame resize as a workaround, for now.)
-    pszr->Add(this->panelTop, wxSizerFlags(0).Expand().Shaped().Center());
-
-    wxPanel *panelSdl = new wxPanel(this->panelTop, wxID_ANY, wxDefaultPosition, wxSize(SCRW,SCRH*ASPECT_RATIO));
-    createSdlTexture(panelSdl);
-
-    drawLabels();
-    notifyObservers();
-
+    pszr->Add(this->sdl);
     SetSizer(pszr);
     pszr->SetSizeHints(this);
 
+    this->pixels = (unsigned int*) calloc(SCRW * SCRH, sizeof (unsigned int));
+    this->screen_pitch = SCRW;
+
+    drawLabels();
+    notifyObservers();
 }
 
-void ScreenImage::createSdlTexture(wxPanel *panelSdl) {
-    WXWidget nativeSdl = panelSdl->GetHandle();
+void ScreenImage::createSdlTexture() {
+    WXWidget nativeSdl = this->sdl->GetHandle();
     // TODO: do we need special gtk handling here, to get xid using:
 //    GtkWidget* widget = panel->GetHandle();
 //    gtk_widget_realize(widget);
 //    Window xid = GDK_WINDOW_XWINDOW(widget->window);
+
     this->window = SDL_CreateWindowFrom(static_cast<void*>(nativeSdl));
     if (this->window == NULL) {
         printf("Unable to create window: %s\n", SDL_GetError());
@@ -139,9 +146,6 @@ void ScreenImage::createSdlTexture(wxPanel *panelSdl) {
         std::cerr << SDL_GetError() << std::endl;
         throw ScreenException();
     }
-
-    this->pixels = (unsigned int*) calloc(SCRW * SCRH, sizeof (unsigned int));
-    this->screen_pitch = SCRW;
 }
 
 void ScreenImage::destroyScreen() {
@@ -320,25 +324,26 @@ void ScreenImage::drawPower(bool on) {
 }
 
 void ScreenImage::notifyObservers() {
-    const int e = SDL_UpdateTexture(this->texture, NULL, this->pixels, SCRW * sizeof (unsigned int));
+    const int e = SDL_UpdateTexture(this->texture, NULL, this->pixels, SCRW*sizeof(unsigned int));
     if (e) {
         std::cerr << SDL_GetError() << std::endl;
     }
     SDL_RenderClear(this->renderer);
-    SDL_RenderCopy(this->renderer,this->texture,NULL,NULL);
+    SDL_RenderCopy(this->renderer, this->texture, NULL, NULL);
     SDL_RenderPresent(this->renderer);
+    SDL_RenderSetLogicalSize(this->renderer, SCRW, SCRH*ASPECT_RATIO);
 }
 
 void ScreenImage::setElem(unsigned int i, const unsigned int val) {
     unsigned int* pn = this->pixels;
-    i += (i / WIDTH)*(SCRW - WIDTH);
+    i += (i/WIDTH)*(SCRW-WIDTH);
     pn += i;
     *pn = val;
 }
 
 void ScreenImage::blank() {
     for (int r = 0; r < HEIGHT; ++r) {
-        memset((char*) (this->pixels) + r * SCRW * 4, 0, WIDTH * 4);
+        memset((char*)(this->pixels)+r*SCRW*4, 0, WIDTH*4);
     }
 }
 
@@ -538,4 +543,12 @@ void ScreenImage::saveBMP() {
     SDL_Surface* screenshot = SDL_CreateRGBSurfaceFrom(this->pixels,SCRW,SCRH,32,SCRW*4,0x00FF0000,0x0000FF00,0x000000FF,0xFF000000);
     SDL_SaveBMP(screenshot, time);
     SDL_FreeSurface(screenshot);
+}
+
+void ScreenImage::OnKeyDown(wxKeyEvent &evt) {
+    this->keyEventHandler.dispatchKeyDown(evt);
+}
+
+void ScreenImage::OnKeyUp(wxKeyEvent &evt) {
+    this->keyEventHandler.dispatchKeyUp(evt);
 }

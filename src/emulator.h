@@ -52,10 +52,6 @@ class Emulator {
     void powerOnComputer();
     void powerOffComputer();
 
-    void handleAnyPendingEvents();
-
-    void handleRepeatKey();
-
 public:
     Emulator();
     virtual ~Emulator();

@@ -43,21 +43,27 @@
 90 GOTO 5
 */
 
-static bool isKeyDown(const SDL_Keycode sym, const SDL_Keymod mod) {
+
+
+static bool is_key_down(const wxKeyEvent& keyEvent) {
+    const int sym = keyEvent.GetKeyCode();
     return (
-        (sym < 0x7F || sym == SDLK_LEFT || sym == SDLK_RIGHT) &&
-        !(sym == SDLK_TAB || sym == SDLK_BACKQUOTE || sym == '[' || sym == '\\' || sym == SDLK_DELETE) &&
-        !(sym == ']' && mod & KMOD_SHIFT)
+        (sym < 0x7F || sym == WXK_LEFT || sym == WXK_RIGHT) &&
+        !(sym == WXK_TAB || sym == '`' || sym == '[' || sym == '\\' || sym == WXK_DELETE) &&
+        !(sym == ']' && keyEvent.ShiftDown())
     );
 }
 
-static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modifiers, unsigned char* key) {
-    if (keycode == SDLK_LEFT) {
+// Take real-world keystrokes from SDL and filter them to emulate the Apple ][ keyboard
+static bool translate_key(const wxKeyEvent& keyEvent, unsigned char* key) {
+    const int keycode = keyEvent.GetKeyCode();
+
+    if (keycode == WXK_LEFT) {
         *key = 8;
         return true;
     }
 
-    if (keycode == SDLK_RIGHT) {
+    if (keycode == WXK_RIGHT) {
         *key = 21;
         return true;
     }
@@ -75,56 +81,56 @@ static bool translateKeysToAppleModernized(SDL_Keycode keycode, SDL_Keymod modif
 
     // from SDL 1.2 to 2.0, we can't use UNICODE so we need to
     // apply shift and control modifiers ourselves
-    if (modifiers & KMOD_SHIFT) {
-        if (keycode == SDLK_BACKQUOTE) *key = '~';
-        else if (keycode == SDLK_1) *key = '!';
-        else if (keycode == SDLK_2) *key = '@';
-        else if (keycode == SDLK_3) *key = '#';
-        else if (keycode == SDLK_4) *key = '$';
-        else if (keycode == SDLK_5) *key = '%';
-        else if (keycode == SDLK_6) *key = '^';
-        else if (keycode == SDLK_7) *key = '&';
-        else if (keycode == SDLK_8) *key = '*';
-        else if (keycode == SDLK_9) *key = '(';
-        else if (keycode == SDLK_0) *key = ')';
-        else if (keycode == SDLK_MINUS) *key = '_';
-        else if (keycode == SDLK_EQUALS) *key = '+';
+    if (keyEvent.ShiftDown()) {
+        if (keycode == '`') *key = '~';
+        else if (keycode == '1') *key = '!';
+        else if (keycode == '2') *key = '@';
+        else if (keycode == '3') *key = '#';
+        else if (keycode == '4') *key = '$';
+        else if (keycode == '5') *key = '%';
+        else if (keycode == '6') *key = '^';
+        else if (keycode == '7') *key = '&';
+        else if (keycode == '8') *key = '*';
+        else if (keycode == '9') *key = '(';
+        else if (keycode == '0') *key = ')';
+        else if (keycode == '-') *key = '_';
+        else if (keycode == '=') *key = '+';
 
-        else if (keycode == SDLK_SEMICOLON) *key = ':';
-        else if (keycode == SDLK_QUOTE) *key = '\"';
+        else if (keycode == ';') *key = ':';
+        else if (keycode == '\'') *key = '\"';
 
-        else if (keycode == SDLK_COMMA) *key = '<';
-        else if (keycode == SDLK_PERIOD) *key = '>';
-        else if (keycode == SDLK_SLASH) *key = '?';
+        else if (keycode == ',') *key = '<';
+        else if (keycode == '.') *key = '>';
+        else if (keycode == '/') *key = '?';
 
-        else if (keycode == SDLK_m) *key = ']';
-        else if (keycode == SDLK_n) *key = '^';
-        else if (keycode == SDLK_p) *key = '@';
+        else if (keycode == 'M') *key = ']';
+        else if (keycode == 'N') *key = '^';
+        else if (keycode == 'P') *key = '@';
     }
 
-    if (modifiers & KMOD_CTRL) {
+    if (keyEvent.RawControlDown()) {
         if (('A' <= *key && *key <= 'Z') || (*key == ']') || (*key == '^') || (*key == '@')) {
             *key -= 64;
         }
     }
 
-    if ((modifiers & KMOD_SHIFT) && (modifiers & KMOD_CTRL) && keycode == ' ') {
+    if (keyEvent.ShiftDown() && keyEvent.RawControlDown() && keycode == ' ') {
         // Ctrl-Shift-Space is the same as Space
         *key = ' ';
-    } else if ((modifiers & KMOD_CTRL) && !(modifiers & KMOD_SHIFT) && (('0' <= keycode && keycode <= '9') || keycode == '/' || keycode == ' ')) {
+    } else if (keyEvent.RawControlDown() && !keyEvent.ShiftDown() && (('0' <= keycode && keycode <= '9') || keycode == '/' || keycode == ' ')) {
         // Control-only upon 0-9, / and space leaves them unchanged, the same as unmodified
         *key = keycode;
     } else if (keycode == ']') {
-        if (modifiers & KMOD_SHIFT) {
+        if (keyEvent.ShiftDown()) {
             // ignore '}' (shift ']')
             return false;
         }
-        if (modifiers & KMOD_CTRL) {
+        if (keyEvent.RawControlDown()) {
             // Ctrl-] == ASCII: $1D
             *key = 29;
         }
     } // else if this is one of the *keys that can't be typed on an Apple ][ keyboard
-    else if (*key == 0 || keycode == SDLK_TAB || keycode == SDLK_BACKQUOTE || keycode == '[' || keycode == '\\' || keycode == SDLK_DELETE) {
+    else if (*key == 0 || keycode == WXK_TAB || keycode == '`' || keycode == '[' || keycode == '\\' || keycode == WXK_DELETE) {
         return false;
     }
 
@@ -140,29 +146,26 @@ KeyEventHandler::~KeyEventHandler() {
 }
 
 
-// Take real-world keystrokes from SDL and filter them to emulate the Apple ][ keyboard
-void KeyEventHandler::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
-    if (keyEvent.repeat) {
+
+void KeyEventHandler::dispatchKeyDown(const wxKeyEvent& keyEvent) {
+    if (keyEvent.IsAutoRepeat()) {
         // To repeat on the real Apple ][, you need to use the REPT key (emulated by F10)
         return;
     }
 
-    const SDL_Keycode sym = keyEvent.keysym.sym;
-    const SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
+    const int sym = keyEvent.GetKeyCode();
 
     //printf("keydown:   mod: %04X   sym: %08X   scan:%04X   name:%s\n", mod, sym, scan, SDL_GetKeyName(sym));
 
-    if (isKeyDown(sym, mod)) {
+    if (is_key_down(keyEvent)) {
         ++this->keysDown;
     }
 
-    if (sym == SDLK_F10) {
+    if (sym == WXK_F10) {
         this->repeater.press();
-//    } else if (SDLK_F1 <= sym && sym <= SDLK_F12) {
-//        wxGetApp().OnFnKeyPressed(sym);
     } else {
         unsigned char key;
-        const bool sendKey = translateKeysToAppleModernized(sym, mod, &key);
+        const bool sendKey = translate_key(keyEvent, &key);
         if (sendKey) {
             //printf("    sending to apple as ASCII ------------------------------> %02X (%02X) (%d)\n", key, key | 0x80, key | 0x80);
             this->keypresses.push(key);
@@ -171,18 +174,17 @@ void KeyEventHandler::dispatchKeyDown(const SDL_KeyboardEvent& keyEvent) {
     }
 }
 
-void KeyEventHandler::dispatchKeyUp(const SDL_KeyboardEvent& keyEvent) {
-    const SDL_Keycode sym = keyEvent.keysym.sym;
-    const SDL_Keymod mod = (SDL_Keymod)keyEvent.keysym.mod;
+void KeyEventHandler::dispatchKeyUp(const wxKeyEvent& keyEvent) {
+    const int sym = keyEvent.GetKeyCode();
 
-    if (isKeyDown(sym, mod)) {
+    if (is_key_down(keyEvent)) {
         --this->keysDown;
         if (this->keysDown <= 0) {
             this->repeater.clearKey();
         }
     }
 
-    if (sym == SDLK_F10) {
+    if (sym == WXK_F10) {
         this->repeater.release();
     }
 }
