@@ -1,5 +1,7 @@
 #include "gtkutil.h"
 
+#ifdef __WXGTK__
+
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
@@ -13,3 +15,5 @@ void *get_gtk_native_window_handle(void *widget) {
 
     return reinterpret_cast<void*>(xid);
 }
+
+#endif
