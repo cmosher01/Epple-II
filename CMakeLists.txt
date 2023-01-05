@@ -187,7 +187,7 @@ target_compile_definitions(${APP_NAME} PRIVATE
     BOOST_THREAD_DYN_LINK
     BOOST_ALL_NO_LIB
     BOOST_LIB_DIAGNOSTIC
-    BOOST_USE_WINAPI_VERSION=0x0600)
+    BOOST_USE_WINAPI_VERSION=0x0602)
 target_link_libraries(${APP_NAME} PRIVATE ${Boost_LIBRARIES})
 
 find_package(wxWidgets REQUIRED COMPONENTS base core xrc qa)
