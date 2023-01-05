@@ -88,6 +88,7 @@ emulator.cpp
 filterchroma.cpp
 filterluma.cpp
 firmwarecard.cpp
+gtkutil.cpp
 gui.cpp
 keyboardbuffermode.cpp
 keyboard.cpp
@@ -192,6 +193,13 @@ target_link_libraries(${APP_NAME} PRIVATE ${Boost_LIBRARIES})
 find_package(wxWidgets REQUIRED COMPONENTS base core xrc qa)
 include(${wxWidgets_USE_FILE})
 target_link_libraries(${APP_NAME} PRIVATE ${wxWidgets_LIBRARIES})
+
+if(NOT (APPLE OR WIN32))
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTKMM REQUIRED gtk+-3.0)
+    target_include_directories(${APP_NAME} PRIVATE ${GTKMM_INCLUDE_DIRS})
+    target_link_libraries(${APP_NAME} PRIVATE ${GTKMM_LIBRARIES})
+endif()
 
 
 

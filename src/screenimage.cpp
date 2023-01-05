@@ -21,8 +21,10 @@
 #include "e2const.h"
 #include "applentsc.h"
 #include "card.h"
+#include "gtkutil.h"
 #include "util.h"
 
+#include <wx/menu.h>
 #include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/gdicmn.h>
@@ -74,6 +76,7 @@ ScreenImage::ScreenImage(KeyEventHandler &k) :
     cassOutName(32, ' '),
     keyEventHandler(k) {
     createScreen();
+    Center();
     Show();
     Bind(wxEVT_IDLE, &ScreenImage::OnIdle, this);
 }
@@ -120,18 +123,26 @@ void ScreenImage::createScreen() {
     notifyObservers();
 }
 
-void ScreenImage::createSdlTexture() {
-    WXWidget nativeSdl = this->sdl->GetHandle();
-    // TODO: do we need special gtk handling here, to get xid using:
-//    GtkWidget* widget = panel->GetHandle();
-//    gtk_widget_realize(widget);
-//    Window xid = GDK_WINDOW_XWINDOW(widget->window);
+static void *get_native_window_handle(wxWindowBase *panel) {
+    void *vn = static_cast<void*>(panel->GetHandle());
+#ifdef __WXGTK__
+    vn = get_gtk_native_window_handle(vn);
+#endif
+    return vn;
+}
 
-    this->window = SDL_CreateWindowFrom(static_cast<void*>(nativeSdl));
+void ScreenImage::createSdlTexture() {
+    void *nativeSdl = get_native_window_handle(this->sdl);
+
+    this->window = SDL_CreateWindowFrom(nativeSdl);
     if (this->window == NULL) {
         printf("Unable to create window: %s\n", SDL_GetError());
         throw ScreenException();
     }
+
+#ifdef __WXGTK__
+    SDL_SetWindowSize(this->window, SCRW, SCRH*ASPECT_RATIO);
+#endif
 
     this->renderer = SDL_CreateRenderer(this->window, -1, 0);
     if (this->renderer == NULL) {
