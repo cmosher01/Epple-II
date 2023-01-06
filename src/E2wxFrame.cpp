@@ -34,17 +34,6 @@
 #include <iostream>
 
 
-enum E2MenuID {
-    ID_MENUITEM_POWER = wxID_HIGHEST+1,
-    ID_MENUITEM_CYCLE_MONITOR,
-    ID_MENUITEM_TOGGLE_FULL_SCREEN,
-    ID_MENUITEM_EMULATOR_COMMAND,
-    ID_MENUITEM_RESET,
-    ID_MENUITEM_SCREEN_SHOT,
-    ID_MENUITEM_TOGGLE_BUFFERED,
-    ID_MENUITEM_START_EMULATOR,
-    ID_MENUITEM_STOP_EMULATOR,
-};
 
 wxBEGIN_EVENT_TABLE(E2wxFrame, wxFrame)
     EVT_CLOSE(E2wxFrame::HandleUserQuitRequest)
@@ -136,7 +125,7 @@ void E2wxFrame::InitMenuBar() {
 
 void E2wxFrame::InitStatusBar() {
     CreateStatusBar();
-    SetStatusText("Welcome to "+wxGetApp().GetID());
+    SetStatusText("Welcome to "+wxGetApp().GetAppDisplayName());
 }
 
 
@@ -175,14 +164,17 @@ void E2wxFrame::OnPreferences(wxCommandEvent& event) {
 void E2wxFrame::OnAbout(wxCommandEvent& event) {
     wxString msg = "";
 
-    msg += wxGetApp().GetID()+"\n";
+    msg += wxGetApp().GetVendorName();
+    msg += ".";
+    msg += wxGetApp().GetAppName();
+    msg += "\n";
 
     msg += "version: "+wxGetApp().GetVersion()+"\n";
 
     msg += "Current log file:\n";
     msg += wxGetApp().GetLogFile().c_str();
 
-    wxMessageBox(msg, "About "+wxGetApp().GetID(), wxOK | wxICON_INFORMATION);
+    wxMessageBox(msg, "About "+wxGetApp().GetAppDisplayName(), wxOK | wxICON_INFORMATION);
 }
 
 
@@ -196,7 +188,7 @@ void E2wxFrame::OnCycleMonitor(wxCommandEvent& event) {
 }
 
 void E2wxFrame::OnToggleFullScreen(wxCommandEvent& event) {
-    wxGetApp().ToggleFullScreen();
+//    wxGetApp().ToggleFullScreen();
 }
 
 void E2wxFrame::OnEmulatorCommand(wxCommandEvent& event) {

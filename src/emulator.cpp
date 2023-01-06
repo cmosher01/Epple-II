@@ -38,7 +38,7 @@
 
 
 Emulator::Emulator() :
-    screenImage(keyEventHandler),
+    screenImage(*this, keyEventHandler),
     display(screenImage),
     videoStatic(display),
     apple2(keypresses, paddleButtonStates, display, buffered, screenImage),

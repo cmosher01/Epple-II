@@ -25,7 +25,9 @@
 
 #include <SDL_keycode.h>
 
+#include <wx/defs.h>
 #include <wx/app.h>
+#include <wx/event.h>
 #include <wx/cmdline.h>
 #include <wx/timer.h>
 #include <wx/string.h>
@@ -37,6 +39,20 @@
 
 class E2wxFrame;
 class Emulator;
+
+
+
+enum E2MenuID {
+    ID_MENUITEM_POWER = wxID_HIGHEST+1,
+    ID_MENUITEM_CYCLE_MONITOR,
+    ID_MENUITEM_TOGGLE_FULL_SCREEN,
+    ID_MENUITEM_EMULATOR_COMMAND,
+    ID_MENUITEM_RESET,
+    ID_MENUITEM_SCREEN_SHOT,
+    ID_MENUITEM_TOGGLE_BUFFERED,
+    ID_MENUITEM_START_EMULATOR,
+    ID_MENUITEM_STOP_EMULATOR,
+};
 
 
 
@@ -55,7 +71,6 @@ public:
 
 
 class E2wxApp : public wxApp {
-    const wxString id;
     const wxString version;
     std::filesystem::path logfile;
     std::filesystem::path resdir;
@@ -75,7 +90,6 @@ public:
     E2wxApp();
     virtual ~E2wxApp();
 
-    const wxString GetID() const;
     const wxString GetVersion() const;
     const std::filesystem::path GetLogFile() const;
     const std::filesystem::path GetResDir() const;
@@ -87,8 +101,6 @@ public:
 
     void StartEmulator();
     void StopEmulator();
-
-    void OnFnKeyPressed(const SDL_Keycode k);
 
     bool CloseMainFrame();
     bool EnsureCanQuit();

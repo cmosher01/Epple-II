@@ -64,7 +64,10 @@ wxIMPLEMENT_APP_NO_MAIN(E2wxApp);
 #define PROJECT_VENDOR nu.mine.mosher
 #endif
 #ifndef PROJECT_NAME
-#define PROJECT_NAME Epple-II
+#define PROJECT_NAME epple2
+#endif
+#ifndef PROJECT_DISPLAY_NAME
+#define PROJECT_DISPLAY_NAME PROJECT_NAME
 #endif
 
 
@@ -90,7 +93,6 @@ void EmuTimer::Notify() {
 
 
 E2wxApp::E2wxApp() :
-    id(wxSTRINGIZE(PROJECT_VENDOR) "." wxSTRINGIZE(PROJECT_NAME)),
     version(wxSTRINGIZE(PROJECT_VERSION)),
     frame(nullptr),
     emu(nullptr),
@@ -121,7 +123,6 @@ static std::filesystem::path dirDocuments() {
 
 
 
-
 bool E2wxApp::OnInit() {
     if (!wxApp::OnInit()) {
         return false;
@@ -132,6 +133,12 @@ bool E2wxApp::OnInit() {
     wxHandleFatalExceptions();
 #endif
 #endif
+
+
+
+    SetVendorName(wxSTRINGIZE(PROJECT_VENDOR));
+    SetAppName(wxSTRINGIZE(PROJECT_NAME));
+    SetAppDisplayName(wxSTRINGIZE(PROJECT_DISPLAY_NAME));
 
 
 
@@ -156,19 +163,21 @@ bool E2wxApp::OnInit() {
 //    TODO define components to turn on/off for trace level logging (disk, cassette, woz, keyboard, ram, lss, audio, etc.)
 //    TODO why are log messages getting buffered? (It ruins the timestamp.)
 
-    BOOST_LOG_TRIVIAL(info) << "Application ID: " << this->GetID();
+    BOOST_LOG_TRIVIAL(info) << "Vendor name: " << this->GetVendorName();
+    BOOST_LOG_TRIVIAL(info) << "Application name: " << this->GetAppName();
     BOOST_LOG_TRIVIAL(info) << "Application version: " << this->GetVersion();
 
+    const wxString id = GetVendorName() + "." + GetAppName();
 
-    this->confdir = dirConfig() / path_from_string(GetID()+".d");
+    this->confdir = dirConfig() / path_from_string(id+".d");
     std::filesystem::create_directories(this->confdir);
     BOOST_LOG_TRIVIAL(info) << "Configuration directory path: " << this->confdir;
 
-    this->conffile = dirConfig() / path_from_string(GetID());
+    this->conffile = dirConfig() / path_from_string(id);
     BOOST_LOG_TRIVIAL(info) << "Configuration      file path: " << this->conffile;
-    wxConfigBase::Set(new wxFileConfig("", "", GetID()));
+    wxConfigBase::Set(new wxFileConfig("", "", id));
 
-    this->docsdir = dirDocuments() / path_from_string(GetID());
+    this->docsdir = dirDocuments() / path_from_string(id);
     BOOST_LOG_TRIVIAL(info) << "User document directory path: " << this->docsdir;
 
     const std::filesystem::path exe = path_from_string(stdpaths.GetExecutablePath());
@@ -207,33 +216,6 @@ bool E2wxApp::OnInit() {
 
 
 
-void E2wxApp::OnFnKeyPressed(const SDL_Keycode k) {
-    if (k == SDLK_F1) {
-        this->TogglePower();
-    } else if (k == SDLK_F2) {
-        this->CycleMonitor();
-    } else if (k == SDLK_F3) {
-        this->ToggleFullScreen();
-    } else if (k == SDLK_F4) {
-        //
-    } else if (k == SDLK_F5) {
-        this->EmulatorCommand();
-    } else if (k == SDLK_F6) {
-        this->Reset();
-    } else if (k == SDLK_F7) {
-        this->Paste();
-    } else if (k == SDLK_F8) {
-        this->ScreenShot();
-    } else if (k == SDLK_F9) {
-        this->CloseMainFrame();
-    } else if (k == SDLK_F10) {
-        //
-    } else if (k == SDLK_F11) {
-        //
-    } else if (k == SDLK_F12) {
-        this->ToggleBuffered();
-    }
-}
 
 bool E2wxApp::CloseMainFrame() {
     bool r = false;
@@ -332,10 +314,6 @@ const std::filesystem::path E2wxApp::GetResDir() const {
     return this->resdir;
 }
 
-const wxString E2wxApp::GetID() const {
-    return this->id;
-}
-
 const wxString E2wxApp::GetVersion() const {
     return this->version;
 }
@@ -355,9 +333,11 @@ const std::filesystem::path E2wxApp::GetDocumentsDir() const {
 
 
 const std::filesystem::path E2wxApp::BuildLogFilePath() const {
+    const wxString id = GetVendorName() + "." + GetAppName();
+
     std::filesystem::path logfile =
         dirCache() /
-        path_from_string(GetID()) /
+        path_from_string(id) /
         std::filesystem::path("log");
 
     std::filesystem::create_directories(logfile);
@@ -462,9 +442,9 @@ void E2wxApp::ToggleBuffered() {
 }
 
 void E2wxApp::ToggleFullScreen() {
-    if (this->emu) {
-        this->emu->toggleFullScreen();
-    }
+//    if (this->emu) {
+//        this->emu->toggleFullScreen();
+//    }
 }
 
 static const wxString message = "Enter a command for the emulator. See https://cmosher01.github.io/Epple-II/usermanual.html";

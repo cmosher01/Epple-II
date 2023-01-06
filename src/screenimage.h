@@ -30,6 +30,7 @@
 #include <vector>
 #include <string>
 
+class Emulator;
 class Card;
 struct SDL_Texture;
 struct SDL_Renderer;
@@ -37,6 +38,7 @@ struct SDL_Window;
 
 class ScreenImage : public wxFrame {
 private:
+    Emulator &emu;
     wxPanel *sdl;
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -60,10 +62,11 @@ private:
     void OnIdle(wxIdleEvent &evt);
     void OnKeyDown(wxKeyEvent &evt);
     void OnKeyUp(wxKeyEvent &evt);
+    void HandleUserCloseWindowRequest(wxCloseEvent& event);
 
     // TODO some of these methods should be private
 public:
-    ScreenImage(KeyEventHandler &keyEventHandler);
+    ScreenImage(Emulator &emulator, KeyEventHandler &keyEventHandler);
     ~ScreenImage();
 
     void exitFullScreen();

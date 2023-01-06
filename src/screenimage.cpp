@@ -23,6 +23,7 @@
 #include "card.h"
 #include "gtkutil.h"
 #include "util.h"
+#include "emulator.h"
 
 #include <wx/menu.h>
 #include <wx/panel.h>
@@ -66,8 +67,9 @@ static const int WIDTH = AppleNTSC::H - AppleNTSC::PIC_START - 2;
 class ScreenException {
 };
 
-ScreenImage::ScreenImage(KeyEventHandler &k) :
+ScreenImage::ScreenImage(Emulator &emulator, KeyEventHandler &k) :
     wxFrame(nullptr, wxID_ANY, "Emulator"),
+    emu(emulator),
     fullscreen(false),
     buffer(true),
     display(AnalogTV::TV_OLD_COLOR),
@@ -79,6 +81,7 @@ ScreenImage::ScreenImage(KeyEventHandler &k) :
     Center();
     Show();
     Bind(wxEVT_IDLE, &ScreenImage::OnIdle, this);
+    Bind(wxEVT_CLOSE_WINDOW, &ScreenImage::HandleUserCloseWindowRequest, this);
 }
 
 ScreenImage::~ScreenImage() {
@@ -87,10 +90,15 @@ ScreenImage::~ScreenImage() {
 
 
 
+
 void ScreenImage::OnIdle(wxIdleEvent &evt) {
     if (!this->FindFocus() || !this->sdl->HasFocus()) {
         this->sdl->SetFocus();
     }
+}
+
+void ScreenImage::HandleUserCloseWindowRequest(wxCloseEvent& event) {
+    wxGetApp().StopEmulator();
 }
 
 void ScreenImage::exitFullScreen() {
