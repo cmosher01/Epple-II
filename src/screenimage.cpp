@@ -148,9 +148,7 @@ void ScreenImage::createSdlTexture() {
         throw ScreenException();
     }
 
-#ifdef __WXGTK__
     SDL_SetWindowSize(this->window, SCRW, SCRH*ASPECT_RATIO);
-#endif
 
     this->renderer = SDL_CreateRenderer(this->window, -1, 0);
     if (this->renderer == NULL) {
