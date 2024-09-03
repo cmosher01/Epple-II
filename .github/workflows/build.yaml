@@ -56,7 +56,7 @@ jobs:
           cmake ..
           cmake --build .
 
-      - uses: "actions/download-artifact@v3"
+      - uses: "actions/download-artifact@v4.1.7"
         with:
           name: "epple2-roms"
           path: "build/epple2-roms"
@@ -115,7 +115,7 @@ jobs:
           cmake ..
           cmake --build .
 
-      - uses: "actions/download-artifact@v3"
+      - uses: "actions/download-artifact@v4.1.7"
         with:
           name: "epple2-roms"
           path: "build/epple2-roms"
@@ -170,7 +170,7 @@ jobs:
           cmake ..
           cmake --build .
 
-      - uses: "actions/download-artifact@v3"
+      - uses: "actions/download-artifact@v4.1.7"
         with:
           name: "epple2-roms"
           path: "build/epple2-roms"
